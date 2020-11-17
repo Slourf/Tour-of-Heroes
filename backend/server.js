@@ -1,17 +1,6 @@
 const http = require('http');
 const app = require('./app');
 
-
-const Pool = require('pg').Pool
-
-const pool = new Pool({
-  user: 'toh',
-  host: 'localhost',
-  database: 'tower_of_heroes',
-  password: 'password',
-  port: 5432,
-})
-
 const normalizePort = val => {
   const port = parseInt(val, 10);
 
