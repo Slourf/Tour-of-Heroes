@@ -30,4 +30,8 @@ export class HeroService {
     this.log(`fetch hero id=${id}`);
     return this.http.get<Hero>(this.heroesUrl + `/${id}`);
   }
+
+  addHero(name: string): Observable<Hero> {
+    return this.http.post<Hero>(this.heroesUrl, { name });
+  }
 }
