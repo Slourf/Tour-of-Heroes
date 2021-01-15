@@ -14,5 +14,5 @@ artefacts:
   files:
     - '**/*'
   base-directory: 'backend'
-  name: 'toh-build'
+  name: 'BuildArtifact'
   discard-paths: no
