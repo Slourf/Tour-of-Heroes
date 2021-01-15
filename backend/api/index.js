@@ -1,7 +1,7 @@
-var express = require('express');
-var heroes = require('./heroes/index')
+import { Router } from 'express';
+import heroes from './heroes/index';
 
-var router = express.Router();
+var router = Router();
 
 // middleware that is specific to this router
 router.use(function timeLog(req, res, next) {
@@ -17,4 +17,4 @@ router.get('/about', function(req, res) {
   res.send('About birds');
 });
 
-module.exports = router;
+export default router;

@@ -1,9 +1,16 @@
-const express = require('express');
-const bodyParse = require('body-parser');
-const db = require('./api/heroes/queries');
-const api = require('./api/index');
+import express from 'express';
+import helmet from 'helmet';
+import compression from 'compression';
+
+import bodyParse from 'body-parser';
+import db from './api/heroes/queries';
+import api from './api/index';
 
 const app = express();
+
+app.use(helmet());
+app.use(compression());
+
 app.use((req, res, next) => {
     console.log('Requete recue !');
     next();
@@ -22,4 +29,4 @@ app.use((req, res, next) => {
     console.log('Réponse envoyée avec succès !');
 });
 
-module.exports = app;
+export default app;

@@ -1,7 +1,9 @@
 
-const express = require('express');
-const { getHeroesById, getHeroes } = require('./queries');
-const router = express.Router();
+import { Router } from 'express'
+import def from './queries'
+
+const { getHeroesById, getHeroes } = def;
+const router = Router();
 
 router.get('/', async (req, res, next) => {
 
@@ -17,4 +19,4 @@ router.get('/:id', async (req, res, next) => {
     res.status(200).json(hero);
 })
 
-module.exports = router;
+export default router;
