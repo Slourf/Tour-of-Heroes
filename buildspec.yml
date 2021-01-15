@@ -10,3 +10,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+artefacts:
+  files:
+    - '**/*'
+  base-directory: 'backend'
