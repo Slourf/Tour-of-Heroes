@@ -14,5 +14,5 @@ artefacts:
   files:
     - '**/*'
   base-directory: 'backend'
-  name: 'BuildArtifact'
+  name: 'build_output'
   discard-paths: no
