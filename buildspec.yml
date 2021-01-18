@@ -12,4 +12,5 @@ phases:
       - echo toto
 artefacts:
   files:
-    - '**/*'
+    - 'buildspec.yml'
+
