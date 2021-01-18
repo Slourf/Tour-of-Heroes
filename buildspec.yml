@@ -13,6 +13,3 @@ phases:
 artefacts:
   files:
     - '**/*'
-  base-directory: 'backend'
-  name: 'build_output'
-  discard-paths: no
