@@ -3,13 +3,13 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Nothing to do in the pre_build phase...
+      - echo titi
   build:
     commands:
-      - echo Build started on `date`
+      - echo tata
   post_build:
     commands:
-      - echo Build completed on `date`
+      - echo toto
 artefacts:
   files:
     - '**/*'
