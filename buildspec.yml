@@ -6,7 +6,7 @@ phases:
       - echo titi
   build:
     commands:
-      - echo tata
+      - ls
   post_build:
     commands:
       - echo toto
