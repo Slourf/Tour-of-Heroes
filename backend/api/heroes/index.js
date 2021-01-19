@@ -1,9 +1,6 @@
-
-import { Router } from 'express'
-import def from './queries'
-
-const { getHeroesById, getHeroes } = def;
-const router = Router();
+const express = require('express');
+const { getHeroesById, getHeroes } = require('./queries');
+const router = express.Router();
 
 router.get('/', async (req, res, next) => {
 
@@ -19,4 +16,4 @@ router.get('/:id', async (req, res, next) => {
     res.status(200).json(hero);
 })
 
-export default router;
+module.exports = router;

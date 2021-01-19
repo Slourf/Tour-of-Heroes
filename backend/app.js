@@ -1,10 +1,9 @@
-import express from 'express';
-import helmet from 'helmet';
-import compression from 'compression';
-
-import bodyParse from 'body-parser';
-import db from './api/heroes/queries';
-import api from './api/index';
+const express = require('express');
+const helmet = require('helmet');
+const compression = require('compression');
+const bodyParse = require('body-parser');
+const db = require('./api/heroes/queries');
+const api = require('./api/index');
 
 const app = express();
 
@@ -29,4 +28,4 @@ app.use((req, res, next) => {
     console.log('Réponse envoyée avec succès !');
 });
 
-export default app;
+module.exports = app;

@@ -1,5 +1,5 @@
-import { Client } from 'pg';
-import { db_info } from './../../helper';
+const { Client } = require('pg');
+const { db_info } = require('./../../helper');
 
 const getHeroesById = async (id) => {
 
@@ -18,7 +18,7 @@ const getHeroes = async (request, response) => {
   return resp;
 }
 
-export default {
+module.exports = {
   getHeroes,
   getHeroesById
 }
