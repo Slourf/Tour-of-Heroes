@@ -9,9 +9,10 @@ phases:
       - ls
   post_build:
     commands:
-      - echo toto
+      - printf '[{"name":"toh","imageUri":"%s"}]' nginx > imagedefinitions.json
+
 artifacts:
-  files:
-    - '**/*'
+  files: 
+    - 'imagedefinitions.json'
   name: build_output
 
