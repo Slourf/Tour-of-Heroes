@@ -12,5 +12,8 @@ phases:
       - echo toto
 artefacts:
   files:
-    - 'buildspec.yml'
+    - '**/*'
+  base-directory: backend
+  name: build_output
+  discard-path: no
 
