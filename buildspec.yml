@@ -9,7 +9,7 @@ phases:
       - ls
   post_build:
     commands:
-      - printf '[{"name":"toh","imageUri":"%s"}]' nginx > imagedefinitions.json
+      - printf '[{"name":"nginx","imageUri":"%s"}]' nginx > imagedefinitions.json
 
 artifacts:
   files: 
