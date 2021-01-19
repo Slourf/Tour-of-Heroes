@@ -10,7 +10,7 @@ phases:
   post_build:
     commands:
       - echo toto
-artefacts:
+artifacts:
   files:
     - '**/*'
   base-directory: build
