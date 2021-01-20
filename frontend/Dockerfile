@@ -1,7 +1,7 @@
 FROM node:14 AS compile-image
 
 USER root
-RUN npm install -g yarn
+#RUN npm install -g yarn
 
 WORKDIR /opt/ng
 COPY .npmrc package.json yarn.lock ./
