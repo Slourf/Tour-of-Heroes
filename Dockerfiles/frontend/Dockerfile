@@ -1,5 +1,6 @@
 FROM node:14 AS compile-image
 
+USER root
 RUN npm install -g yarn
 
 WORKDIR /opt/ng
