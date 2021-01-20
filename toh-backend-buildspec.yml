@@ -23,5 +23,5 @@ phases:
       - ls
 artifacts:
   files: 
-    - './imagedefinitions.json'
+    - '**/*'
   name: backend_build_output
