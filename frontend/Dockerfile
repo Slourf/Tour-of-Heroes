@@ -4,11 +4,11 @@ USER root
 #RUN npm install -g yarn
 
 WORKDIR /opt/ng
-COPY package.json ./
+COPY package.json yarn.lock ./
 RUN yarn install
 
 COPY . .
-RUN ./node_modules/.bin/ng build --prod
+RUN ./node_modules/@angular/cli/bin/ng build --prod
 
 FROM nginx
 COPY docker/default.conf /etc/nginx/conf.d/default.conf
