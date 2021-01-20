@@ -8,7 +8,9 @@ COPY package.json ./
 RUN yarn install
 
 COPY . .
-RUN ng build --prod
+RUN pwd
+RUN ls
+RUN ./node_module/.bin/ng build --prod
 
 FROM nginx
 COPY docker/default.conf /etc/nginx/conf.d/default.conf
