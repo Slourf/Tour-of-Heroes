@@ -4,7 +4,7 @@ USER root
 #RUN npm install -g yarn
 
 WORKDIR /opt/ng
-COPY .npmrc package.json yarn.lock ./
+COPY package.json ./
 RUN yarn install
 
 ENV PATH="./node_modules/.bin:$PATH" 
