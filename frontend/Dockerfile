@@ -10,6 +10,7 @@ RUN yarn install
 ENV PATH="/opt/ng/node_modules/.bin:$PATH" 
 
 COPY . .
+RUN ls
 RUN ng build --prod
 
 FROM nginx

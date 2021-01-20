@@ -18,8 +18,9 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker push $IMAGE_REPO_NAME:$IMAGE_TAG
-      - cd
       - printf '[{"name":"toh-backend","imageUri":"%s"}]' $IMAGE_REPO_NAME:$IMAGE_TAG > imagedefinitions.json
+      - pwd
+      - ls
 artifacts:
   files: 
     - 'imagedefinitions.json'
