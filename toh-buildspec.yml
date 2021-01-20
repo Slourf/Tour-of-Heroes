@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo titi
+  build:
+    commands:
+      - ls
+  post_build:
+    commands:
+      - printf '[{"name":"nginx","imageUri":"%s"}]' nginx > imagedefinitions.json
+
+artifacts:
+  files: 
+    - 'imagedefinitions.json'
+  name: build_output
+
