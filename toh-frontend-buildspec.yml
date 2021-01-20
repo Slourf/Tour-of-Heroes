@@ -5,16 +5,12 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       # Type the command to log in to your Docker Hub account here.          
-      - aws ecr get-login-password --region eu-west-3
       - aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin 120523844784.dkr.ecr.eu-west-3.amazonaws.com
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - cd Dockerfiles/frontend/
-      - pwd
-      - ls
-      - ls ../../frontend
+      - cd frontend/
       - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $IMAGE_REPO_NAME:$IMAGE_TAG
   post_build:

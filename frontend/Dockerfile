@@ -4,12 +4,12 @@ USER root
 RUN npm install -g yarn
 
 WORKDIR /opt/ng
-COPY ../../frontend/.npmrc ../../frontend/package.json ../../frontend/yarn.lock ./
+COPY .npmrc package.json yarn.lock ./
 RUN yarn install
 
 ENV PATH="./node_modules/.bin:$PATH" 
 
-COPY ../../frontend/* ./
+COPY . .
 RUN ng build --prod
 
 FROM nginx
