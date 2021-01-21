@@ -2,7 +2,6 @@ FROM node:14 AS build
 
 USER root
 #RUN npm install -g yarn
-
 WORKDIR /opt/ng
 COPY package.json yarn.lock ./
 RUN yarn install
