@@ -9,7 +9,6 @@ RUN yarn install
 
 COPY . .
 RUN ./node_modules/@angular/cli/bin/ng build --prod
-RUN ls /opt/ng/dist/
 
 FROM nginx
 COPY docker/default.conf /etc/nginx/conf.d/default.conf
