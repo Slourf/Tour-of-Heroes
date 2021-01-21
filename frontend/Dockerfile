@@ -10,5 +10,7 @@ COPY . .
 RUN ./node_modules/@angular/cli/bin/ng build --prod
 
 FROM nginx
+USER root
 COPY docker/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /opt/ng/dist/angular-tour-of-heroes /usr/share/nginx/html
+RUN chown www-data /usr/share/nginx/html/*
