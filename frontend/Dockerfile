@@ -13,4 +13,4 @@ RUN ls /opt/ng/dist/
 
 FROM nginx
 COPY docker/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /opt/ng/dist/app-name /usr/share/nginx/html
+COPY --from=build /opt/ng/dist/angular-tour-of-heroes /usr/share/nginx/html
