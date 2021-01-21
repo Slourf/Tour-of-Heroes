@@ -46,3 +46,7 @@ testem.log
 Thumbs.db
 
 *swp
+*.__ivy_ngcc_bak
+*.map
+*.cache
+*ngcc*
