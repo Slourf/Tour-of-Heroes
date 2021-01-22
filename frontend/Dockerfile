@@ -1,11 +1,14 @@
 FROM node:14 AS build
 
-USER root
+ARG url
+ARG port
+
 #RUN npm install -g yarn
 WORKDIR /opt/ng
 COPY package.json yarn.lock ./
 RUN yarn install
 
+RUN echo "export const environment = { production: true, SERVER_URL: $SERVER_URL, SERVER_PORT: $SERVER_PORT };" > src/environments/environment.prod.ts
 COPY . .
 RUN ./node_modules/@angular/cli/bin/ng build --prod
 

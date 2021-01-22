@@ -4,6 +4,7 @@ import { HEROES } from './mock-heroes';
 import { from, Observable, of} from 'rxjs';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../environments/environment'
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class HeroService {
     private http: HttpClient,
     private messageService: MessageService) { }
   
-  private heroesUrl = 'http://localhost:3000/api/heroes';
+  private heroesUrl = `http://${environment.SERVER_URL}:${environment.SERVER_PORT}/api/heroes`;
 
   private log(message: string): void {
     this.messageService.add(`HeroService: ${message}`);
