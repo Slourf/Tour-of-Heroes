@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   SERVER_URL: "localhost",
-  SERVER_PORT: 3000
+  SERVER_PORT: "3000"
 };
 
 /*
