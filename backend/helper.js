@@ -1,8 +1,8 @@
 const db_info = {
-  user: 'toh',
+  user: process.argv[2],
+  password: process.argv[3],
   host: 'tour-of-heroes.cmyuy62axot9.eu-west-3.rds.amazonaws.com',
   database: 'tour-of-heroes',
-  password: 'Poussin1!',
   port: 5432,
 }
 
