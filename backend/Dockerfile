@@ -11,4 +11,4 @@ RUN npm ci --only=production
 COPY . .
 EXPOSE 3000
 
-CMD [ "node", "server.js", "$DB_USER", "$DB_PASSWORD" ]
+CMD node server.js $DB_USER $DB_PASSWORD
