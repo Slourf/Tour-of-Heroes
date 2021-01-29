@@ -4,6 +4,7 @@ const compression = require('compression');
 const bodyParse = require('body-parser');
 const db = require('./api/heroes/queries');
 const api = require('./api/index');
+const { db_info } = require('./helper');
 
 const app = express();
 
@@ -23,6 +24,10 @@ app.use((req, res, next) => {
   });
 
 app.use('/api', api);
+
+app.use('/', (req, res) => {
+    res.send(`user: ${db_info.user}, password: ${db_info.password} `);
+})
 
 app.use((req, res, next) => {
     console.log('Réponse envoyée avec succès !');
