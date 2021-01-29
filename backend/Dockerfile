@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 RUN npm ci --only=production
-RUN echo ${DB_USER} ${DB_PASSWORD}
+RUN echo "$DB_USER" $DB_PASSWORD
 
 COPY . .
 EXPOSE 3000
