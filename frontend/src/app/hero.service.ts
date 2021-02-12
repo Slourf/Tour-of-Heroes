@@ -15,7 +15,7 @@ export class HeroService {
     private http: HttpClient,
     private messageService: MessageService) { }
   
-  private heroesUrl = `http://${environment.SERVER_URL}:${environment.SERVER_PORT}/api/heroes`;
+  private heroesUrl = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/api/heroes`;
 
   private log(message: string): void {
     this.messageService.add(`HeroService: ${message}`);
