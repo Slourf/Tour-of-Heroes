@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Hero } from './hero';
-import { HEROES } from './mock-heroes';
 import { from, Observable, of} from 'rxjs';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -29,10 +28,15 @@ export class HeroService {
   getHero(id: number): Observable<Hero> {
 
     this.log(`fetch hero id=${id}`);
-    return this.http.get<Hero>(this.heroesUrl + `/${id}`);
+    return this.http.get<Hero>(`${this.heroesUrl}/${id}`);
   }
 
-  addHero(name: string): Observable<Hero> {
-    return this.http.post<Hero>(this.heroesUrl, { name });
+  addHero(hero: Hero): Observable<string> {
+    this.log(`addHero: ${hero}`);
+    return this.http.post<string>(this.heroesUrl, hero);
+  }
+
+  deleteHero(id: number): Observable<Hero> {
+    return this.http.delete<Hero>(`${this.heroesUrl}/${id}`);
   }
 }

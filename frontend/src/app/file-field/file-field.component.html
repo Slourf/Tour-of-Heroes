@@ -1,0 +1,9 @@
+<div class="form-group">
+  <label for="file">{{ name }}</label>
+  <br />
+  <input
+    type="file"
+    id="file"
+    (change)="handleFileInput($event.target.files)"
+  />
+</div>

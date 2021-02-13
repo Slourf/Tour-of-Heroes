@@ -10,6 +10,8 @@ import { HeroDetailComponent } from './hero-detail/hero-detail.component';
 import { MessagesComponent } from './messages/messages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AddNewHeroComponent } from './add-new-hero/add-new-hero.component';
+import { FileFieldComponent } from './file-field/file-field.component';
+import { InputFieldComponent } from './input-field/input-field.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { AddNewHeroComponent } from './add-new-hero/add-new-hero.component';
     HeroDetailComponent,
     MessagesComponent,
     DashboardComponent,
-    AddNewHeroComponent
+    AddNewHeroComponent,
+    FileFieldComponent,
+    InputFieldComponent
   ],
   imports: [
     BrowserModule,

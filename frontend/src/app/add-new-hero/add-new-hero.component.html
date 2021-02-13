@@ -1,0 +1,8 @@
+<form (ngSubmit)="onSubmit(f)" #f="ngForm">
+  <app-input-field [name]="'Nom'" [value]="hero.name" ></app-input-field>
+  <app-input-field [name]="'Description'" [value]="hero.description" ></app-input-field>
+  <app-file-field [name]="'Logo'"></app-file-field>
+  <app-file-field [name]="'Image'"></app-file-field>
+
+  <button class="btn btn-primary" type="submit">Enregistrer</button>
+</form>
