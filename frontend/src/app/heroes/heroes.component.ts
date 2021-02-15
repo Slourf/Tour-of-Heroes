@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { Hero } from '../hero';
 import { HeroService } from '../hero.service';
 import { MessageService } from '../message.service';
@@ -17,7 +18,13 @@ export class HeroesComponent implements OnInit {
 
   getHeroes(): void {
     this.heroService.getHeroes()
-      .subscribe(heroes => this.heroes = heroes);
+      .subscribe(heroes => { 
+        this.heroes = heroes;
+        this.heroes.forEach((hero: Hero) => {
+          hero.image_path = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/${hero.image}`;
+          hero.logo_path = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/${hero.logo}`;
+        });
+      });
   }
 
   ngOnInit(): void {

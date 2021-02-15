@@ -4,8 +4,6 @@ import compression from "compression";
 import bodyParse from "body-parser";
 import { router as api } from "./api/index";
 
-import { dbInfo } from "./helper";
-
 export const app = express();
 export const staticPath: string = "static";
 

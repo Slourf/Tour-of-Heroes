@@ -20,22 +20,19 @@ export const getHeroesById = (id) => __awaiter(void 0, void 0, void 0, function*
     console.log(`${staticPath}/${resp.image}`);
     console.log(fs.existsSync(`${staticPath}/${resp.image}`));
     if (!fs.existsSync(`${staticPath}/${resp.image}`)) {
-        console.log("image does not exist");
+        // FIXME this code does not work !!
         const image = (yield client.query("SELECT * FROM heroes_image WHERE image_path = $1", [
             resp.image,
         ])).rows[0];
-        fs.writeFile(image.path, image.data, image.encoding);
-        console.log(image);
+        fs.writeFile(`${staticPath}/${image.path}`, image.data, image.encoding);
     }
     if (!fs.existsSync(`${staticPath}/${resp.logo}`)) {
-        console.log("logo does not exist");
+        // FIXME this code does not work !!
         const logo = (yield client.query("SELECT * FROM heroes_logo WHERE logo_path = $1", [
             resp.logo,
         ])).rows[0];
         fs.writeFile(`${staticPath}/${logo.path}`, logo.data, logo.encoding);
-        console.log(logo);
     }
-    console.log(resp);
     client.end();
     return resp;
 });

@@ -9,43 +9,61 @@ const { Client } = pkg;
 export const getHeroesById = async (id: number) => {
   const client = new Client(dbInfo);
   client.connect();
-  const resp: Hero = (
+  const hero: Hero = (
     await client.query(`SELECT * FROM heroes WHERE id = $1`, [id])
   ).rows[0];
-    console.log(resp);
-    console.log(`${staticPath}/${resp.image}`);
-    console.log(fs.existsSync(`${staticPath}/${resp.image}`));
 
-
-  if (!fs.existsSync(`${staticPath}/${resp.image}`)) {
+  if (!fs.existsSync(`${staticPath}/${hero.image}`)) {
     // FIXME this code does not work !!
     const image = (
       await client.query("SELECT * FROM heroes_image WHERE image_path = $1", [
-        resp.image,
+        hero.image,
       ])
     ).rows[0];
     fs.writeFile(`${staticPath}/${image.path}`, image.data, image.encoding);
   }
 
-  if (!fs.existsSync(`${staticPath}/${resp.logo}`)) {
+  if (!fs.existsSync(`${staticPath}/${hero.logo}`)) {
     // FIXME this code does not work !!
     const logo = (
       await client.query("SELECT * FROM heroes_logo WHERE logo_path = $1", [
-        resp.logo,
+        hero.logo,
       ])
     ).rows[0];
     fs.writeFile(`${staticPath}/${logo.path}`, logo.data, logo.encoding);
   }
   client.end();
-  return resp;
+  return hero;
 };
 
 export const getHeroes = async (request?: any, response?: any) => {
   const client = new Client(dbInfo);
   client.connect();
-  const resp: Hero[] = (await client.query("SELECT * FROM heroes")).rows;
+  const heroes: Hero[] = (await client.query("SELECT * FROM heroes")).rows;
+  heroes.forEach(async (hero: Hero) => {
+
+    if (!fs.existsSync(`${staticPath}/${hero.image}`)) {
+      // FIXME this code does not work !!
+      const image = (
+        await client.query("SELECT * FROM heroes_image WHERE image_path = $1", [
+          hero.image,
+        ])
+      ).rows[0];
+      fs.writeFile(`${staticPath}/${image.path}`, image.data, image.encoding);
+    }
+
+    if (!fs.existsSync(`${staticPath}/${hero.logo}`)) {
+      // FIXME this code does not work !!
+      const logo = (
+        await client.query("SELECT * FROM heroes_logo WHERE logo_path = $1", [
+          hero.logo,
+        ])
+      ).rows[0];
+      fs.writeFile(`${staticPath}/${logo.path}`, logo.data, logo.encoding);
+    }
+  });
   client.end();
-  return resp;
+  return heroes;
 };
 
 export const addHero = async (hero: HeroFileless, files: any) => {
