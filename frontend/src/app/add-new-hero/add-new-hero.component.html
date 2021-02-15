@@ -1,8 +1,27 @@
 <form (ngSubmit)="onSubmit(f)" #f="ngForm">
-  <app-input-field [name]="'Nom'" [value]="hero.name" ></app-input-field>
-  <app-input-field [name]="'Description'" [value]="hero.description" ></app-input-field>
-  <app-file-field [name]="'Logo'"></app-file-field>
-  <app-file-field [name]="'Image'"></app-file-field>
-
+  <app-input-field
+    [id]="'name'"
+    [name]="'Nom'"
+    [value]="hero.name"
+    (onChange)="handleInputField($event)"
+  ></app-input-field>
+  <app-input-field
+    [id]="'description'"
+    [name]="'Description'"
+    [value]="hero.description"
+    (onChange)="handleInputField($event)"
+  ></app-input-field>
+  <app-file-field
+    [id]="'logo'"
+    [name]="'Logo'"
+    [value]="hero.logo"
+    (onChange)="handleFileField($event)"
+  ></app-file-field>
+  <app-file-field
+    [id]="'image'"
+    [name]="'Image'"
+    [value]="hero.image"
+    (onChange)="handleFileField($event)"
+  ></app-file-field>
   <button class="btn btn-primary" type="submit">Enregistrer</button>
 </form>

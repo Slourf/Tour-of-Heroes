@@ -5,14 +5,14 @@ export const router: Router = express.Router();
 
 // middleware that is specific to this router
 router.use(function timeLog(req, res, next) {
-  console.log('Time: ', Date.now());
+  console.log("Time: ", Date.now());
   next();
 });
 
 // define the home page route
-router.use('/heroes', heroes);
+router.use("/heroes", heroes);
 
 // define the about route
-router.get('/about', (req, res) => {
-  res.send('About birds');
+router.get("/about", (req, res) => {
+  res.send("About birds");
 });

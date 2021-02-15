@@ -33,7 +33,14 @@ export class HeroService {
 
   addHero(hero: Hero): Observable<string> {
     this.log(`addHero: ${hero}`);
-    return this.http.post<string>(this.heroesUrl, hero);
+    const formData: FormData = new FormData();
+
+    formData.append('name', hero.name);
+    formData.append('description', hero.description);
+    formData.append('image', hero.image, hero.image.name);
+    formData.append('logo', hero.logo, hero.logo.name);
+
+    return this.http.post<string>(this.heroesUrl, formData);
   }
 
   deleteHero(id: number): Observable<Hero> {

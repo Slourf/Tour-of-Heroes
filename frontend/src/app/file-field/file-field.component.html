@@ -2,8 +2,9 @@
   <label for="file">{{ name }}</label>
   <br />
   <input
+    id="id"
+    name="name"
     type="file"
-    id="file"
-    (change)="handleFileInput($event.target.files)"
+    (change)="handleFileChange($event.target.files)"
   />
 </div>

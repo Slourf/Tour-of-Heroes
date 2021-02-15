@@ -12,33 +12,34 @@ export class AddNewHeroComponent implements OnInit {
 
   constructor(private heroService: HeroService) { }
 
-  private id;
-  public hero: Hero = {
-    id: null,
-    name: '',
-    description: '',
-    logo: null,
-    image: null
-  };
+  public hero: Hero =  {
+      id: null,
+      name: '',
+      description: '',
+      logo: null,
+      image: null
+    };
 
   ngOnInit(): void {
   }
 
-  handleInputField(value: string) {
-    this.hero[self.name] = value;
+  handleInputField(data: { id: string, value: string, name: string }) {
+    if (data.id && data.value) {
+      this.hero[data.id] = data.value;
+      console.log(this.hero);
+    }
   }
 
-  handleFileField(value: File) {
-    this.hero[self.name] = value;
+  handleFileField(data: { id: string, value: File, name: string }) {
+    if (data.id && data.value) {
+      this.hero[data.id] = data.value;
+      console.log(this.hero);
+    }
   }
 
   onSubmit(form: NgForm) {
+    console.log(this.hero);
     this.heroService.addHero(this.hero)
-      .subscribe(status => { this.id = "OK" });
-  }
-
-  createHero(name: string): void {
-    console.log(name);
-    // this.heroService.addHero(name);
+      .subscribe(status => { console.log(status) });
   }
 }

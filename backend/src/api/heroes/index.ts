@@ -1,26 +1,35 @@
 import express, { Router } from "express";
+import { HeroFileless } from "./helper";
 import { getHeroesById, getHeroes, addHero } from "./queries";
+import multer from "multer";
+
+const upload = multer({ dest: "static/heroes/" });
 
 export const router: Router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
+  const heroes = await getHeroes();
 
-    const heroes = await getHeroes();
+  res.status(200).json(heroes);
+});
 
-    res.status(200).json(heroes);
-  });
+router.get("/:id", async (req, res, next) => {
+  const id = parseInt(req.params.id, 10);
+  const hero = await getHeroesById(id);
+  res.status(200).json(hero);
+});
 
-router.get('/:id', async (req, res, next) => {
+router.post(
+  "/",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "logo", maxCount: 1 },
+  ]),
+  async (req, res, next) => {
+    const files: any = req.files;
+    const hero: HeroFileless = req.body;
 
-    const id = parseInt(req.params.id, 10);
-    const hero = await getHeroesById(id);
-    res.status(200).json(hero);
-})
-
-router.post('/', async (req, res, next) => {
-  console.log("post hero");
-  console.log(req.body);
-  const { name, description } = req.body;
-  await addHero(name, description);
-  res.status(200)
-})
+    await addHero(hero, files);
+    res.status(200);
+  }
+);

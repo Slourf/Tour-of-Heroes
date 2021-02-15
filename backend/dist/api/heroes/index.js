@@ -9,21 +9,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import express from "express";
 import { getHeroesById, getHeroes, addHero } from "./queries";
+import multer from "multer";
+const upload = multer({ dest: "static/heroes/" });
 export const router = express.Router();
-router.get('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const heroes = yield getHeroes();
     res.status(200).json(heroes);
 }));
-router.get('/:id', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const id = parseInt(req.params.id, 10);
     const hero = yield getHeroesById(id);
     res.status(200).json(hero);
 }));
-router.post('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("post hero");
-    console.log(req.body);
-    const { name, description } = req.body;
-    yield addHero(name, description);
+router.post("/", upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "logo", maxCount: 1 },
+]), (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const files = req.files;
+    const hero = req.body;
+    yield addHero(hero, files);
     res.status(200);
 }));
 //# sourceMappingURL=index.js.map
