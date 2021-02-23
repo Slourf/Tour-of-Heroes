@@ -15,33 +15,46 @@ const { Client } = pkg;
 export const getHeroesById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const client = new Client(dbInfo);
     client.connect();
-    const resp = (yield client.query(`SELECT * FROM heroes WHERE id = $1`, [id])).rows[0];
-    console.log(resp);
-    console.log(`${staticPath}/${resp.image}`);
-    console.log(fs.existsSync(`${staticPath}/${resp.image}`));
-    if (!fs.existsSync(`${staticPath}/${resp.image}`)) {
+    const hero = (yield client.query(`SELECT * FROM heroes WHERE id = $1`, [id])).rows[0];
+    if (!fs.existsSync(`${staticPath}/${hero.image}`)) {
         // FIXME this code does not work !!
         const image = (yield client.query("SELECT * FROM heroes_image WHERE image_path = $1", [
-            resp.image,
+            hero.image,
         ])).rows[0];
         fs.writeFile(`${staticPath}/${image.path}`, image.data, image.encoding);
     }
-    if (!fs.existsSync(`${staticPath}/${resp.logo}`)) {
+    if (!fs.existsSync(`${staticPath}/${hero.logo}`)) {
         // FIXME this code does not work !!
         const logo = (yield client.query("SELECT * FROM heroes_logo WHERE logo_path = $1", [
-            resp.logo,
+            hero.logo,
         ])).rows[0];
         fs.writeFile(`${staticPath}/${logo.path}`, logo.data, logo.encoding);
     }
     client.end();
-    return resp;
+    return hero;
 });
 export const getHeroes = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const client = new Client(dbInfo);
     client.connect();
-    const resp = (yield client.query("SELECT * FROM heroes")).rows;
+    const heroes = (yield client.query("SELECT * FROM heroes")).rows;
+    heroes.forEach((hero) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!fs.existsSync(`${staticPath}/${hero.image}`)) {
+            // FIXME this code does not work !!
+            const image = (yield client.query("SELECT * FROM heroes_image WHERE image_path = $1", [
+                hero.image,
+            ])).rows[0];
+            fs.writeFile(`${staticPath}/${image.path}`, image.data, image.encoding);
+        }
+        if (!fs.existsSync(`${staticPath}/${hero.logo}`)) {
+            // FIXME this code does not work !!
+            const logo = (yield client.query("SELECT * FROM heroes_logo WHERE logo_path = $1", [
+                hero.logo,
+            ])).rows[0];
+            fs.writeFile(`${staticPath}/${logo.path}`, logo.data, logo.encoding);
+        }
+    }));
     client.end();
-    return resp;
+    return heroes;
 });
 export const addHero = (hero, files) => __awaiter(void 0, void 0, void 0, function* () {
     const client = new Client(dbInfo);

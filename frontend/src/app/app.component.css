@@ -1,61 +1,21 @@
-/* Application-wide Styles */
-h1 {
-  color: #369;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 150%;
-  margin: 10px 5px;
-  border-right: #000;
-}
-h2,
-h3 {
-  color: #444;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: lighter;
-}
-body,
-input[type="text"],
-button {
-  color: #333;
-  font-family: Cambria, Georgia;
-}
-/* everywhere else */
-* {
-  font-family: Arial, Helvetica, sans-serif;
+.btn {
+  background-color: #369;
+  border: 0;
+  padding: 8px;
+  color: white;
+  font-weight: bold;
 }
 
-nav a {
-  padding: 5px 10px;
-  text-decoration: none;
-  /* display: inline-block; */
-  height: 100%;
-}
-nav a:visited,
-a:link {
-  color: #334953;
-}
-nav a:hover {
-  color: #039be5;
-  background-color: #cfd8dc;
-}
-nav a.active {
-  color: #039be5;
+.btn:hover {
+  background-color: #258;
+  cursor: -webkit-grabbing;
+  cursor:-moz-grabbing;
 }
 
-.header-container {
-  padding: 10px;
-  height: auto;
-}
-
-#title.header-container {
-  border-right: solid 1px;
-  border-color: #ddd;
-}
-
-#header {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  flex: 1;
-  align-items: center;
-  box-shadow: 0px 5px 5px #ddd;
+input#file-upload-button {
+  background-color: #369;
+  border: 0;
+  padding: 8px;
+  color: white;
+  font-weight: bold;
 }

@@ -15,6 +15,10 @@ export class FileFieldComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  clearValue() {
+    this.value = null;
+  }
+
   handleFileChange(files: FileList) {
     if (files.length > 0) {
       this.value = files.item(0);
