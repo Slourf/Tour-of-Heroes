@@ -9,28 +9,29 @@ const { Client } = pkg;
 export const getHeroesById = async (id: number) => {
   const client = new Client(dbInfo);
   client.connect();
+  console.log("get");
   const hero: Hero = (
     await client.query(`SELECT * FROM heroes WHERE id = $1`, [id])
   ).rows[0];
-
-  if (!fs.existsSync(`${staticPath}/${hero.image}`)) {
+    console.log(hero);
+  if (!fs.existsSync(`${hero.image}`)) {
     // FIXME this code does not work !!
     const image = (
       await client.query("SELECT * FROM heroes_image WHERE image_path = $1", [
         hero.image,
       ])
     ).rows[0];
-    fs.writeFile(`${staticPath}/${image.path}`, image.data, image.encoding);
+    fs.writeFile(`${image.path}`, image.data, image.encoding);
   }
 
-  if (!fs.existsSync(`${staticPath}/${hero.logo}`)) {
+  if (!fs.existsSync(`${hero.logo}`)) {
     // FIXME this code does not work !!
     const logo = (
       await client.query("SELECT * FROM heroes_logo WHERE logo_path = $1", [
         hero.logo,
       ])
     ).rows[0];
-    fs.writeFile(`${staticPath}/${logo.path}`, logo.data, logo.encoding);
+    fs.writeFile(`${logo.path}`, logo.data, logo.encoding);
   }
   client.end();
   return hero;
@@ -42,24 +43,24 @@ export const getHeroes = async (request?: any, response?: any) => {
   const heroes: Hero[] = (await client.query("SELECT * FROM heroes")).rows;
   heroes.forEach(async (hero: Hero) => {
 
-    if (!fs.existsSync(`${staticPath}/${hero.image}`)) {
+    if (!fs.existsSync(`${hero.image}`)) {
       // FIXME this code does not work !!
       const image = (
         await client.query("SELECT * FROM heroes_image WHERE image_path = $1", [
           hero.image,
         ])
       ).rows[0];
-      fs.writeFile(`${staticPath}/${image.path}`, image.data, image.encoding);
+      fs.writeFile(`${image.path}`, image.data, image.encoding);
     }
 
-    if (!fs.existsSync(`${staticPath}/${hero.logo}`)) {
+    if (!fs.existsSync(`${hero.logo}`)) {
       // FIXME this code does not work !!
       const logo = (
         await client.query("SELECT * FROM heroes_logo WHERE logo_path = $1", [
           hero.logo,
         ])
       ).rows[0];
-      fs.writeFile(`${staticPath}/${logo.path}`, logo.data, logo.encoding);
+      fs.writeFile(`${logo.path}`, logo.data, logo.encoding);
     }
   });
   client.end();
@@ -77,6 +78,8 @@ export const addHero = async (hero: HeroFileless, files: any) => {
   fs.readFile(logo.path, (err, data) => {
     logoData += data;
   });
+
+  console.log(logo);
 
   await client.query(
     "INSERT INTO heroes_logo \

@@ -1,0 +1,45 @@
+.hero-image {
+    width: 100%;
+    margin-top: 100px;
+}
+
+.background {
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+    width: 110%;
+    height: 100%;
+    filter: blur(8px);
+    animation: 3000ms cubic-bezier(0.215, 0.61, 0.355, 1) 500ms 1 normal both running animation;
+    position: absolute;
+    left: -5%;
+    top: -5%;
+    line-height: 1.15;
+    text-size-adjust: 100%;
+    z-index:1;
+    background: linear-gradient(transparent, rgb(0, 9, 19) 70%);
+}
+
+@keyframes animation {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}
+
+.hero-body {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 128px;
+    color: white;
+    font-style: italic;
+    position: relative;
+    top: -20px;
+    margin: auto;
+}

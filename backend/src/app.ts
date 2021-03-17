@@ -30,7 +30,7 @@ app.use((req: any, res: any, next: any) => {
   );
   next();
 });
-app.use(express.static(staticPath));
+app.use('/static', express.static(staticPath));
 app.use("/api", api);
 /*ù
 app.use("/", (req: any, res: any) => {

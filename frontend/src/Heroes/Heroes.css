@@ -1,0 +1,58 @@
+/* HeroesComponent's private CSS styles */
+.heroes {
+  margin: 0 0 2em 0;
+  list-style-type: none;
+  padding: 0;
+  width: 1200px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.heroes .hero {
+  cursor: pointer;
+  position: relative;
+  left: 0;
+  background-color: #EEE;
+  margin: .5em;
+  border-radius: 4px;
+}
+.heroes .hero:hover {
+  color: #607D8B;
+  background-color: #DDD;
+  left: .1em;
+}
+.heroes .hero.selected {
+  background-color: #CFD8DC;
+  color: white;
+}
+.heroes .hero.selected:hover {
+  background-color: #BBD8DC;
+  color: white;
+}
+
+.hero {
+  width: 220px;
+}
+
+.logo {
+  width: 100%;
+}
+
+.label {
+  padding: 8px;
+}
+
+.label-container {
+    display: flex;
+}
+
+a {
+    text-decoration: none;
+}
+
+span {
+  background-color: #607D8B;
+}
+
+.image-container {
+  display: flex;
+}
