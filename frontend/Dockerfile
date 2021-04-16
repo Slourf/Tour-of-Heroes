@@ -9,6 +9,7 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 COPY . .
+RUN npm list -g semver
 RUN yarn build
 
 FROM nginx
