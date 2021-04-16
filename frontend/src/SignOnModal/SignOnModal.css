@@ -1,0 +1,8 @@
+div.modal-close-button {
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-bottom: 3rem;
+}
+div.modal-close-button:hover {
+    color: red;
+}

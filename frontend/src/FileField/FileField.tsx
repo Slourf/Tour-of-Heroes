@@ -6,6 +6,7 @@ interface Props {
   id: string;
   name: string;
   value?: File;
+  style?: React.CSSProperties;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onClear?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
@@ -23,6 +24,15 @@ export default class FileField extends React.Component<Props, State> {
         }
     }
 
+    hiddenFileInput = React.createRef<HTMLInputElement>();
+
+    handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        if (this.hiddenFileInput.current != null) {
+            this.hiddenFileInput.current.click();
+        }
+    };
+
     handlechange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { onChange } = this.props;
         if (onChange) {
@@ -30,6 +40,7 @@ export default class FileField extends React.Component<Props, State> {
         }
         this.setState({ files: event.target.files });
     }
+
 
     clearValue = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -43,28 +54,34 @@ export default class FileField extends React.Component<Props, State> {
     }
 
     render() {
-        const { id, name } = this.props;
+        const { id, name, style } = this.props;
         const { files } = this.state;
 
         return (
-        <div>
+        <div style={{...style}}>
             {!files? (
             <div>
                 <label className="name"> {name} </label>
                 <br />
-                <button className="btn" type="button">
-                <label htmlFor={id}>Parcourir</label>
-                </button>
-                <input id={id} name={name} type="file" className="file-input" onChange={this.handlechange} />
+                <div className="input-file">
+                    <button className="input-file" type="button" onClick={this.handleClick}>
+                    <label htmlFor={id} className="input">Parcourir</label>
+                    </button>
+                    <input id={id} name={name} type="file" ref={this.hiddenFileInput} className="file-input" onChange={this.handlechange} />
+                </div>
             </div>
             ) : (
             <div className="form-group">
                 <label className="name">{name}</label>
                 <br />
-                <button id={id} className="btn" type="button" onClick={this.clearValue}>
-                <label htmlFor={id}>&times;</label>
-                </button>
-                {files.length > 0 ? files.item(0)?.name : null}
+                <div className="input-file-filled">
+                    <button id={id} className="input-file-delete" type="button" onClick={this.clearValue}>
+                    <label htmlFor={id} className="input" style={{ color: "white" }}>&times;</label>
+                    </button>
+                    <div className="input-file-data">
+                        {files.length > 0 ? files.item(0)?.name : null}
+                    </div>
+                </div>
             </div>
             )}
         </div>

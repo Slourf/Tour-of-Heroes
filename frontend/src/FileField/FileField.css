@@ -1,3 +1,7 @@
+label.input {
+  cursor: pointer;
+}
+
 label.name {
   color: #369;
   font-family: Arial, Helvetica, sans-serif;
@@ -7,20 +11,68 @@ label.name {
   display: inline-block;
 }
 
-button {
-  background-color: #eee;
-  border: 0;
-  padding: 8px;
-  color: #444;
+div.input-file-filled { 
+  display: flex;
+
+}
+
+input[type=file] {
+  width: 100%;
+  height: 40px;
+}
+
+button.input-file {
+  display: block;
+  width: 100%;
+  height: 40px;
   font-weight: bold;
-  margin-top: 5px;
+  color: #444;
+  background-color: #eee;
+  font-size: 1rem;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+}
+
+div.input-file-data {
+  width: 100%;
+  height: 24px;
+  line-height: 24px;
+  font-weight: bold;
+  color: #444;
+  background-color: #eee;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-left: 0;
+  border-radius: 0rem .25rem .25rem 0rem;
+}
+
+button.input-file-delete {
+  display: block;
+  position: relative;
+  height: 40px;
+  font-weight: bold;
+  background-color: #369;
+  color: #eee;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-right: 0;
+  border-radius: .25rem 0rem 0rem .25rem;
+}
+button.input-file-delete:hover {
+  background-color: #258;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #ddd;
+  background-color: #ddd;
+  cursor: pointer;
 }
 
 input.file-input {
-    display: none;
+  display: none;
 }
-

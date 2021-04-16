@@ -16,7 +16,6 @@ body,
 input[type="text"],
 button {
   color: #333;
-  font-family: Cambria, Georgia;
 }
 /* everywhere else */
 * {
@@ -24,19 +23,21 @@ button {
 }
 
 nav a {
-  padding: 5px 10px;
+  padding: 10px;
   text-decoration: none;
   /* display: inline-block; */
   height: 100%;
 }
-nav a:visited,
+a:visited,
 a:link {
   color: #334953;
 }
-nav a:hover {
-  color: #039be5;
-  background-color: #cfd8dc;
+a.nav-item:hover {
+  color: black;
+  border-radius: 2rem;
+  background-color: #eee;
 }
+
 nav a.active {
   color: #039be5;
 }
@@ -51,8 +52,26 @@ nav a.active {
   border-color: #ddd;
 }
 
+.header-account {
+  margin-left: auto;
+  padding: 5px 10px;
+  order: 2;
+  display: flex;
+}
+.header-account-item {
+  padding: 10px;
+  color: #334953;
+  cursor: pointer;
+}
+
+.header-account-item:hover {
+  color: black;
+  border-radius: 2rem;
+  background-color: #eee;
+}
+
 #header {
-  position: relative;
+  position: fixed;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -61,4 +80,6 @@ nav a.active {
   box-shadow: 0px 5px 5px #ddd;
   z-index: 10;
   background-color: white;
+  width: 100%;
+  top: 0;
 }

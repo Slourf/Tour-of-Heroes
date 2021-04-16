@@ -1,5 +1,6 @@
 div#page-body {
-    margin-top: 20px;
+    padding-top: 2rem;
     margin: auto;
+    margin-top: 3rem;
     width: 70%;
 }

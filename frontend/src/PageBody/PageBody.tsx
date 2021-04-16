@@ -7,11 +7,7 @@ interface Props {
     style?: CSS.Properties;
 }
 
-interface State {
-
-}
-
-export default class PageBody extends React.Component<Props, State> {
+export default class PageBody extends React.Component<Props> {
 
     render() {
 

@@ -26,18 +26,14 @@ app.use((req: any, res: any, next: any) => {
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    "GET, POST, PUT, DELETE"
   );
   next();
 });
 app.use('/static', express.static(staticPath));
 app.use("/api", api);
-/*ù
-app.use("/", (req: any, res: any) => {
-  res.send(`The server is running !`);
-});
-*/
 
 app.use((req: any, res: any, next: any) => {
+  res.send();
   console.log("Réponse envoyée avec succès !");
 });

@@ -3,9 +3,9 @@
   margin: 0 0 2em 0;
   list-style-type: none;
   padding: 0;
-  width: 1200px;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 .heroes .hero {
   cursor: pointer;
@@ -13,12 +13,12 @@
   left: 0;
   background-color: #EEE;
   margin: .5em;
-  border-radius: 4px;
+  border-radius: 1rem;
+  border: solid 1px #ced4da;
 }
 .heroes .hero:hover {
   color: #607D8B;
   background-color: #DDD;
-  left: .1em;
 }
 .heroes .hero.selected {
   background-color: #CFD8DC;
@@ -33,12 +33,31 @@
   width: 220px;
 }
 
+.hero:hover .logo {
+  transform: scale(1.1);
+}
+
+.image-container {
+  display: flex;
+  overflow: hidden;
+  border-radius: 1rem 1rem 0 0;
+}
+
 .logo {
   width: 100%;
+  border-radius: 1rem 1rem 0 0;
+  transition: transform .5s ease;
+  opacity: 0.99;
+}
+
+.logo:hover {
+  transform: scale(1.2);
 }
 
 .label {
   padding: 8px;
+  font-weight: bold;
+  color: black;
 }
 
 .label-container {
@@ -53,6 +72,3 @@ span {
   background-color: #607D8B;
 }
 
-.image-container {
-  display: flex;
-}

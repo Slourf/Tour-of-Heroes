@@ -6,7 +6,7 @@ import "./InputField.css"
 interface Props {
     id: string;
     name: string;
-    style?: CSS.Properties;
+    style?: React.CSSProperties;
     value?: string;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -38,10 +38,10 @@ export default class InputField extends React.Component<Props, State> {
     render() {
         const { id, style, value, name } = this.props
         return (
-            <div>
+            <div style={{ ...style }}>
                 <label htmlFor={id}>{name}</label>
                 <br />
-                <input id={id} style={{ ...style }} value={value} onChange={this.handleChange} />
+                <input id={id} style={{ ...style }} type="text" value={value} className="input-form" onChange={this.handleChange} />
             </div>
         );
     }

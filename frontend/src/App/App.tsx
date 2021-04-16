@@ -11,6 +11,8 @@ import AddHeroForm from "../AddHeroForm/AddHeroForm"
 import Heroes from "../Heroes/Heroes"
 import PageBody from "../PageBody/PageBody"
 import HeroDetail from "../HeroDetail/HeroDetail"
+import Notification from "../Notification/Notification"
+import SignIn from "../SignIn/SignIn"
 
 import './App.css';
 
@@ -22,27 +24,22 @@ export default class App extends React.PureComponent {
 
   render() {
     return (
-      <Router>
-        <NavBar/>
-
-        <PageBody>
-          <Switch>
-            <Route exact path="/">
-              <Heroes />
-            </Route>
-            <Route path="/dashboard">
-
-            </Route>
-            <Route exact path="/heroes">
-              <Heroes />
-            </Route>
-            <Route exact path="/heroes/:id" component={HeroDetail} />
-            <Route exact path="/heroes/add">
-              <AddHeroForm  />
-            </Route>
-          </Switch>
-        </PageBody>
-      </Router>
+      <div id="toh-app">
+        <Router>
+          <NavBar/>
+          <Notification />
+          <PageBody>
+            <Switch>
+              <Route exact path="/" component={Heroes} />
+              <Route exact path="/heroes" component={Heroes} />
+              <Route exact path="/heroes/add" component={AddHeroForm} />
+              <Route exact path="/heroes/:id" component={HeroDetail} />
+              <Route exact path="/dashboard" />
+              <Route exact path="/signin" component={SignIn}/>
+            </Switch>
+          </PageBody>
+        </Router>
+      </div>
     );
   }
 }

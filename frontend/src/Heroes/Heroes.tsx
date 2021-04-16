@@ -5,11 +5,13 @@ import axios from "axios";
 
 import { heroesUrl } from "../helpers";
 import "./Heroes.css";
+import InputField from "../InputField/InputField";
 
 interface Props {}
 
 interface State {
   heroes: Hero[];
+  search: string;
 }
 
 export default class Heroes extends React.Component<Props, State> {
@@ -17,6 +19,7 @@ export default class Heroes extends React.Component<Props, State> {
     super(props);
     this.state = {
       heroes: [],
+      search: ""
     };
   }
 
@@ -26,7 +29,8 @@ export default class Heroes extends React.Component<Props, State> {
 
   fetchHeroes = () => {
     axios.get(heroesUrl).then((res) => {
-      const heroes = res.data;
+      const heroes: Hero[] = res.data.sort((h1: Hero, h2: Hero) => h1.name.localeCompare(h2.name));
+      console.log(heroes);
       heroes.forEach((hero: Hero): void => {
         hero.image_path = `http://localhost:3000/${hero.image}`;
         hero.logo_path = `http://localhost:3000/${hero.logo}`;
@@ -35,33 +39,42 @@ export default class Heroes extends React.Component<Props, State> {
     });
   };
 
+
+  handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    this.setState({ ...this.state, search: event.currentTarget.value })
+  }
+
   render() {
-    const { heroes } = this.state;
+    let { heroes, search } = this.state;
     if (!heroes) {
       return;
     }
-    console.log(heroes);
+    heroes = heroes.filter((hero: Hero) => hero.name.toLowerCase().includes(search.toLowerCase()));
+
     return (
-      <div className="heroes">
-        {heroes.map((hero, index) => {
-          return (
+      <div>
+        <InputField id="search" name="Search" onChange={this.handleSearch} />
+        <div className="heroes">
+          {heroes.map((hero, index) => {
+            return (
               <Fragment>
                 <div key={`hero-${index}`} className="hero">
-                    <Link to={"/heroes/" + hero.id}>
+                  <Link to={"/heroes/" + hero.id}>
                     <div className="image-container">
-                        <img className="logo" src={hero.logo_path} alt="" />
+                      <img className="logo" src={hero.logo_path} alt="" />
                     </div>
                     <div>
-                        <div className="label-container">
-                        <span className="badge label">{hero.id}</span>
-                        <div className="label">{hero.name}</div>
-                        </div>
+                      <div className="label-container">
+                        <div className="label" style={{ margin: "auto" }}>{hero.name}</div>
+                      </div>
                     </div>
-                    </Link>
+                  </Link>
                 </div>
               </Fragment>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     );
   }

@@ -7,9 +7,16 @@ label {
   display: inline-block;
 }
 
-input[type="text"] {
-  padding: 1px 10px;
-  line-height: 25px;
-  width: 90%;
+input[type="text"].input-form {
+  display: block;
+  width: 100%;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  box-sizing: border-box;
 }
-

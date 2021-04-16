@@ -3,8 +3,14 @@ import InputField from "../InputField/InputField";
 import FileField from "../FileField/FileField";
 import axios from "axios";
 import { heroesUrl } from "../helpers";
+import { store } from "../Notification/Notification"
 
-interface Props {}
+import "./AddHeroForm.css"
+import PageTitle from "../PageTitle/PageTitle";
+import TextField from "../TextField/TextField";
+import { RouteComponentProps } from "react-router-dom";
+
+interface Props extends RouteComponentProps {}
 
 interface State {
   form: {
@@ -23,6 +29,7 @@ export default class AddHeroFrom extends React.Component<Props, State> {
       form: {},
     };
   }
+
   submitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const form = new FormData();
@@ -36,12 +43,23 @@ export default class AddHeroFrom extends React.Component<Props, State> {
 
         axios
         .post(heroesUrl, form)
-        .then()
-        .catch(() => console.log("error"));
+        .then(() => {
+          store.addNotification({ message: "The hero was created sucessfully!", type: "success"});
+          this.props.history.push("/heroes");
+        })
+        .catch(() => {
+          store.addNotification({ message: "An error occured while creating the hero.", type: "error"});
+        });
     }
   };
 
   handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = event.target;
+    const { form } = this.state;
+    this.setState({ form: { ...form, [id]: value } });
+  };
+
+  handleTextInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { id, value } = event.target;
     const { form } = this.state;
     this.setState({ form: { ...form, [id]: value } });
@@ -67,34 +85,38 @@ export default class AddHeroFrom extends React.Component<Props, State> {
   };
 
   render() {
-    if (this.state.form) {
-      console.log(this.state.form);
-    }
     return (
       <div>
+        <PageTitle title="Création de héro" />
         <InputField
           id="name"
           name="Nom du hero"
+          style={{ marginTop: ".575rem" }}
           onChange={this.handleInputChange}
         />
-        <InputField
+        <TextField
           id="description"
           name="Description"
-          onChange={this.handleInputChange}
+          style={{ marginTop: ".575rem" }}
+          onChange={this.handleTextInputChange}
         />
-        <FileField
-          id="logo"
-          name="Logo"
-          onChange={this.handleFileChange}
-          onClear={this.handleFileClear}
-        />
-        <FileField
-          id="image"
-          name="image"
-          onChange={this.handleFileChange}
-          onClear={this.handleFileClear}
-        />
-        <button onClick={this.submitForm}>Créer</button>
+        <div style={{ display:"flex", width: "100%", marginTop: ".575rem" }}>
+          <FileField
+            id="logo"
+            name="Logo"
+            style={{ width: "48%", marginRight: "2%" }}
+            onChange={this.handleFileChange}
+            onClear={this.handleFileClear}
+          />
+          <FileField
+            id="image"
+            name="Image"
+            style={{ width: "48%", marginLeft: "2%" }}
+            onChange={this.handleFileChange}
+            onClear={this.handleFileClear}
+          />
+        </div>
+        <button onClick={this.submitForm} className="submit">Créer</button>
       </div>
     );
   }
