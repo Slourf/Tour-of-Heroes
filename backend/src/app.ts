@@ -32,8 +32,12 @@ app.use((req: any, res: any, next: any) => {
 });
 app.use('/static', express.static(staticPath));
 app.use("/api", api);
+app.use("/healthcheck", (req: any, res: any, next: any) => {
+  res.status(200).json({ health: "OK" });
+  next();
+})
 
 app.use((req: any, res: any, next: any) => {
   res.send();
-  console.log("Réponse envoyée avec succès !");
+  console.log("réponse envoyée avec succès !");
 });
