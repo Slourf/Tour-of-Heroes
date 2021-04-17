@@ -1,5 +1,5 @@
 import express from "express";
-import helmet from "helmet";
+// import helmet from "helmet";
 import compression from "compression";
 import bodyParse from "body-parser";
 import { router as api } from "./api/index";
@@ -7,7 +7,7 @@ import { router as api } from "./api/index";
 export const app = express();
 export const staticPath: string = "static";
 
-app.use(helmet());
+// app.use(helmet());
 app.use(compression());
 
 app.use((req: any, res: any, next: any) => {
