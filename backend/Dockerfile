@@ -13,4 +13,4 @@ RUN ls -l /usr/src/app/node_modules/tslint/bin/tslint
 
 EXPOSE 3000
 
-CMD yarn start $ENV_DB_USER $ENV_DB_PASSWORD
+CMD ls -l /usr/src/app/node_modules/tslint/bin/tslint & yarn start $ENV_DB_USER $ENV_DB_PASSWORD
