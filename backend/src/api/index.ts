@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import { router as heroes } from "./heroes/index";
-import jwt from "express-jwt";
-import jwksRsa from "jwks-rsa";
+// import jwt from "express-jwt";
+// import jwksRsa from "jwks-rsa";
 
 export const router: Router = express.Router();
 
@@ -13,7 +13,7 @@ router.use(function timeLog(req, res, next) {
 
 // authentification
 router.use(function timeLog(req, res, next) {
-
+  /*
   const checkJwt = jwt({
     secret: jwksRsa.expressJwtSecret({
       cache: true,
@@ -29,6 +29,7 @@ router.use(function timeLog(req, res, next) {
   });
 
   next();
+  */
 });
 
 // define the home page route
