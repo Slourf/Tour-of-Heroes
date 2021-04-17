@@ -8,12 +8,14 @@ export const router: Router = express.Router();
 // middleware that is specific to this router
 router.use(function timeLog(req, res, next) {
   console.log("Time: ", Date.now());
+  res.status(200).json({ health: "API OK" });
   next();
 });
 
+  /*
 // authentification
 router.use(function timeLog(req, res, next) {
-  /*
+
   const checkJwt = jwt({
     secret: jwksRsa.expressJwtSecret({
       cache: true,
@@ -29,8 +31,8 @@ router.use(function timeLog(req, res, next) {
   });
 
   next();
-  */
 });
+  */
 
 // define the home page route
 router.use("/heroes", heroes);
