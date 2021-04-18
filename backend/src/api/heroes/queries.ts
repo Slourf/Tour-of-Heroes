@@ -24,7 +24,7 @@ export const getHeroes = async (request?: any, response?: any) => {
   client.connect();
 
   const heroes: Hero[] = (await client.query("SELECT * FROM heroes")).rows;
-  Promise.all(heroes.map(async (hero: Hero) => {
+  await Promise.all(heroes.map(async (hero: Hero) => {
     await fetchMissingImages(hero, client);
   }));
   console.log("Closing pg connection!");
