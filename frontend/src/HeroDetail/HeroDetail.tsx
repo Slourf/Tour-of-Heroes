@@ -3,6 +3,7 @@ import { Hero } from "./../Heroes/helper";
 import { RouteComponentProps } from "react-router-dom";
 import axios from "axios";
 import { store } from "../Notification/Notification";
+import { environment } from "../environment";
 
 import { heroesUrl } from "../helpers";
 import "./HeroDetail.css"
@@ -43,8 +44,8 @@ export default class HeroDetail extends React.Component<Props, State> {
   fetchHeroById = (id: string) => {
     axios.get(`${heroesUrl}/${id}`).then((res) => {
       const hero: Hero = res.data;
-      hero.image_path = `http://localhost:3000/${hero.image}`;
-      hero.logo_path = `http://localhost:3000/${hero.logo}`;
+      hero.image_path = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/${hero.image}`;
+      hero.logo_path = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/${hero.logo}`;
       this.setState({ hero });
     });
   };

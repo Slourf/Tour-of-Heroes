@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { Hero } from "./helper";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { environment }  from "../environment";
 
 import { heroesUrl } from "../helpers";
 import "./Heroes.css";
@@ -32,8 +33,8 @@ export default class Heroes extends React.Component<Props, State> {
       const heroes: Hero[] = res.data.sort((h1: Hero, h2: Hero) => h1.name.localeCompare(h2.name));
       console.log(heroes);
       heroes.forEach((hero: Hero): void => {
-        hero.image_path = `http://localhost:3000/${hero.image}`;
-        hero.logo_path = `http://localhost:3000/${hero.logo}`;
+        hero.image_path = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/${hero.image}`;
+        hero.logo_path = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/${hero.logo}`;
       });
       this.setState({ heroes });
     });
