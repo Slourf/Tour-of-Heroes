@@ -27,7 +27,7 @@ export const getHeroes = async (request?: any, response?: any) => {
   Promise.all(heroes.map(async (hero: Hero) => {
     await fetchMissingImages(hero, client);
   }));
-
+  console.log("Closing pg connection!");
   client.end();
   return heroes;
 };
@@ -39,18 +39,21 @@ const fetchMissingImages = async (hero: Hero, client: pkg.Client) => {
         await client.query("SELECT encode(data::bytea, 'hex') FROM heroes_image WHERE image_path = $1", [hero.image])
       ).rows[0];
       fs.writeFile(hero.image, image.encode, "hex", (err) => {
+        console.log("image err: ", err, "writing image", hero.image)
         if (err)
           throw err;
       });
     }
 
     if (!fs.existsSync(hero.logo)) {
+      console.log("logo: ", hero.image);
       const logo = (
         await client.query("SELECT encode(data::bytea, 'hex') FROM heroes_logo WHERE logo_path = $1", [
           hero.logo,
         ])
       ).rows[0];
       fs.writeFile(hero.logo, logo.encode, "hex", (err) => {
+        console.log("logo err: ", err, "writing logo", hero.logo)
         if (err)
           throw err;
       });

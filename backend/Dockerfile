@@ -9,9 +9,7 @@ ENV ENV_DB_PASSWORD=$DB_PASSWORD
 WORKDIR /usr/src/app
 COPY . .
 RUN yarn install
-RUN yarn list
-RUN ls -l /usr/src/app/node_modules/tslint/bin/tslint
 
 EXPOSE 3000
 
-CMD yarn list & yarn start $ENV_DB_USER $ENV_DB_PASSWORD
+CMD yarn start $ENV_DB_USER $ENV_DB_PASSWORD
