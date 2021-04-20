@@ -11,6 +11,22 @@ image_dir = 'lol-image/'
 custom_champ_desc = {"malaphite": "malphite", "ialiyah": "taliyah",
                 "graves-cigar": "graves", "xeratth": "xerath"}
 
+custom_champ_imag = {"aurelionsol": "AurelionSol",
+                     "xinzhao": "XinZhao",
+                     "drmundo": "DrMundo",
+                     "ialiyah": "Taliyah",
+                     "jarvaniv": "JarvanIV",
+                     "reksai": "RekSai",
+                     "missfortune": "MissFortune",
+                     "tahmkench": "TahmKench",
+                     "masteryi": "MasterYi",
+                     "monkeyking": "Wukong",
+                     "malaphite": "Malphite",
+                     "graves-cigar": "Graves",
+                     "xeratth": "Xerath",
+                     "twistedfate": "TwitedFate",
+                     "kogmaw": "KogMaw",
+                     "leesin": "LeeSin"}
 
 def import_logo():
     f = open('logo-url.html', 'r')
@@ -33,8 +49,8 @@ def import_image():
     for dirs in os.walk(image_dir):
         for champ_name in dirs[1]:
             path = image_dir + champ_name + '/'
-            if champ_name == "aurelionsol":
-                url = 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/AurelionSol_0.jpg'
+            if champ_name in custom_champ_imag:
+                url = 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/' + custom_champ_imag[champ_name] +'_0.jpg'
             else:
                 url = 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/' + \
                     champ_name.capitalize() + '_0.jpg'

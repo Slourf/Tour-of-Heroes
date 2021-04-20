@@ -38,11 +38,7 @@ const fetchMissingImages = async (hero: Hero, client: pkg.Client) => {
       const image = (
         await client.query("SELECT encode(data::bytea, 'hex') FROM heroes_image WHERE image_path = $1", [hero.image])
       ).rows[0];
-      fs.writeFile(hero.image, image.encode, "hex", (err) => {
-        console.log("image err: ", err, "writing image", hero.image)
-        if (err)
-          throw err;
-      });
+      await fs.promises.writeFile(hero.image, image.encode, "hex");
     }
 
     if (!fs.existsSync(hero.logo)) {
@@ -52,11 +48,7 @@ const fetchMissingImages = async (hero: Hero, client: pkg.Client) => {
           hero.logo,
         ])
       ).rows[0];
-      fs.writeFile(hero.logo, logo.encode, "hex", (err) => {
-        console.log("logo err: ", err, "writing logo", hero.logo)
-        if (err)
-          throw err;
-      });
+      await fs.promises.writeFile(hero.logo, logo.encode, "hex");
     }
 }
 
@@ -66,12 +58,10 @@ export const addHero = async (hero: HeroFileless, files: any) => {
   const logo: HeroFileHeader = files.logo[0];
 
   client.connect();
-  let logoData: string;
 
-  fs.readFile(logo.path, "hex", async (errLogo, dataLogo) => {
-    logoData = `\\x${dataLogo}`;
-    if (errLogo)
-      throw errLogo;
+
+  try {
+    const logoData: string = `\\x${await fs.promises.readFile(logo.path, { encoding: "hex" })}`;
 
     await client.query(
       "INSERT INTO heroes_logo \
@@ -89,11 +79,12 @@ export const addHero = async (hero: HeroFileless, files: any) => {
         logoData,
       ]
     );
+  } catch (error) {
+    throw error;
+  }
 
-    fs.readFile(image.path, "hex", async (errImage, dataImage) => {
-      const imageData: string = `\\x${dataImage}`;
-      if (errImage)
-        throw errImage;
+  try {
+      const imageData: string = `\\x${fs.promises.readFile(image.path, { encoding: "hex" })}`;
 
       await client.query(
         "INSERT INTO heroes_image \
@@ -112,15 +103,18 @@ export const addHero = async (hero: HeroFileless, files: any) => {
         ]
       );
 
-      await client.query(
-        "INSERT INTO heroes \
-          (name, description, image, logo) \
-          VALUES ($1, $2, $3, $4)",
-        [hero.name, hero.description, image.path, logo.path]
-      );
-      client.end();
-    });
-  });
+  } catch (error) {
+    throw error;
+  }
+
+  await client.query(
+    "INSERT INTO heroes \
+      (name, description, image, logo) \
+      VALUES ($1, $2, $3, $4)",
+    [hero.name, hero.description, image.path, logo.path]
+  );
+
+  client.end();
 };
 
 export const deleteHero = async (id: number) => {
