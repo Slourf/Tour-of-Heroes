@@ -48,3 +48,6 @@ Thumbs.db
 *swp
 lol-image
 static/
+
+backend/dist/
+rontend/node_modules/*

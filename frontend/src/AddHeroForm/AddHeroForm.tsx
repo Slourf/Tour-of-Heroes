@@ -1,14 +1,13 @@
 import React from "react";
-import InputField from "../InputField/InputField";
-import FileField from "../FileField/FileField";
-import axios from "axios";
-import { heroesUrl } from "../helpers";
-import { store } from "../Notification/Notification"
+import InputField from "../FormTools/InputField/InputField";
+import FileField from "../FormTools/FileField/FileField";
+import { store } from "../Notification/Notification";
 
-import "./AddHeroForm.css"
+import "./AddHeroForm.css";
 import PageTitle from "../PageTitle/PageTitle";
-import TextField from "../TextField/TextField";
+import TextField from "../FormTools/TextField/TextField";
 import { RouteComponentProps } from "react-router-dom";
+import { requestPost } from "../misc/api";
 
 interface Props extends RouteComponentProps {}
 
@@ -36,19 +35,24 @@ export default class AddHeroFrom extends React.Component<Props, State> {
     const hero = this.state.form;
 
     if (hero.description && hero.image && hero.logo && hero.name) {
-        form.append('name', hero.name);
-        form.append('description', hero.description);
-        form.append('image', hero.image, hero.image.name);
-        form.append('logo', hero.logo, hero.logo.name);
+      form.append("name", hero.name);
+      form.append("description", hero.description);
+      form.append("image", hero.image, hero.image.name);
+      form.append("logo", hero.logo, hero.logo.name);
 
-        axios
-        .post(heroesUrl, form)
+      requestPost("/api/heroes", form)
         .then(() => {
-          store.addNotification({ message: "The hero was created sucessfully!", type: "success"});
+          store.addNotification({
+            message: "The hero was created sucessfully!",
+            type: "success",
+          });
           this.props.history.push("/heroes");
         })
         .catch(() => {
-          store.addNotification({ message: "An error occured while creating the hero.", type: "error"});
+          store.addNotification({
+            message: "An error occured while creating the hero.",
+            type: "error",
+          });
         });
     }
   };
@@ -100,7 +104,7 @@ export default class AddHeroFrom extends React.Component<Props, State> {
           style={{ marginTop: ".575rem" }}
           onChange={this.handleTextInputChange}
         />
-        <div style={{ display:"flex", width: "100%", marginTop: ".575rem" }}>
+        <div style={{ display: "flex", width: "100%", marginTop: ".575rem" }}>
           <FileField
             id="logo"
             name="Logo"
@@ -116,7 +120,9 @@ export default class AddHeroFrom extends React.Component<Props, State> {
             onClear={this.handleFileClear}
           />
         </div>
-        <button onClick={this.submitForm} className="submit">Créer</button>
+        <button onClick={this.submitForm} className="submit">
+          Créer
+        </button>
       </div>
     );
   }

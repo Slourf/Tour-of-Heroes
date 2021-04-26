@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import SignOnModal from "../SignOnModal/SignOnModal";
+import { withAuthenticatedUser } from "../misc/auth";
 
 import "./NavBar.css";
 
@@ -10,7 +11,7 @@ interface State {
   isSignOnModalOpen: boolean;
 }
 
-export default class NavBar extends React.Component<Props, State> {
+class NavBar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -63,3 +64,5 @@ export default class NavBar extends React.Component<Props, State> {
     );
   }
 }
+
+export default withAuthenticatedUser(NavBar);

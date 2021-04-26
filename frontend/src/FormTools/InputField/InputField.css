@@ -7,7 +7,7 @@ label {
   display: inline-block;
 }
 
-input[type="text"].input-form {
+input.input-form {
   display: block;
   width: 100%;
   padding: .375rem .75rem;

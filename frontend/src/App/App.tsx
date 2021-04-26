@@ -13,32 +13,58 @@ import PageBody from "../PageBody/PageBody"
 import HeroDetail from "../HeroDetail/HeroDetail"
 import Notification from "../Notification/Notification"
 import SignIn from "../SignIn/SignIn"
+import { AuthenticatedUser } from "../AuthenticatedUser/AuthenticatedUser";
+import { User } from "../helpers";
 
 import './App.css';
 
-export default class App extends React.PureComponent {
+interface IState {
+  authenticatedUser: User | null;
+}
+
+interface IProps {
+
+}
+
+
+export default class App extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
+    super(props);
+    this.state = {
+      authenticatedUser: null
+    };
+  }
+
 
   fetchHeroes = () => {
     
   }
 
+  componentWillMount = () => {
+
+  }
+
+
+
   render() {
     return (
       <div id="toh-app">
-        <Router>
-          <NavBar/>
-          <Notification />
-          <PageBody>
-            <Switch>
-              <Route exact path="/" component={Heroes} />
-              <Route exact path="/heroes" component={Heroes} />
-              <Route exact path="/heroes/add" component={AddHeroForm} />
-              <Route exact path="/heroes/:id" component={HeroDetail} />
-              <Route exact path="/dashboard" />
-              <Route exact path="/signin" component={SignIn}/>
-            </Switch>
-          </PageBody>
-        </Router>
+        <AuthenticatedUser.Provider value={this.state.authenticatedUser}>
+          <Router>
+            <NavBar/>
+            <Notification />
+            <PageBody>
+              <Switch>
+                <Route exact path="/" component={Heroes} />
+                <Route exact path="/heroes" component={Heroes} />
+                <Route exact path="/heroes/add" component={AddHeroForm} />
+                <Route exact path="/heroes/:id" component={HeroDetail} />
+                <Route exact path="/dashboard" />
+                <Route exact path="/signin" component={SignIn}/>
+              </Switch>
+            </PageBody>
+          </Router>
+        </AuthenticatedUser.Provider>
       </div>
     );
   }

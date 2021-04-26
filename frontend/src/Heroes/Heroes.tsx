@@ -1,12 +1,11 @@
 import React, { Fragment } from "react";
 import { Hero } from "./helper";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { environment }  from "../environment";
 
-import { heroesUrl } from "../helpers";
+import { url } from "../helpers";
 import "./Heroes.css";
-import InputField from "../InputField/InputField";
+import InputField from "../FormTools/InputField/InputField";
+import { requestGet } from "../misc/api";
 
 interface Props {}
 
@@ -29,15 +28,16 @@ export default class Heroes extends React.Component<Props, State> {
   };
 
   fetchHeroes = () => {
-    axios.get(heroesUrl).then((res) => {
-      const heroes: Hero[] = res.data.sort((h1: Hero, h2: Hero) => h1.name.localeCompare(h2.name));
-      console.log(heroes);
-      heroes.forEach((hero: Hero): void => {
-        hero.image_path = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/${hero.image}`;
-        hero.logo_path = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/${hero.logo}`;
+    requestGet("/api/heroes")
+      .then((res) => {
+        const heroes: Hero[] = res.data.sort((h1: Hero, h2: Hero) => h1.name.localeCompare(h2.name));
+        console.log(heroes);
+        heroes.forEach((hero: Hero): void => {
+          hero.image_path = `${url}/${hero.image}`;
+          hero.logo_path = `${url}/${hero.logo}`;
+        });
+        this.setState({ heroes });
       });
-      this.setState({ heroes });
-    });
   };
 
 

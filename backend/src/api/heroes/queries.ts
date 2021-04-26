@@ -13,7 +13,6 @@ export const getHeroesById = async (id: number) => {
     await client.query("SELECT * FROM heroes WHERE id = $1", [id])
   ).rows[0];
 
-  console.log(hero);
   await fetchMissingImages(hero, client);
   client.end();
   return hero;
@@ -27,14 +26,12 @@ export const getHeroes = async (request?: any, response?: any) => {
   await Promise.all(heroes.map(async (hero: Hero) => {
     await fetchMissingImages(hero, client);
   }));
-  console.log("Closing pg connection!");
   client.end();
   return heroes;
 };
 
 const fetchMissingImages = async (hero: Hero, client: pkg.Client) => {
     if (!fs.existsSync(hero.image)) {
-      console.log("image: ", hero.image);
       const image = (
         await client.query("SELECT encode(data::bytea, 'hex') FROM heroes_image WHERE image_path = $1", [hero.image])
       ).rows[0];
@@ -42,7 +39,6 @@ const fetchMissingImages = async (hero: Hero, client: pkg.Client) => {
     }
 
     if (!fs.existsSync(hero.logo)) {
-      console.log("logo: ", hero.image);
       const logo = (
         await client.query("SELECT encode(data::bytea, 'hex') FROM heroes_logo WHERE logo_path = $1", [
           hero.logo,
@@ -62,7 +58,6 @@ export const addHero = async (hero: HeroFileless, files: any) => {
 
   try {
     const logoData: string = `\\x${await fs.promises.readFile(logo.path, { encoding: "hex" })}`;
-
     await client.query(
       "INSERT INTO heroes_logo \
         (fieldname, originalname, encoding, mimetype, destination, filename, logo_path, size, data) \
@@ -84,8 +79,7 @@ export const addHero = async (hero: HeroFileless, files: any) => {
   }
 
   try {
-      const imageData: string = `\\x${fs.promises.readFile(image.path, { encoding: "hex" })}`;
-
+      const imageData: string = `\\x${await fs.promises.readFile(image.path, { encoding: "hex" })}`;
       await client.query(
         "INSERT INTO heroes_image \
           (fieldname, originalname, encoding, mimetype, destination, filename, image_path, size, data) \
