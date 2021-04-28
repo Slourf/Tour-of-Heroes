@@ -1,12 +1,11 @@
 import React from "react";
-import InputField from "../InputField/InputField";
-import axios from "axios";
-import { heroesUrl } from "../helpers";
+import InputField from "../FormTools/InputField/InputField";
 import { store } from "../Notification/Notification"
 
 import "./SignIn.css"
 import PageTitle from "../PageTitle/PageTitle";
 import { RouteComponentProps } from "react-router-dom";
+import { requestPost } from "../misc/api";
 
 interface Props extends RouteComponentProps {}
 
@@ -35,15 +34,14 @@ export default class AddHeroFrom extends React.Component<Props, State> {
         form.append('username', credentials.username);
         form.append('password', credentials.password);
 
-        axios
-        .post(heroesUrl, form)
-        .then(() => {
-          store.addNotification({ message: "Your account was created sucessfully!", type: "success"});
-          this.props.history.push("/heroes");
-        })
-        .catch(() => {
-          store.addNotification({ message: "An error occured while creating your account.", type: "error"});
-        });
+        requestPost("/api/users", form)
+          .then(() => {
+            store.addNotification({ message: "Your account was created sucessfully!", type: "success"});
+            this.props.history.push("/heroes");
+          })
+          .catch(() => {
+            store.addNotification({ message: "An error occured while creating your account.", type: "error"});
+          });
     }
   };
 
@@ -83,7 +81,7 @@ export default class AddHeroFrom extends React.Component<Props, State> {
       <div>
         <PageTitle title="Sign In" />
         <InputField
-          id="name"
+          id="username"
           name="Username"
           style={{ marginTop: ".575rem" }}
           onChange={this.handleInputChange}
@@ -91,12 +89,14 @@ export default class AddHeroFrom extends React.Component<Props, State> {
         <InputField
           id="password"
           name="Password"
+          type="password"
           style={{ marginTop: ".575rem" }}
           onChange={this.handleInputChange}
         />
         <InputField
           id="confirmed-password"
           name="Confirm password"
+          type="password"
           style={{ marginTop: ".575rem" }}
           onChange={this.handleInputChange}
         />

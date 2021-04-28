@@ -1,18 +1,12 @@
-export class ErrorHandler extends Error {
-    private statusCode;
+import { Response } from "express";
 
-    constructor(statusCode: string, message: string) {
+export class ErrorHandler extends Error {
+    public statusCode: number;
+    public message: string;
+
+    constructor(statusCode: number, message: string) {
         super();
         this.statusCode = statusCode;
         this.message = message;
     }
 }
-
-export const handleError = (err: any, res: any) => {
-  const { statusCode, message } = err;
-  res.status(statusCode).json({
-    status: "error",
-    statusCode,
-    message
-  });
-};

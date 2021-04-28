@@ -1,5 +1,7 @@
 import express, { Router } from "express";
 import { router as heroes } from "./heroes/index";
+import { router as users } from "./users/index";
+import { router as auth } from "./auth/index";
 // import jwt from "express-jwt";
 // import jwksRsa from "jwks-rsa";
 
@@ -11,27 +13,8 @@ router.use(function timeLog(req, res, next) {
   next();
 });
 
-  /*
-// authentification
-router.use(function timeLog(req, res, next) {
-
-  const checkJwt = jwt({
-    secret: jwksRsa.expressJwtSecret({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-      jwksUri: `https://<AUTH0_DOMAIN>/.well-known/jwks.json`
-    }),
-
-    // Validate the audience and the issuer.
-    audience: '<API_IDENTIFIER>',
-    issuer: `https://<AUTH0_DOMAIN>/`,
-    algorithms: ['RS256']
-  });
-
-  next();
-});
-  */
 
 // define the home page route
+router.use("/auth", auth);
+router.use("/users", users);
 router.use("/heroes", heroes);

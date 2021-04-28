@@ -1,12 +1,11 @@
 import React from "react";
 import { Hero } from "./../Heroes/helper";
 import { RouteComponentProps } from "react-router-dom";
-import axios from "axios";
 import { store } from "../Notification/Notification";
-import { environment } from "../environment";
 
-import { heroesUrl } from "../helpers";
-import "./HeroDetail.css"
+import { url } from "../helpers";
+import "./HeroDetail.css";
+import { requestDelete, requestGet } from "../misc/api";
 
 interface MatchParams {
   id: string;
@@ -30,22 +29,29 @@ export default class HeroDetail extends React.Component<Props, State> {
 
   deleteHero = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    axios
-    .delete(`${heroesUrl}/${this.props.match.params.id}`)
-    .then(() => {
-      store.addNotification({ message: "The hero was deleted sucessfully!", type: "success"});
-      this.props.history.push("/heroes");
-    })
-    .catch(() => {
-      store.addNotification({ message: "An error occured while deleting the hero.", type: "error"});
-    });
-  }
+    requestDelete(`/api/heroes/${this.props.match.params.id}`)
+      .then(() => {
+        store.addNotification({
+          message: "The hero was deleted sucessfully!",
+          type: "success",
+          timer: 2000
+        });
+        this.props.history.push("/heroes");
+      })
+      .catch(() => {
+        store.addNotification({
+          message: "An error occured while deleting the hero.",
+          type: "error",
+          timer: 2000
+        });
+      });
+  };
 
   fetchHeroById = (id: string) => {
-    axios.get(`${heroesUrl}/${id}`).then((res) => {
+    requestGet(`/api/heroes/${id}`).then((res) => {
       const hero: Hero = res.data;
-      hero.image_path = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/${hero.image}`;
-      hero.logo_path = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:${environment.SERVER_PORT}/${hero.logo}`;
+      hero.image_path = `${url}/${hero.image}`;
+      hero.logo_path = `${url}/${hero.logo}`;
       this.setState({ hero });
     });
   };
@@ -61,18 +67,16 @@ export default class HeroDetail extends React.Component<Props, State> {
       <div>
         <div className="hero-header">
           <img src={hero.image_path} className="hero-image" alt="" />
-          <h1 className="hero-title" >{hero.name}</h1>
+          <h1 className="hero-title">{hero.name}</h1>
         </div>
         <div className="hero-body">
-          <button className="delete" onClick={this.deleteHero}>Delete Hero</button>
+          <button className="delete" onClick={this.deleteHero}>
+            Delete Hero
+          </button>
           <h1 className="hero-body-title">Description</h1>
           <div>
             {desc.map((paragraph, index) => {
-              return (
-                <p key={index}>
-                  {paragraph}
-                </p>
-              )
+              return <p key={index}>{paragraph}</p>;
             })}
           </div>
           <h1 className="hero-body-title">Spells</h1>

@@ -1,23 +1,32 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import SignOnModal from "../SignOnModal/SignOnModal";
+import { withAuthenticatedUser } from "../misc/auth";
 
 import "./NavBar.css";
+import { User } from "../helpers";
+import Cookies from "universal-cookie";
 
-interface Props {}
+interface Props {
+  authenticatedUser: User;
+  context: { 
+    authenticatedUser: User | null,
+    clearAuthenticatedUser: () => void
+  } | null
+}
 
 interface State {
   isSignOnModalOpen: boolean;
 }
 
-export default class NavBar extends React.Component<Props, State> {
+class NavBar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       isSignOnModalOpen: false,
     };
   }
-  toggleModal = (isOpen: boolean) => {
+  toggleModal = () => {
     this.setState({
       ...this.state,
       isSignOnModalOpen: !this.state.isSignOnModalOpen,
@@ -25,11 +34,23 @@ export default class NavBar extends React.Component<Props, State> {
   };
 
   handleToggleModal = (event: React.MouseEvent<HTMLDivElement>) => {
-    this.toggleModal(this.state.isSignOnModalOpen);
+    this.toggleModal();
   };
+
+  handleLogOut = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (this.props.context === null)
+      return;
+    const cookie: Cookies = new Cookies();
+    cookie.remove("auth_token");
+    this.props.context.clearAuthenticatedUser();
+  }
 
   render() {
     const { isSignOnModalOpen } = this.state;
+    if (!this.props.context)
+      return;
+    const { authenticatedUser } = this.props.context;
+    console.log(authenticatedUser);
     return (
       <div id="header">
         <Link to="/heroes">
@@ -42,18 +63,26 @@ export default class NavBar extends React.Component<Props, State> {
             <Link to="/heroes" className="nav-item">Heroes</Link>
             <Link to="/dashboard" className="nav-item">Dashboard</Link>
             <Link to="/heroes/add" className="nav-item">+ Hero</Link>
-
           </nav>
         </div>
         <div className="header-account">
-          <div className="header-account-item" onClick={this.handleToggleModal}>
-            Sign On
-          </div>
-          <Link to="/signin">
-            <div className="header-account-item">
-                Sign In
-            </div>
-          </Link>
+          {!authenticatedUser ? 
+            <Fragment>
+              <div className="header-account-item" onClick={this.handleToggleModal}>
+                Sign On
+              </div>
+              <Link to="/signin">
+                <div className="header-account-item">
+                    Sign In
+                </div>
+              </Link>
+            </Fragment>
+            :
+            <Fragment>
+              <div className="header-account-item" onClick={this.handleLogOut}>Log out</div>
+              <div className="header-account-item">{authenticatedUser.username}</div>
+            </Fragment>
+          }
         </div>
         <SignOnModal
           isOpen={isSignOnModalOpen}
@@ -63,3 +92,5 @@ export default class NavBar extends React.Component<Props, State> {
     );
   }
 }
+
+export default withAuthenticatedUser(NavBar);

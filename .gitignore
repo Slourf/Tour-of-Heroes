@@ -48,3 +48,7 @@ Thumbs.db
 *swp
 lol-image
 static/
+
+backend/dist/
+frontend/node_modules/**/*
+frontend/node_modules/yocto-queue/package.json
