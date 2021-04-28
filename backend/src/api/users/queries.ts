@@ -71,6 +71,27 @@ export const getUserByUsername = async (username: string) => {
   }
 };
 
+export const getUserByUsernameWithPassword = async (username: string) => {
+  const client: pkg.Client = new Client(dbInfo);
+  try {
+    client.connect();
+  } catch {
+    throw new ErrorHandler(500, "Failed to connect to the database");
+  }
+
+  try {
+    const user : User = (
+      await client.query("SELECT * FROM users WHERE username = $1", [username])
+    ).rows[0];
+
+    client.end();
+
+    return user;
+  } catch {
+    throw new ErrorHandler(404, "User not found");
+  }
+};
+
 export const addUser = async (user: User) => {
   const client: pkg.Client = new Client(dbInfo);
   try {

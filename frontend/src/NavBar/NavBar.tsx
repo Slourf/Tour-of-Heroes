@@ -40,9 +40,9 @@ class NavBar extends React.Component<Props, State> {
   handleLogOut = (event: React.MouseEvent<HTMLDivElement>) => {
     if (this.props.context === null)
       return;
-    this.props.context.clearAuthenticatedUser();
     const cookie: Cookies = new Cookies();
     cookie.remove("auth_token");
+    this.props.context.clearAuthenticatedUser();
   }
 
   render() {
@@ -79,8 +79,8 @@ class NavBar extends React.Component<Props, State> {
             </Fragment>
             :
             <Fragment>
-              <div className="header-account-item">{authenticatedUser.username}</div>
               <div className="header-account-item" onClick={this.handleLogOut}>Log out</div>
+              <div className="header-account-item">{authenticatedUser.username}</div>
             </Fragment>
           }
         </div>

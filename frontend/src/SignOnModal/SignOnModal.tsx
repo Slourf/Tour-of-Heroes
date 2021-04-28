@@ -8,10 +8,18 @@ import { customStyles } from "./styles";
 import "./SignOnModal.css";
 import { store } from "../Notification/Notification";
 import { requestPost } from "../misc/api";
+import { withAuthenticatedUser } from "../misc/auth";
+import { User } from "../helpers";
+import { useHistory } from "react-router";
 
 interface IProps {
   isOpen: boolean;
   toggleModal: (isOpen: boolean) => void;
+  context: {
+    authenticatedUser: User | null;
+    clearAuthenticatedUser: () => void;
+    fetchAuthenticatedUser: () => void;
+  } | null;
 }
 
 interface IState {
@@ -21,7 +29,7 @@ interface IState {
   };
 }
 
-export default class SignOnModal extends React.Component<IProps, IState> {
+class SignOnModal extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -43,7 +51,9 @@ export default class SignOnModal extends React.Component<IProps, IState> {
     this.setState({ form: { ...form, [id]: value } });
   };
 
-  submitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+  submitForm = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     const { form } = this.state;
 
     requestPost("/api/auth", form)
@@ -51,17 +61,23 @@ export default class SignOnModal extends React.Component<IProps, IState> {
         store.addNotification({
           message: "Login successfully!!",
           type: "success",
-          timer: 2000
+          timer: 3000
         });
         this.handleToggleModal();
+
         const cookie = new Cookies();
         cookie.set("auth_token", res.data.token);
+
+        const { context } = this.props;
+        if (context !== null) {
+          context.fetchAuthenticatedUser();
+        }
       })
       .catch(() => {
         store.addNotification({
-          message: "An error occured while creating the hero.",
+          message: "An error occured while logging.",
           type: "error",
-          timer: 2000
+          timer: 3000
         });
       });
   };
@@ -76,24 +92,26 @@ export default class SignOnModal extends React.Component<IProps, IState> {
             &#10005;
           </div>
         </div>
-
-        <InputField
-          id="username"
-          name="Login"
-          style={{ marginTop: ".575rem" }}
-          onChange={this.handleInputChange}
-        />
-        <InputField
-          id="password"
-          name="Password"
-          type="password"
-          style={{ marginTop: ".575rem" }}
-          onChange={this.handleInputChange}
-        />
-        <button className="submit" onClick={this.submitForm}>
-          Log in
-        </button>
+        <form onSubmit={this.submitForm}>
+          <InputField
+            id="username"
+            name="Login"
+            style={{ marginTop: ".575rem" }}
+            onChange={this.handleInputChange}
+          />
+          <InputField
+            id="password"
+            name="Password"
+            type="password"
+            style={{ marginTop: ".575rem" }}
+            onChange={this.handleInputChange}
+          />
+          <button type="submit" className="submit">
+            Log in
+          </button>
+        </form>
       </Modal>
     );
   }
 }
+export default withAuthenticatedUser(SignOnModal);

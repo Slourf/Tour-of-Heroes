@@ -21,6 +21,7 @@ interface IState {
   context: {
     authenticatedUser: User | null;
     clearAuthenticatedUser: () => void;
+    fetchAuthenticatedUser: () => void;
   } | null;
 }
 
@@ -33,6 +34,7 @@ export default class App extends React.Component<IProps, IState> {
       context: {
         authenticatedUser: null,
         clearAuthenticatedUser: this.clearAuthenticatedUser,
+        fetchAuthenticatedUser: this.fetchAuthenticatedUser
       },
     };
   }
@@ -53,6 +55,7 @@ export default class App extends React.Component<IProps, IState> {
           context: {
             authenticatedUser: user,
             clearAuthenticatedUser: this.clearAuthenticatedUser,
+            fetchAuthenticatedUser: this.fetchAuthenticatedUser
           },
         });
       })
@@ -60,7 +63,13 @@ export default class App extends React.Component<IProps, IState> {
   };
 
   clearAuthenticatedUser = () => {
-    this.setState({ context: null });
+    this.setState({
+      context: {
+        authenticatedUser: null,
+        clearAuthenticatedUser: this.clearAuthenticatedUser,
+        fetchAuthenticatedUser: this.fetchAuthenticatedUser
+      },
+    });
   };
 
   componentWillMount = () => {

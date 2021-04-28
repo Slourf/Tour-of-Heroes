@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction, Router } from "express";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { getUserByUsername } from "../users/queries";
+import { getUserByUsernameWithPassword } from "../users/queries";
 import { User } from "../users/helper";
 import { config } from "./helper";
 import { ErrorHandler } from "../../error";
@@ -10,7 +10,7 @@ export const router: Router = express.Router();
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user: User = (await getUserByUsername(req.body.username));
+    const user: User = (await getUserByUsernameWithPassword(req.body.username));
     if (!user) {
       throw new ErrorHandler(404, "No user found.");
     }
@@ -39,7 +39,6 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     catch (err) {
       throw new ErrorHandler(500, "Failed to sign jwt token");
     }
-
   } catch (err) {
     next(err);
   }
