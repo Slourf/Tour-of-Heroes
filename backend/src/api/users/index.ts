@@ -2,8 +2,7 @@ import express, { Router, Request, Response, NextFunction } from "express";
 import { User } from "./helper";
 import { getUsers, getUserById, addUser, deleteUser } from "./queries";
 import multer from "multer";
-import { addHero } from "../heroes/queries";
-import { HeroFileless } from "../heroes/helper";
+import { ErrorHandler } from "../../error";
 
 const upload = multer({ dest: "static/heroes/" });
 
@@ -32,28 +31,45 @@ router.post(
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
     const user: User = req.body;
-    await addUser(user);
-
-    res.status(200);
-    next();
+    try {
+      await addUser(user);
+      res.status(200);
+      next();
+    } catch (err) {
+      next(err);
+    }
   }
 );
 
 router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
-  const id = parseInt(req.params.id, 10);
-  const user = await getUserById(id);
-  res.status(200).json(user);
-  next();
+  try {
+    const id = parseInt(req.params.id, 10);
+    try {
+      const user = await getUserById(id);
+      res.status(200).json(user);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  } catch (err) {
+    next(new ErrorHandler(500, "Failed to parse id"));
+  }
 });
 
 router.delete(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
-    const id = parseInt(req.params.id, 10);
-
-    await deleteUser(id);
-
-    res.status(200);
-    next();
+    try {
+      const id = parseInt(req.params.id, 10);
+      try {
+        await deleteUser(id);
+        res.status(200);
+        next();
+      } catch (err) {
+        next(err);
+      }
+    } catch (err) {
+      next(new ErrorHandler(500, "Failed to parse id"));
+    }
   }
 );

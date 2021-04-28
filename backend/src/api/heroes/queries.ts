@@ -2,32 +2,68 @@ import pkg from "pg";
 import { dbInfo } from "../../helper";
 import { Hero, HeroFileHeader, HeroFileless } from "./helper";
 import fs from "fs";
+import { ErrorHandler } from "../../error";
 
 const { Client } = pkg;
 
 export const getHeroesById = async (id: number) => {
   const client: pkg.Client = new Client(dbInfo);
-  client.connect();
+  try {
+    client.connect();
+  } catch {
+    throw new ErrorHandler(500, "Failed to connect to the database");
+  }
 
-  const hero: Hero = (
-    await client.query("SELECT * FROM heroes WHERE id = $1", [id])
-  ).rows[0];
+  try {
+    const hero: Hero = (
+      await client.query("SELECT * FROM heroes WHERE id = $1", [id])
+    ).rows[0];
 
-  await fetchMissingImages(hero, client);
-  client.end();
-  return hero;
+    if (!hero) {
+      throw new ErrorHandler(404, "Hero not found");
+    }
+
+    try {
+      await fetchMissingImages(hero, client);
+    } catch (err) {
+      throw err;
+    }
+
+    client.end();
+    return hero;
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const getHeroes = async (request?: any, response?: any) => {
   const client = new Client(dbInfo);
-  client.connect();
+  try {
+    client.connect();
+  } catch {
+    throw new ErrorHandler(500, "Failed to connect to the database");
+  }
+  try {
+    const heroes: Hero[] = (await client.query("SELECT * FROM heroes")).rows;
 
-  const heroes: Hero[] = (await client.query("SELECT * FROM heroes")).rows;
-  await Promise.all(heroes.map(async (hero: Hero) => {
-    await fetchMissingImages(hero, client);
-  }));
-  client.end();
-  return heroes;
+    try {
+      await Promise.all(heroes.map(async (hero: Hero) => {
+        try {
+          await fetchMissingImages(hero, client);
+        } catch (err) {
+          throw err;
+        }
+      }));
+    } catch (err) {
+      throw err;
+    }
+    client.end();
+    return heroes;
+  } catch (err) {
+    if (err) {
+      throw err;
+    }
+  }
 };
 
 const fetchMissingImages = async (hero: Hero, client: pkg.Client) => {
@@ -53,7 +89,11 @@ export const addHero = async (hero: HeroFileless, files: any) => {
   const image: HeroFileHeader = files.image[0];
   const logo: HeroFileHeader = files.logo[0];
 
-  client.connect();
+  try {
+    client.connect();
+  } catch {
+    throw new ErrorHandler(500, "Failed to connect to the database");
+  }
 
 
   try {
@@ -113,7 +153,11 @@ export const addHero = async (hero: HeroFileless, files: any) => {
 
 export const deleteHero = async (id: number) => {
   const client = new Client(dbInfo);
-  client.connect();
+  try {
+    client.connect();
+  } catch {
+    throw new ErrorHandler(500, "Failed to connect to the database");
+  }
 
   await client.query("DELETE FROM heroes WHERE id = $1", [id]);
 
