@@ -1,4 +1,5 @@
 import React from "react";
+import { Field } from "react-final-form";
 
 import "./InputField.css";
 
@@ -40,14 +41,16 @@ export default class InputField extends React.Component<Props, State> {
       <div style={{ ...style }}>
         <label htmlFor={id}>{name}</label>
         <br />
-        <input
-          id={id}
-          style={{ ...style }}
-          type={type}
-          value={value}
-          className="input-form"
-          onChange={this.handleChange}
-        />
+        <Field name={id} type={type} value={value} onChange={this.handleChange}>
+          {(props) => (
+            <input
+              {...props}
+              id={id}
+              style={{ ...style }}
+              className="input-form"
+            />
+          )}
+        </Field>
       </div>
     );
   }

@@ -1,4 +1,5 @@
 import React from "react";
+import { Form } from "react-final-form";
 import InputField from "../FormTools/InputField/InputField";
 import FileField from "../FormTools/FileField/FileField";
 import { store } from "../Notification/Notification";
@@ -29,7 +30,7 @@ export default class AddHeroFrom extends React.Component<Props, State> {
     };
   }
 
-  submitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+  handleSubmitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const form = new FormData();
     const hero = this.state.form;
@@ -61,12 +62,14 @@ export default class AddHeroFrom extends React.Component<Props, State> {
     const { id, value } = event.target;
     const { form } = this.state;
     this.setState({ form: { ...form, [id]: value } });
+    console.log(this.state);
   };
 
   handleTextInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { id, value } = event.target;
     const { form } = this.state;
     this.setState({ form: { ...form, [id]: value } });
+    console.log(this.state);
   };
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,37 +95,45 @@ export default class AddHeroFrom extends React.Component<Props, State> {
     return (
       <div>
         <PageTitle title="Création de héro" />
-        <InputField
-          id="name"
-          name="Nom du hero"
-          style={{ marginTop: ".575rem" }}
-          onChange={this.handleInputChange}
-        />
-        <TextField
-          id="description"
-          name="Description"
-          style={{ marginTop: ".575rem" }}
-          onChange={this.handleTextInputChange}
-        />
-        <div style={{ display: "flex", width: "100%", marginTop: ".575rem" }}>
-          <FileField
-            id="logo"
-            name="Logo"
-            style={{ width: "48%", marginRight: "2%" }}
-            onChange={this.handleFileChange}
-            onClear={this.handleFileClear}
-          />
-          <FileField
-            id="image"
-            name="Image"
-            style={{ width: "48%", marginLeft: "2%" }}
-            onChange={this.handleFileChange}
-            onClear={this.handleFileClear}
-          />
-        </div>
-        <button onClick={this.submitForm} className="submit">
-          Créer
-        </button>
+        <Form onSubmit={this.handleSubmitForm}>
+          {(props) => (
+            <form action="">
+              <InputField
+                id="name"
+                name="Nom du hero"
+                style={{ marginTop: ".575rem" }}
+                onChange={this.handleInputChange}
+              />
+              <TextField
+                id="description"
+                name="Description"
+                style={{ marginTop: ".575rem" }}
+                onChange={this.handleTextInputChange}
+              />
+              <div
+                style={{ display: "flex", width: "100%", marginTop: ".575rem" }}
+              >
+                <FileField
+                  id="logo"
+                  name="Logo"
+                  style={{ width: "48%", marginRight: "2%" }}
+                  onChange={this.handleFileChange}
+                  onClear={this.handleFileClear}
+                />
+                <FileField
+                  id="image"
+                  name="Image"
+                  style={{ width: "48%", marginLeft: "2%" }}
+                  onChange={this.handleFileChange}
+                  onClear={this.handleFileClear}
+                />
+              </div>
+              <button onClick={this.handleSubmitForm} className="submit">
+                Créer
+              </button>
+            </form>
+          )}
+        </Form>
       </div>
     );
   }

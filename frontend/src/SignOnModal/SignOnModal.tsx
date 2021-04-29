@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
+import { Form } from "react-final-form";
 import Cookies from "universal-cookie";
 
 import InputField from "../FormTools/InputField/InputField";
@@ -10,7 +11,6 @@ import { store } from "../Notification/Notification";
 import { requestPost } from "../misc/api";
 import { withAuthenticatedUser } from "../misc/auth";
 import { User } from "../helpers";
-import { useHistory } from "react-router";
 
 interface IProps {
   isOpen: boolean;
@@ -51,7 +51,7 @@ class SignOnModal extends React.Component<IProps, IState> {
     this.setState({ form: { ...form, [id]: value } });
   };
 
-  submitForm = (event: React.FormEvent<HTMLFormElement>) => {
+  handleSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const { form } = this.state;
@@ -92,24 +92,28 @@ class SignOnModal extends React.Component<IProps, IState> {
             &#10005;
           </div>
         </div>
-        <form onSubmit={this.submitForm}>
-          <InputField
-            id="username"
-            name="Login"
-            style={{ marginTop: ".575rem" }}
-            onChange={this.handleInputChange}
-          />
-          <InputField
-            id="password"
-            name="Password"
-            type="password"
-            style={{ marginTop: ".575rem" }}
-            onChange={this.handleInputChange}
-          />
-          <button type="submit" className="submit">
-            Log in
-          </button>
-        </form>
+        <Form onSubmit={this.handleSubmitForm}>
+          {(props) => (
+            <form onSubmit={props.handleSubmit}>
+              <InputField
+                id="username"
+                name="Login"
+                style={{ marginTop: ".575rem" }}
+                onChange={this.handleInputChange}
+              />
+              <InputField
+                id="password"
+                name="Password"
+                type="password"
+                style={{ marginTop: ".575rem" }}
+                onChange={this.handleInputChange}
+              />
+              <button type="submit" className="submit">
+                Log in
+              </button>
+            </form>
+          )}
+        </Form>
       </Modal>
     );
   }

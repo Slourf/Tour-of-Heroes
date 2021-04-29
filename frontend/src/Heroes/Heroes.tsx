@@ -57,7 +57,7 @@ export default class Heroes extends React.Component<Props, State> {
 
     return (
       <div>
-        <InputField id="search" name="Search" onChange={this.handleSearch} />
+        {/*<InputField id="search" name="Search" onChange={this.handleSearch} />*/}
         <div className="heroes">
           {heroes.map((hero, index) => {
             return (

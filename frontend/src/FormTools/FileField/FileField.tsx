@@ -1,4 +1,5 @@
 import React from "react";
+import { Field } from "react-final-form";
 import "./FileField.css";
 
 interface Props {
@@ -56,55 +57,64 @@ export default class FileField extends React.Component<Props, State> {
 
     return (
       <div style={{ ...style }}>
-        {!files ? (
-          <div>
-            <label className="name"> {name} </label>
-            <br />
-            <div className="input-file">
-              <button
-                className="input-file"
-                type="button"
-                onClick={this.handleClick}
-              >
-                <label htmlFor={id} className="input">
-                  Parcourir
-                </label>
-              </button>
-              <input
-                id={id}
-                name={name}
-                type="file"
-                ref={this.hiddenFileInput}
-                className="file-input"
-                onChange={this.handlechange}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="form-group">
-            <label className="name">{name}</label>
-            <br />
-            <div className="input-file-filled">
-              <button
-                id={id}
-                className="input-file-delete"
-                type="button"
-                onClick={this.clearValue}
-              >
-                <label
-                  htmlFor={id}
-                  className="input"
-                  style={{ color: "white" }}
-                >
-                  &times;
-                </label>
-              </button>
-              <div className="input-file-data">
-                {files.length > 0 ? files.item(0)?.name : null}
-              </div>
-            </div>
-          </div>
-        )}
+        <Field name={id}>
+          {(props) => {
+            if (!files) {
+              return (
+                <div>
+                  <label className="name"> {name} </label>
+                  <br />
+                  <div className="input-file">
+                    <button
+                      className="input-file"
+                      type="button"
+                      onClick={this.handleClick}
+                    >
+                      <label htmlFor={id} className="input">
+                        Parcourir
+                      </label>
+                    </button>
+                    <input
+                      {...props}
+                      id={id}
+                      name={name}
+                      type="file"
+                      ref={this.hiddenFileInput}
+                      className="file-input"
+                      onChange={this.handlechange}
+                    />
+                  </div>
+                </div>
+              );
+            } else {
+              return (
+                <div className="form-group">
+                  <label className="name">{name}</label>
+                  <br />
+                  <div className="input-file-filled">
+                    <button
+                      id={id}
+                      className="input-file-delete"
+                      type="button"
+                      onClick={this.clearValue}
+                    >
+                      <label
+                        htmlFor={id}
+                        className="input"
+                        style={{ color: "white" }}
+                      >
+                        &times;
+                      </label>
+                    </button>
+                    <div className="input-file-data">
+                      {files.length > 0 ? files.item(0)?.name : null}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+          }}
+        </Field>
       </div>
     );
   }

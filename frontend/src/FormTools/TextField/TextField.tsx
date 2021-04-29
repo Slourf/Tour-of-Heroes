@@ -1,4 +1,5 @@
 import React from "react";
+import { Field } from "react-final-form";
 
 import "./TextField.css";
 
@@ -39,13 +40,16 @@ export default class TextField extends React.Component<Props, State> {
       <div style={{ ...style }}>
         <label htmlFor={id}>{name}</label>
         <br />
-        <textarea
-          id={id}
-          style={{ ...style }}
-          value={value}
-          className="input-form"
-          onChange={this.handleChange}
-        />
+        <Field name={id} value={value} onChange={this.handleChange}>
+          {(props) => (
+            <textarea
+              {...props}
+              id={id}
+              style={{ ...style }}
+              className="input-form"
+            />
+          )}
+        </Field>
       </div>
     );
   }
