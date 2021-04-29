@@ -1,8 +1,8 @@
 import React from "react";
 import InputField from "../FormTools/InputField/InputField";
-import { store } from "../Notification/Notification"
+import { store } from "../Notification/Notification";
 
-import "./SignIn.css"
+import "./SignIn.css";
 import PageTitle from "../PageTitle/PageTitle";
 import { RouteComponentProps } from "react-router-dom";
 import { requestPost } from "../misc/api";
@@ -31,17 +31,23 @@ export default class AddHeroFrom extends React.Component<Props, State> {
     const credentials = this.state.form;
 
     if (credentials.username && credentials.password) {
-        form.append('username', credentials.username);
-        form.append('password', credentials.password);
+      form.append("username", credentials.username);
+      form.append("password", credentials.password);
 
-        requestPost("/api/users", form)
-          .then(() => {
-            store.addNotification({ message: "Your account was created sucessfully!", type: "success"});
-            this.props.history.push("/heroes");
-          })
-          .catch(() => {
-            store.addNotification({ message: "An error occured while creating your account.", type: "error"});
+      requestPost("/api/users", form)
+        .then(() => {
+          store.addNotification({
+            message: "Your account was created sucessfully!",
+            type: "success",
           });
+          this.props.history.push("/heroes");
+        })
+        .catch(() => {
+          store.addNotification({
+            message: "An error occured while creating your account.",
+            type: "error",
+          });
+        });
     }
   };
 
@@ -100,7 +106,9 @@ export default class AddHeroFrom extends React.Component<Props, State> {
           style={{ marginTop: ".575rem" }}
           onChange={this.handleInputChange}
         />
-        <button onClick={this.submitForm} className="submit">Create account</button>
+        <button onClick={this.submitForm} className="submit">
+          Create account
+        </button>
       </div>
     );
   }

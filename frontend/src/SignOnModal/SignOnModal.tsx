@@ -61,7 +61,7 @@ class SignOnModal extends React.Component<IProps, IState> {
         store.addNotification({
           message: "Login successfully!!",
           type: "success",
-          timer: 3000
+          timer: 3000,
         });
         this.handleToggleModal();
 
@@ -77,7 +77,7 @@ class SignOnModal extends React.Component<IProps, IState> {
         store.addNotification({
           message: "An error occured while logging.",
           type: "error",
-          timer: 3000
+          timer: 3000,
         });
       });
   };

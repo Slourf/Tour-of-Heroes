@@ -13,7 +13,6 @@ router.use(function timeLog(req, res, next) {
   next();
 });
 
-
 // define the home page route
 router.use("/auth", auth);
 router.use("/users", users);

@@ -14,5 +14,5 @@ export const config = {
   // individual password, so larger is better. however, larger also means longer
   // to hash the password. tune so that hashing the password takes about a
   // second
-  iterations: 100000
+  iterations: 100000,
 };

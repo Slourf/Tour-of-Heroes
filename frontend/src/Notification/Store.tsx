@@ -1,4 +1,4 @@
-import { iNotification } from './Notification';
+import { iNotification } from "./Notification";
 
 interface iStore {
   addNotification: ((notification: iNotification) => void) | null;
@@ -21,7 +21,7 @@ class Store implements iStore {
   }
 
   public removeNotification: ((id: string) => void) | null;
-  public removeAllNotifications: ((() => void)) | null;
+  public removeAllNotifications: (() => void) | null;
 
   private add: ((notification: iNotification) => void) | null;
   private counter: number;
@@ -36,7 +36,7 @@ class Store implements iStore {
     this.incrementCounter();
 
     if (this.add) {
-        this.add(notification);
+      this.add(notification);
     }
   }
 

@@ -35,7 +35,7 @@
 }
 
 .hero-header {
-  margin-top: .5rem;
+  margin-top: 0.5rem;
   height: 25rem; /* height of container */
   position: relative;
   z-index: 2;
@@ -69,12 +69,12 @@
 }
 
 button.delete {
-    background-color: #AD1C1C;
-    color: white;
-    width: 100%;
-    margin-top: 1rem;
+  background-color: #ad1c1c;
+  color: white;
+  width: 100%;
+  margin-top: 1rem;
 }
 
 button.delete:hover {
-    background-color: #9D0C0C;
+  background-color: #9d0c0c;
 }

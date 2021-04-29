@@ -34,7 +34,7 @@ export default class HeroDetail extends React.Component<Props, State> {
         store.addNotification({
           message: "The hero was deleted sucessfully!",
           type: "success",
-          timer: 2000
+          timer: 2000,
         });
         this.props.history.push("/heroes");
       })
@@ -42,7 +42,7 @@ export default class HeroDetail extends React.Component<Props, State> {
         store.addNotification({
           message: "An error occured while deleting the hero.",
           type: "error",
-          timer: 2000
+          timer: 2000,
         });
       });
   };

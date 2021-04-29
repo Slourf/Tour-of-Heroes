@@ -52,17 +52,20 @@ router.post(
   }
 );
 
-router.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const id = parseInt(req.params.id, 10);
+router.delete(
+  "/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await deleteHero(id);
-      res.status(200);
-      next();
+      const id = parseInt(req.params.id, 10);
+      try {
+        await deleteHero(id);
+        res.status(200);
+        next();
+      } catch (err) {
+        next(err);
+      }
     } catch (err) {
-      next(err);
+      next(new ErrorHandler(500, "Failed to parse id"));
     }
-  } catch (err) {
-    next(new ErrorHandler(500, "Failed to parse id"));
   }
-});
+);

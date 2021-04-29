@@ -33,7 +33,9 @@ export const getUserById = async (id: number) => {
     throw new ErrorHandler(500, "Failed to connect to the database");
   }
   try {
-    const user: User = (await client.query("SELECT id, username FROM users WHERE id = $1", [id])).rows[0];
+    const user: User = (
+      await client.query("SELECT id, username FROM users WHERE id = $1", [id])
+    ).rows[0];
 
     if (!user) {
       throw new ErrorHandler(404, "User not found");
@@ -42,12 +44,10 @@ export const getUserById = async (id: number) => {
     client.end();
 
     return user;
-
   } catch {
     console.log("err");
     throw new ErrorHandler(404, "User not found");
   }
-
 };
 
 export const getUserByUsername = async (username: string) => {
@@ -59,8 +59,10 @@ export const getUserByUsername = async (username: string) => {
   }
 
   try {
-    const user : User = (
-      await client.query("SELECT id, username FROM users WHERE username = $1", [username])
+    const user: User = (
+      await client.query("SELECT id, username FROM users WHERE username = $1", [
+        username,
+      ])
     ).rows[0];
 
     client.end();
@@ -80,7 +82,7 @@ export const getUserByUsernameWithPassword = async (username: string) => {
   }
 
   try {
-    const user : User = (
+    const user: User = (
       await client.query("SELECT * FROM users WHERE username = $1", [username])
     ).rows[0];
 
@@ -122,15 +124,15 @@ export const addUser = async (user: User) => {
   hash.copy(combined, salt.length + 8);
 
   try {
-    console.log(combined.toString('base64'));
-      await client.query(
+    console.log(combined.toString("base64"));
+    await client.query(
       "INSERT INTO users \
           (username, password) \
           VALUES ($1, $2)",
-      [user.username, combined.toString('base64')]
-      );
+      [user.username, combined.toString("base64")]
+    );
   } catch {
-      throw new ErrorHandler(500, "User creation failed");
+    throw new ErrorHandler(500, "User creation failed");
   }
 
   client.end();
@@ -146,7 +148,7 @@ export const deleteUser = async (id: number) => {
   try {
     await client.query("DELETE FROM users WHERE id = $1", [id]);
   } catch {
-    throw new ErrorHandler(404, "User not found")
+    throw new ErrorHandler(404, "User not found");
   }
   client.end();
 };

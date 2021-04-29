@@ -1,6 +1,5 @@
 import React from "react";
-import "./FileField.css"
-
+import "./FileField.css";
 
 interface Props {
   id: string;
@@ -16,75 +15,97 @@ interface State {
 }
 
 export default class FileField extends React.Component<Props, State> {
-
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            files: null
-        }
-    }
-
-    hiddenFileInput = React.createRef<HTMLInputElement>();
-
-    handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        if (this.hiddenFileInput.current != null) {
-            this.hiddenFileInput.current.click();
-        }
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      files: null,
     };
+  }
 
-    handlechange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { onChange } = this.props;
-        if (onChange) {
-            onChange(event);
-        }
-        this.setState({ files: event.target.files });
+  hiddenFileInput = React.createRef<HTMLInputElement>();
+
+  handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (this.hiddenFileInput.current != null) {
+      this.hiddenFileInput.current.click();
     }
+  };
 
-
-    clearValue = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-
-        const { onClear } = this.props;
-
-        if (onClear) {
-            onClear(event);
-        }
-        this.setState({ files: null });
+  handlechange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { onChange } = this.props;
+    if (onChange) {
+      onChange(event);
     }
+    this.setState({ files: event.target.files });
+  };
 
-    render() {
-        const { id, name, style } = this.props;
-        const { files } = this.state;
+  clearValue = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
 
-        return (
-        <div style={{...style}}>
-            {!files? (
-            <div>
-                <label className="name"> {name} </label>
-                <br />
-                <div className="input-file">
-                    <button className="input-file" type="button" onClick={this.handleClick}>
-                    <label htmlFor={id} className="input">Parcourir</label>
-                    </button>
-                    <input id={id} name={name} type="file" ref={this.hiddenFileInput} className="file-input" onChange={this.handlechange} />
-                </div>
+    const { onClear } = this.props;
+
+    if (onClear) {
+      onClear(event);
+    }
+    this.setState({ files: null });
+  };
+
+  render() {
+    const { id, name, style } = this.props;
+    const { files } = this.state;
+
+    return (
+      <div style={{ ...style }}>
+        {!files ? (
+          <div>
+            <label className="name"> {name} </label>
+            <br />
+            <div className="input-file">
+              <button
+                className="input-file"
+                type="button"
+                onClick={this.handleClick}
+              >
+                <label htmlFor={id} className="input">
+                  Parcourir
+                </label>
+              </button>
+              <input
+                id={id}
+                name={name}
+                type="file"
+                ref={this.hiddenFileInput}
+                className="file-input"
+                onChange={this.handlechange}
+              />
             </div>
-            ) : (
-            <div className="form-group">
-                <label className="name">{name}</label>
-                <br />
-                <div className="input-file-filled">
-                    <button id={id} className="input-file-delete" type="button" onClick={this.clearValue}>
-                    <label htmlFor={id} className="input" style={{ color: "white" }}>&times;</label>
-                    </button>
-                    <div className="input-file-data">
-                        {files.length > 0 ? files.item(0)?.name : null}
-                    </div>
-                </div>
+          </div>
+        ) : (
+          <div className="form-group">
+            <label className="name">{name}</label>
+            <br />
+            <div className="input-file-filled">
+              <button
+                id={id}
+                className="input-file-delete"
+                type="button"
+                onClick={this.clearValue}
+              >
+                <label
+                  htmlFor={id}
+                  className="input"
+                  style={{ color: "white" }}
+                >
+                  &times;
+                </label>
+              </button>
+              <div className="input-file-data">
+                {files.length > 0 ? files.item(0)?.name : null}
+              </div>
             </div>
-            )}
-        </div>
-        );
-    }
+          </div>
+        )}
+      </div>
+    );
+  }
 }
