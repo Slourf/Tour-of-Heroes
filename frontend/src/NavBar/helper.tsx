@@ -8,7 +8,7 @@ export const menu = [
     link: "/dashboard",
   },
   {
-    name: "Hero +",
+    name: "Add Hero",
     link: "/heroes/add",
   },
 ];

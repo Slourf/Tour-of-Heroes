@@ -5,7 +5,8 @@ import { store } from "../Notification/Notification";
 import "./SignIn.css";
 import PageTitle from "../PageTitle/PageTitle";
 import { RouteComponentProps } from "react-router-dom";
-import { requestPost } from "../misc/api";
+import { requestGet, requestPost } from "../misc/api";
+import { Form } from "react-final-form";
 
 interface Props extends RouteComponentProps {}
 
@@ -25,7 +26,53 @@ export default class AddHeroFrom extends React.Component<Props, State> {
     };
   }
 
-  submitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+  isUsernameAvailable = async (username: string) => {
+    const toto = await requestGet(`/api/user/exist/${username}`);
+    return toto;
+  };
+
+  checkValidation = async (values: any) => {
+    const errors = {
+      username: "",
+      password: "",
+      confirmedPassword: "",
+    };
+    let valid = true;
+
+    if (!values.username) {
+      errors.username = "This field is required!";
+      valid = false;
+    } else if (!this.isUsernameAvailable(values.username)) {
+      errors.username = "This username is not available!";
+    }
+    if (!values.password) {
+      errors.password = "This field is required!";
+      valid = false;
+    }
+    if (!values.confirmedPassword) {
+      errors.confirmedPassword = "This field is required!";
+      valid = false;
+    } else if (values.confirmedPassword !== values.password) {
+      errors.confirmedPassword = "Both passwords must be identical!";
+      valid = false;
+    }
+    // implemente a password policy
+    if (valid) {
+      return null;
+    }
+    return errors;
+  };
+
+  handleValidation = (values: any) => {
+    const errors = this.checkValidation(values);
+    console.log(errors);
+    if (errors) {
+      return errors;
+    }
+    return {};
+  };
+
+  handleSubmitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const form = new FormData();
     const credentials = this.state.form;
@@ -86,29 +133,39 @@ export default class AddHeroFrom extends React.Component<Props, State> {
     return (
       <div>
         <PageTitle title="Sign In" />
-        <InputField
-          id="username"
-          name="Username"
-          style={{ marginTop: ".575rem" }}
-          onChange={this.handleInputChange}
-        />
-        <InputField
-          id="password"
-          name="Password"
-          type="password"
-          style={{ marginTop: ".575rem" }}
-          onChange={this.handleInputChange}
-        />
-        <InputField
-          id="confirmed-password"
-          name="Confirm password"
-          type="password"
-          style={{ marginTop: ".575rem" }}
-          onChange={this.handleInputChange}
-        />
-        <button onClick={this.submitForm} className="submit">
-          Create account
-        </button>
+        <Form
+          onSubmit={this.handleSubmitForm}
+          validate={this.handleValidation}
+          validateOnBlur={true}
+        >
+          {(props) => (
+            <form onSubmit={props.handleSubmit}>
+              <InputField
+                id="username"
+                name="Username"
+                style={{ marginTop: ".575rem" }}
+                required={true}
+              />
+              <InputField
+                id="password"
+                name="Password"
+                type="password"
+                style={{ marginTop: ".575rem" }}
+                required={true}
+              />
+              <InputField
+                id="confirmedPassword"
+                name="Confirm password"
+                type="password"
+                style={{ marginTop: ".575rem" }}
+                required={true}
+              />
+              <button type="submit" className="submit">
+                Create account
+              </button>
+            </form>
+          )}
+        </Form>
       </div>
     );
   }

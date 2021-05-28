@@ -7,50 +7,50 @@ interface Props {
   id: string;
   name: string;
   style?: React.CSSProperties;
-  value?: string;
-  onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  required?: boolean;
 }
 
-interface State {
-  value?: string;
-}
-
-export default class TextField extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      value: props.value,
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    const { onChange } = this.props;
-    if (onChange) {
-      onChange(event);
-    }
-    this.setState({ ...event.target });
-  }
-
+export default class TextField extends React.Component<Props> {
   render() {
-    const { id, style, value, name } = this.props;
+    const { id, style, name, required } = this.props;
     return (
-      <div style={{ ...style }}>
-        <label htmlFor={id}>{name}</label>
-        <br />
-        <Field name={id} value={value} onChange={this.handleChange}>
-          {(props) => (
-            <textarea
-              {...props}
-              id={id}
-              style={{ ...style }}
-              className="input-form"
-            />
-          )}
-        </Field>
-      </div>
+      <Field<string> name={id}>
+        {({ input, meta }) => {
+          let errorStyle = {};
+          if (meta.touched && (meta.error || meta.submitError)) {
+            errorStyle = {
+              borderColor: "red",
+            };
+          }
+          return (
+            <div style={{ ...style }}>
+              <label htmlFor={id}>
+                {name}
+                <span style={{ color: "red" }}>{required ? "*" : null}</span>
+              </label>
+              <br />
+              <textarea
+                {...input}
+                id={id}
+                style={{ ...style, ...errorStyle }}
+                className="input-form"
+                required={required}
+              />
+              {(meta.error || meta.submitError) && meta.touched && (
+                <div
+                  style={{
+                    fontSize: "15px",
+                    color: "red",
+                    fontStyle: "italic",
+                  }}
+                >
+                  {meta.error || meta.submitError}
+                </div>
+              )}
+            </div>
+          );
+        }}
+      </Field>
     );
   }
 }

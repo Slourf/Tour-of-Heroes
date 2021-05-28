@@ -40,6 +40,36 @@ class SignOnModal extends React.Component<IProps, IState> {
     };
   }
 
+  checkValidation = (values: any) => {
+    const errors = {
+      username: "",
+      password: "",
+    };
+    let valid = true;
+
+    if (!values.username) {
+      errors.username = "This field is required!";
+      valid = false;
+    }
+    if (!values.password) {
+      errors.password = "This field is required!";
+      valid = false;
+    }
+    if (valid) {
+      return null;
+    }
+    return errors;
+  };
+
+  handleValidation = (values: any) => {
+    const errors = this.checkValidation(values);
+    console.log(errors);
+    if (errors) {
+      return errors;
+    }
+    return {};
+  };
+
   handleToggleModal = () => {
     const { isOpen, toggleModal } = this.props;
     toggleModal(isOpen);
@@ -52,7 +82,7 @@ class SignOnModal extends React.Component<IProps, IState> {
   };
 
   handleSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    // event.preventDefault();
 
     const { form } = this.state;
 
@@ -92,21 +122,21 @@ class SignOnModal extends React.Component<IProps, IState> {
             &#10005;
           </div>
         </div>
-        <Form onSubmit={this.handleSubmitForm}>
+        <Form onSubmit={this.handleSubmitForm} validate={this.handleValidation}>
           {(props) => (
             <form onSubmit={props.handleSubmit}>
               <InputField
                 id="username"
                 name="Login"
                 style={{ marginTop: ".575rem" }}
-                onChange={this.handleInputChange}
+                required={true}
               />
               <InputField
                 id="password"
                 name="Password"
                 type="password"
                 style={{ marginTop: ".575rem" }}
-                onChange={this.handleInputChange}
+                required={true}
               />
               <button type="submit" className="submit">
                 Log in

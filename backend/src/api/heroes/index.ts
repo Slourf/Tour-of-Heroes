@@ -43,12 +43,18 @@ router.post(
     const files: any = req.files;
     const hero: HeroFileless = req.body;
     try {
+      console.log("post: heroes");
       await addHero(hero, files);
+      console.log("post: heroes added");
       res.status(200);
+      console.log("return 200");
       next();
     } catch (err) {
+      console.log(err);
       next(err);
     }
+    console.log("after");
+    next();
   }
 );
 

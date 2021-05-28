@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 import { url } from "../helpers";
 import "./Heroes.css";
-import InputField from "../FormTools/InputField/InputField";
 import { requestGet } from "../misc/api";
 
 interface Props {}

@@ -30,16 +30,19 @@ export default class AddHeroFrom extends React.Component<Props, State> {
     };
   }
 
-  handleSubmitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  handleSubmitForm = (values: any) => {
     const form = new FormData();
-    const hero = this.state.form;
+    const errors = this.checkValidation(values);
+    console.log("submitting...");
+    if (errors) {
+      return errors;
+    }
 
-    if (hero.description && hero.image && hero.logo && hero.name) {
-      form.append("name", hero.name);
-      form.append("description", hero.description);
-      form.append("image", hero.image, hero.image.name);
-      form.append("logo", hero.logo, hero.logo.name);
+    if (values.description && values.image && values.logo && values.name) {
+      form.append("name", values.name);
+      form.append("description", values.description);
+      form.append("image", values.image, values.image.name);
+      form.append("logo", values.logo, values.logo.name);
 
       requestPost("/api/heroes", form)
         .then(() => {
@@ -49,19 +52,63 @@ export default class AddHeroFrom extends React.Component<Props, State> {
           });
           this.props.history.push("/heroes");
         })
-        .catch(() => {
+        .catch((err) => {
           store.addNotification({
-            message: "An error occured while creating the hero.",
+            message: `${err.code} : ${err.message}`,
             type: "error",
           });
         });
     }
   };
 
+  checkValidation = (values: any) => {
+    const errors = {
+      name: "",
+      description: "",
+      image: "",
+      logo: "",
+    };
+    let valid = true;
+
+    if (!values.name) {
+      errors.name = "This field is required!";
+      valid = false;
+    }
+    if (!values.description) {
+      errors.description = "This field is required!";
+      valid = false;
+    }
+    if (!values.logo) {
+      errors.logo = "This field is required!";
+      valid = false;
+    }
+    if (!values.image) {
+      errors.image = "This field is required!";
+      valid = false;
+    }
+    if (valid) {
+      return null;
+    }
+    return errors;
+  };
+
+  handleValidation = (values: any) => {
+    const errors = this.checkValidation(values);
+    console.log(errors);
+    if (errors) {
+      return errors;
+    }
+    return {};
+  };
+
   handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
     const { form } = this.state;
-    this.setState({ form: { ...form, [id]: value } });
+
+    this.setState({
+      ...this.state,
+      form: { ...form, [id]: value },
+    });
     console.log(this.state);
   };
 
@@ -69,7 +116,6 @@ export default class AddHeroFrom extends React.Component<Props, State> {
     const { id, value } = event.target;
     const { form } = this.state;
     this.setState({ form: { ...form, [id]: value } });
-    console.log(this.state);
   };
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,7 +131,6 @@ export default class AddHeroFrom extends React.Component<Props, State> {
 
   handleFileClear = (event: React.MouseEvent<HTMLButtonElement>) => {
     const { id } = event.currentTarget;
-    console.log(event.currentTarget);
     const { form } = this.state;
 
     this.setState({ form: { ...form, [id]: undefined } });
@@ -94,21 +139,21 @@ export default class AddHeroFrom extends React.Component<Props, State> {
   render() {
     return (
       <div>
-        <PageTitle title="Création de héro" />
-        <Form onSubmit={this.handleSubmitForm}>
+        <PageTitle title="Create hero" />
+        <Form onSubmit={this.handleSubmitForm} validate={this.handleValidation}>
           {(props) => (
-            <form action="">
+            <form onSubmit={props.handleSubmit}>
               <InputField
                 id="name"
-                name="Nom du hero"
+                name="Name"
                 style={{ marginTop: ".575rem" }}
-                onChange={this.handleInputChange}
+                required={true}
               />
               <TextField
                 id="description"
                 name="Description"
                 style={{ marginTop: ".575rem" }}
-                onChange={this.handleTextInputChange}
+                required={true}
               />
               <div
                 style={{ display: "flex", width: "100%", marginTop: ".575rem" }}
@@ -117,18 +162,16 @@ export default class AddHeroFrom extends React.Component<Props, State> {
                   id="logo"
                   name="Logo"
                   style={{ width: "48%", marginRight: "2%" }}
-                  onChange={this.handleFileChange}
-                  onClear={this.handleFileClear}
+                  required={true}
                 />
                 <FileField
                   id="image"
                   name="Image"
                   style={{ width: "48%", marginLeft: "2%" }}
-                  onChange={this.handleFileChange}
-                  onClear={this.handleFileClear}
+                  required={true}
                 />
               </div>
-              <button onClick={this.handleSubmitForm} className="submit">
+              <button type="submit" className="submit">
                 Créer
               </button>
             </form>
