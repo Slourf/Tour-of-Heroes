@@ -37,7 +37,6 @@ export default class InputField extends React.Component<Props> {
                 type={type}
                 style={{ ...style, ...errorStyle }}
                 className="input-form"
-                required={required}
               />
               {(meta.error || meta.submitError) && meta.touched && (
                 <div

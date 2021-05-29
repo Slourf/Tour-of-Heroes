@@ -34,7 +34,6 @@ export default class TextField extends React.Component<Props> {
                 id={id}
                 style={{ ...style, ...errorStyle }}
                 className="input-form"
-                required={required}
               />
               {(meta.error || meta.submitError) && meta.touched && (
                 <div

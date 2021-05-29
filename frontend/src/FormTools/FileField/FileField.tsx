@@ -64,7 +64,7 @@ export default class FileField extends React.Component<Props, State> {
         <Field<File> name={id}>
           {({ input: { value, onChange, ...input }, meta }) => {
             let errorStyle;
-            if (touched && (meta.error || meta.submitError)) {
+            if ((meta.touched || touched) && (meta.error || meta.submitError)) {
               errorStyle = {
                 borderColor: "red",
               };
@@ -120,7 +120,7 @@ export default class FileField extends React.Component<Props, State> {
                   onChange={(e) => this.handleChange(e, onChange)}
                 />
 
-                {(meta.error || meta.submitError) && touched && (
+                {(meta.error || meta.submitError) && (meta.touched || touched) && (
                   <div
                     style={{
                       fontSize: "15px",
