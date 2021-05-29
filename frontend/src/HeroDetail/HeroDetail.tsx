@@ -3,21 +3,27 @@ import { Hero } from "./../Heroes/helper";
 import { RouteComponentProps } from "react-router-dom";
 import { store } from "../Notification/Notification";
 
-import { url } from "../helpers";
+import { url, User } from "../helpers";
 import "./HeroDetail.css";
 import { requestDelete, requestGet } from "../misc/api";
+import { withAuthenticatedUser } from "../misc/auth";
 
 interface MatchParams {
   id: string;
 }
 
-interface Props extends RouteComponentProps<MatchParams> {}
+interface Props extends RouteComponentProps<MatchParams> {
+  context: {
+    authenticatedUser: User | null;
+    clearAuthenticatedUser: () => void;
+  } | null;
+}
 
 interface State {
   hero?: Hero;
 }
 
-export default class HeroDetail extends React.Component<Props, State> {
+class HeroDetail extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {};
@@ -58,6 +64,7 @@ export default class HeroDetail extends React.Component<Props, State> {
 
   render() {
     const { hero } = this.state;
+    const { context } = this.props;
     if (!hero) {
       return null;
     }
@@ -70,9 +77,11 @@ export default class HeroDetail extends React.Component<Props, State> {
           <h1 className="hero-title">{hero.name}</h1>
         </div>
         <div className="hero-body">
-          <button className="delete" onClick={this.deleteHero}>
-            Delete Hero
-          </button>
+          {context?.authenticatedUser?.admin && (
+            <button className="delete" onClick={this.deleteHero}>
+              Delete Hero
+            </button>
+          )}
           <h1 className="hero-body-title">Description</h1>
           <div>
             {desc.map((paragraph, index) => {
@@ -85,3 +94,4 @@ export default class HeroDetail extends React.Component<Props, State> {
     );
   }
 }
+export default withAuthenticatedUser(HeroDetail);

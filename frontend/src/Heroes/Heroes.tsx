@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { Hero } from "./helper";
 import { Link } from "react-router-dom";
 
-import { url } from "../helpers";
+import { url, User } from "../helpers";
 import "./Heroes.css";
 import { requestGet } from "../misc/api";
 
@@ -31,7 +31,6 @@ export default class Heroes extends React.Component<Props, State> {
       const heroes: Hero[] = res.data.sort((h1: Hero, h2: Hero) =>
         h1.name.localeCompare(h2.name)
       );
-      console.log(heroes);
       heroes.forEach((hero: Hero): void => {
         hero.image_path = `${url}/${hero.image}`;
         hero.logo_path = `${url}/${hero.logo}`;

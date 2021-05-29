@@ -1,5 +1,6 @@
 import React from "react";
 import { Field } from "react-final-form";
+import ReactTooltip from "react-tooltip";
 
 import "./InputField.css";
 
@@ -10,11 +11,12 @@ interface Props {
   value?: string;
   type?: string;
   required?: boolean;
+  info?: string;
 }
 
 export default class InputField extends React.Component<Props> {
   render() {
-    const { id, style, name, type, required } = this.props;
+    const { id, style, name, type, required, info } = this.props;
     let errorStyle = {};
     return (
       <Field<string> name={id}>
@@ -29,6 +31,13 @@ export default class InputField extends React.Component<Props> {
               <label htmlFor={id}>
                 {name}
                 <span style={{ color: "red" }}>{required ? "*" : null}</span>
+                {info && (
+                  <span data-tip={info} style={{ fontStyle: "normal" }}>
+                    {" "}
+                    &#9432;
+                    <ReactTooltip type="info" html={true} />
+                  </span>
+                )}
               </label>
               <br />
               <input

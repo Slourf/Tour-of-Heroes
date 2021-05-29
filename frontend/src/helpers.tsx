@@ -6,4 +6,5 @@ export const url = `${environment.SERVER_PROTOCOL}://${environment.SERVER_URL}:$
 export interface User {
   id: string;
   username: string;
+  admin: boolean;
 }

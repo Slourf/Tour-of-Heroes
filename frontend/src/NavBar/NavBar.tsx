@@ -47,9 +47,14 @@ class NavBar extends React.Component<Props, State> {
 
   render() {
     const { isSignOnModalOpen } = this.state;
+    let navbarMenu = menu;
     if (!this.props.context) return;
     const { authenticatedUser } = this.props.context;
-    console.log(authenticatedUser);
+    if (!authenticatedUser || !authenticatedUser.admin) {
+      console.log(authenticatedUser);
+      navbarMenu = navbarMenu.filter((item) => item.admin === false);
+    }
+
     return (
       <div id="header">
         <Link to="/heroes">
@@ -59,7 +64,7 @@ class NavBar extends React.Component<Props, State> {
         </Link>
         <div className="header-container">
           <nav>
-            {menu.map((item) => (
+            {navbarMenu.map((item) => (
               <Link to={item.link} className="nav-item">
                 {item.name}
               </Link>

@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOMServer from "react-dom/server";
 import InputField from "../FormTools/InputField/InputField";
 import { store } from "../Notification/Notification";
 
@@ -7,28 +8,13 @@ import PageTitle from "../PageTitle/PageTitle";
 import { RouteComponentProps } from "react-router-dom";
 import { requestGet, requestPost } from "../misc/api";
 import { Form } from "react-final-form";
+import { PasswordPolicy } from "./helper";
 
 interface Props extends RouteComponentProps {}
 
-interface State {
-  form: {
-    username?: string;
-    password?: string;
-  };
-}
-
-export default class AddHeroFrom extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      form: {},
-    };
-  }
-
+export default class AddHeroFrom extends React.Component<Props> {
   isUsernameAvailable = async (username: string) => {
-    const toto = await requestGet(`/api/user/exist/${username}`);
-    return toto;
+    return (await requestGet(`/api/users/exist/${username}`)).data;
   };
 
   checkValidation = async (values: any) => {
@@ -38,16 +24,30 @@ export default class AddHeroFrom extends React.Component<Props, State> {
       confirmedPassword: "",
     };
     let valid = true;
-
     if (!values.username) {
       errors.username = "This field is required!";
       valid = false;
-    } else if (!this.isUsernameAvailable(values.username)) {
-      errors.username = "This username is not available!";
+    } else {
+      const isUsernameAvailable = await this.isUsernameAvailable(
+        values.username
+      );
+      if (!isUsernameAvailable) {
+        errors.username = "This username is not available!";
+        valid = false;
+      }
     }
+
     if (!values.password) {
       errors.password = "This field is required!";
       valid = false;
+    } else {
+      const strongRegex = new RegExp(
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
+      );
+      if (!strongRegex.test(values.password)) {
+        errors.password = "The password doesn't match the password policy!";
+        valid = false;
+      }
     }
     if (!values.confirmedPassword) {
       errors.confirmedPassword = "This field is required!";
@@ -63,19 +63,17 @@ export default class AddHeroFrom extends React.Component<Props, State> {
     return errors;
   };
 
-  handleValidation = (values: any) => {
-    const errors = this.checkValidation(values);
-    console.log(errors);
+  handleValidation = async (values: any) => {
+    const errors = await this.checkValidation(values);
     if (errors) {
       return errors;
     }
     return {};
   };
 
-  handleSubmitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  handleSubmitForm = (values: any) => {
     const form = new FormData();
-    const credentials = this.state.form;
+    const credentials = values;
 
     if (credentials.username && credentials.password) {
       form.append("username", credentials.username);
@@ -96,37 +94,6 @@ export default class AddHeroFrom extends React.Component<Props, State> {
           });
         });
     }
-  };
-
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = event.target;
-    const { form } = this.state;
-    this.setState({ form: { ...form, [id]: value } });
-  };
-
-  handleTextInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { id, value } = event.target;
-    const { form } = this.state;
-    this.setState({ form: { ...form, [id]: value } });
-  };
-
-  handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, files } = event.target;
-    const { form } = this.state;
-
-    if (files && files.length > 0) {
-      this.setState({ form: { ...form, [id]: files[0] } });
-    } else {
-      this.setState({ form: { ...form, [id]: undefined } });
-    }
-  };
-
-  handleFileClear = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const { id } = event.currentTarget;
-    console.log(event.currentTarget);
-    const { form } = this.state;
-
-    this.setState({ form: { ...form, [id]: undefined } });
   };
 
   render() {
@@ -152,6 +119,7 @@ export default class AddHeroFrom extends React.Component<Props, State> {
                 type="password"
                 style={{ marginTop: ".575rem" }}
                 required={true}
+                info={ReactDOMServer.renderToString(<PasswordPolicy />)}
               />
               <InputField
                 id="confirmedPassword"

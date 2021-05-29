@@ -34,7 +34,10 @@ export const getUserById = async (id: number) => {
   }
   try {
     const user: User = (
-      await client.query("SELECT id, username FROM users WHERE id = $1", [id])
+      await client.query(
+        "SELECT id, username, admin FROM users WHERE id = $1",
+        [id]
+      )
     ).rows[0];
 
     if (!user) {
@@ -73,6 +76,27 @@ export const getUserByUsername = async (username: string) => {
   }
 };
 
+export const isUsernameAvailable = async (username: string) => {
+  const client: pkg.Client = new Client(dbInfo);
+  try {
+    client.connect();
+  } catch {
+    throw new ErrorHandler(500, "Failed to connect to the database");
+  }
+
+  try {
+    const results = (
+      await client.query("SELECT 1 FROM users WHERE username = $1", [username])
+    ).rows.length;
+
+    client.end();
+
+    return results === 0;
+  } catch {
+    throw new ErrorHandler(404, "User not found");
+  }
+};
+
 export const getUserByUsernameWithPassword = async (username: string) => {
   const client: pkg.Client = new Client(dbInfo);
   try {
@@ -82,6 +106,7 @@ export const getUserByUsernameWithPassword = async (username: string) => {
   }
 
   try {
+    console.log(username);
     const user: User = (
       await client.query("SELECT * FROM users WHERE username = $1", [username])
     ).rows[0];

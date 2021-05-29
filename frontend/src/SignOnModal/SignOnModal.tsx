@@ -22,24 +22,7 @@ interface IProps {
   } | null;
 }
 
-interface IState {
-  form: {
-    username: string;
-    password: string;
-  };
-}
-
-class SignOnModal extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = {
-      form: {
-        username: "",
-        password: "",
-      },
-    };
-  }
-
+class SignOnModal extends React.Component<IProps> {
   checkValidation = (values: any) => {
     const errors = {
       username: "",
@@ -63,7 +46,6 @@ class SignOnModal extends React.Component<IProps, IState> {
 
   handleValidation = (values: any) => {
     const errors = this.checkValidation(values);
-    console.log(errors);
     if (errors) {
       return errors;
     }
@@ -75,18 +57,15 @@ class SignOnModal extends React.Component<IProps, IState> {
     toggleModal(isOpen);
   };
 
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = event.target;
-    const { form } = this.state;
-    this.setState({ form: { ...form, [id]: value } });
-  };
-
-  handleSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
+  handleSubmitForm = (values: any) => {
     // event.preventDefault();
 
-    const { form } = this.state;
+    const credentials = {
+      username: values.username,
+      password: values.password,
+    };
 
-    requestPost("/api/auth", form)
+    requestPost("/api/auth", credentials)
       .then((res) => {
         store.addNotification({
           message: "Login successfully!!",
