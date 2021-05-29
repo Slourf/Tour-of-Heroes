@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
+import { Form } from "react-final-form";
 import Cookies from "universal-cookie";
 
 import InputField from "../FormTools/InputField/InputField";
@@ -10,7 +11,6 @@ import { store } from "../Notification/Notification";
 import { requestPost } from "../misc/api";
 import { withAuthenticatedUser } from "../misc/auth";
 import { User } from "../helpers";
-import { useHistory } from "react-router";
 
 interface IProps {
   isOpen: boolean;
@@ -22,46 +22,55 @@ interface IProps {
   } | null;
 }
 
-interface IState {
-  form: {
-    username: string;
-    password: string;
-  };
-}
-
-class SignOnModal extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = {
-      form: {
-        username: "",
-        password: "",
-      },
+class SignOnModal extends React.Component<IProps> {
+  checkValidation = (values: any) => {
+    const errors = {
+      username: "",
+      password: "",
     };
-  }
+    let valid = true;
+
+    if (!values.username) {
+      errors.username = "This field is required!";
+      valid = false;
+    }
+    if (!values.password) {
+      errors.password = "This field is required!";
+      valid = false;
+    }
+    if (valid) {
+      return null;
+    }
+    return errors;
+  };
+
+  handleValidation = (values: any) => {
+    const errors = this.checkValidation(values);
+    if (errors) {
+      return errors;
+    }
+    return {};
+  };
 
   handleToggleModal = () => {
     const { isOpen, toggleModal } = this.props;
     toggleModal(isOpen);
   };
 
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = event.target;
-    const { form } = this.state;
-    this.setState({ form: { ...form, [id]: value } });
-  };
+  handleSubmitForm = (values: any) => {
+    // event.preventDefault();
 
-  submitForm = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    const credentials = {
+      username: values.username,
+      password: values.password,
+    };
 
-    const { form } = this.state;
-
-    requestPost("/api/auth", form)
+    requestPost("/api/auth", credentials)
       .then((res) => {
         store.addNotification({
           message: "Login successfully!!",
           type: "success",
-          timer: 3000
+          timer: 3000,
         });
         this.handleToggleModal();
 
@@ -77,7 +86,7 @@ class SignOnModal extends React.Component<IProps, IState> {
         store.addNotification({
           message: "An error occured while logging.",
           type: "error",
-          timer: 3000
+          timer: 3000,
         });
       });
   };
@@ -92,24 +101,28 @@ class SignOnModal extends React.Component<IProps, IState> {
             &#10005;
           </div>
         </div>
-        <form onSubmit={this.submitForm}>
-          <InputField
-            id="username"
-            name="Login"
-            style={{ marginTop: ".575rem" }}
-            onChange={this.handleInputChange}
-          />
-          <InputField
-            id="password"
-            name="Password"
-            type="password"
-            style={{ marginTop: ".575rem" }}
-            onChange={this.handleInputChange}
-          />
-          <button type="submit" className="submit">
-            Log in
-          </button>
-        </form>
+        <Form onSubmit={this.handleSubmitForm} validate={this.handleValidation}>
+          {(props) => (
+            <form onSubmit={props.handleSubmit}>
+              <InputField
+                id="username"
+                name="Login"
+                style={{ marginTop: ".575rem" }}
+                required={true}
+              />
+              <InputField
+                id="password"
+                name="Password"
+                type="password"
+                style={{ marginTop: ".575rem" }}
+                required={true}
+              />
+              <button type="submit" className="submit">
+                Log in
+              </button>
+            </form>
+          )}
+        </Form>
       </Modal>
     );
   }

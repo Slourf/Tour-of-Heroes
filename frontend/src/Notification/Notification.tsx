@@ -29,19 +29,16 @@ export default class Notification extends React.Component<Props, State> {
     this.state.notifications.push(notification);
     this.setState({ notifications: this.state.notifications });
     if (notification.timer) {
-      setTimeout(
-        (() => {
-          //Start the timer
-          console.log(this.state.notifications, notification.id);
-          const notifs: iNotification[] = this.state.notifications.filter(
-            (notif) => notif.id !== notification.id
-          );
-          console.log(notifs);
+      setTimeout(() => {
+        //Start the timer
+        console.log(this.state.notifications, notification.id);
+        const notifs: iNotification[] = this.state.notifications.filter(
+          (notif) => notif.id !== notification.id
+        );
+        console.log(notifs);
 
-          this.setState({ notifications: notifs }); //After 1 second, set render to true
-        }),
-        notification.timer
-      );
+        this.setState({ notifications: notifs }); //After 1 second, set render to true
+      }, notification.timer);
     }
   };
 

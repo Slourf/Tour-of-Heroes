@@ -34,7 +34,7 @@ export default class App extends React.Component<IProps, IState> {
       context: {
         authenticatedUser: null,
         clearAuthenticatedUser: this.clearAuthenticatedUser,
-        fetchAuthenticatedUser: this.fetchAuthenticatedUser
+        fetchAuthenticatedUser: this.fetchAuthenticatedUser,
       },
     };
   }
@@ -55,7 +55,7 @@ export default class App extends React.Component<IProps, IState> {
           context: {
             authenticatedUser: user,
             clearAuthenticatedUser: this.clearAuthenticatedUser,
-            fetchAuthenticatedUser: this.fetchAuthenticatedUser
+            fetchAuthenticatedUser: this.fetchAuthenticatedUser,
           },
         });
       })
@@ -67,7 +67,7 @@ export default class App extends React.Component<IProps, IState> {
       context: {
         authenticatedUser: null,
         clearAuthenticatedUser: this.clearAuthenticatedUser,
-        fetchAuthenticatedUser: this.fetchAuthenticatedUser
+        fetchAuthenticatedUser: this.fetchAuthenticatedUser,
       },
     });
   };

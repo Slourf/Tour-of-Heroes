@@ -30,19 +30,18 @@ app.use("/healthcheck", (req: Request, res: Response, next: NextFunction) => {
 
 app.use(
   (err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
-    if (err) {
-      const { statusCode, message } = err;
-      res
-        .status(statusCode)
-        .json({
-          status: "error",
-          statusCode,
-          message,
-        })
-        .send();
-    } else {
-      res.send();
-    }
-    console.log("réponse envoyée avec succès !");
+    const { statusCode, message } = err;
+    console.log(statusCode, message);
+    res.status(statusCode).json({
+      status: "error",
+      statusCode,
+      message,
+    });
+    next();
   }
 );
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.send();
+  console.log("réponse envoyée avec succès !!");
+});

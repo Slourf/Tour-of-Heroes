@@ -1,6 +1,12 @@
 import express, { Router, Request, Response, NextFunction } from "express";
 import { User } from "./helper";
-import { getUsers, getUserById, addUser, deleteUser } from "./queries";
+import {
+  getUsers,
+  getUserById,
+  addUser,
+  deleteUser,
+  isUsernameAvailable,
+} from "./queries";
 import multer from "multer";
 import { ErrorHandler } from "../../error";
 
@@ -55,6 +61,21 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
     next(new ErrorHandler(500, "Failed to parse id"));
   }
 });
+
+router.get(
+  "/exist/:username",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const isAvailable: boolean = await isUsernameAvailable(
+        req.params.username
+      );
+      res.status(200).json(isAvailable);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.delete(
   "/:id",

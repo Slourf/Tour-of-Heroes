@@ -5,14 +5,15 @@ import { withAuthenticatedUser } from "../misc/auth";
 
 import "./NavBar.css";
 import { User } from "../helpers";
+import { menu } from "./helper";
 import Cookies from "universal-cookie";
 
 interface Props {
   authenticatedUser: User;
-  context: { 
-    authenticatedUser: User | null,
-    clearAuthenticatedUser: () => void
-  } | null
+  context: {
+    authenticatedUser: User | null;
+    clearAuthenticatedUser: () => void;
+  } | null;
 }
 
 interface State {
@@ -38,19 +39,22 @@ class NavBar extends React.Component<Props, State> {
   };
 
   handleLogOut = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (this.props.context === null)
-      return;
+    if (this.props.context === null) return;
     const cookie: Cookies = new Cookies();
     cookie.remove("auth_token");
     this.props.context.clearAuthenticatedUser();
-  }
+  };
 
   render() {
     const { isSignOnModalOpen } = this.state;
-    if (!this.props.context)
-      return;
+    let navbarMenu = menu;
+    if (!this.props.context) return;
     const { authenticatedUser } = this.props.context;
-    console.log(authenticatedUser);
+    if (!authenticatedUser || !authenticatedUser.admin) {
+      console.log(authenticatedUser);
+      navbarMenu = navbarMenu.filter((item) => item.admin === false);
+    }
+
     return (
       <div id="header">
         <Link to="/heroes">
@@ -60,29 +64,36 @@ class NavBar extends React.Component<Props, State> {
         </Link>
         <div className="header-container">
           <nav>
-            <Link to="/heroes" className="nav-item">Heroes</Link>
-            <Link to="/dashboard" className="nav-item">Dashboard</Link>
-            <Link to="/heroes/add" className="nav-item">+ Hero</Link>
+            {navbarMenu.map((item) => (
+              <Link to={item.link} className="nav-item">
+                {item.name}
+              </Link>
+            ))}
           </nav>
         </div>
         <div className="header-account">
-          {!authenticatedUser ? 
+          {!authenticatedUser ? (
             <Fragment>
-              <div className="header-account-item" onClick={this.handleToggleModal}>
+              <div
+                className="header-account-item"
+                onClick={this.handleToggleModal}
+              >
                 Sign On
               </div>
               <Link to="/signin">
-                <div className="header-account-item">
-                    Sign In
-                </div>
+                <div className="header-account-item">Sign In</div>
               </Link>
             </Fragment>
-            :
+          ) : (
             <Fragment>
-              <div className="header-account-item" onClick={this.handleLogOut}>Log out</div>
-              <div className="header-account-item">{authenticatedUser.username}</div>
+              <div className="header-account-item" onClick={this.handleLogOut}>
+                Log out
+              </div>
+              <div className="header-account-item">
+                {authenticatedUser.username}
+              </div>
             </Fragment>
-          }
+          )}
         </div>
         <SignOnModal
           isOpen={isSignOnModalOpen}

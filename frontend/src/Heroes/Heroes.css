@@ -11,21 +11,21 @@
   cursor: pointer;
   position: relative;
   left: 0;
-  background-color: #EEE;
-  margin: .5em;
+  background-color: #eee;
+  margin: 0.5em;
   border-radius: 1rem;
   border: solid 1px #ced4da;
 }
 .heroes .hero:hover {
-  color: #607D8B;
-  background-color: #DDD;
+  color: #607d8b;
+  background-color: #ddd;
 }
 .heroes .hero.selected {
-  background-color: #CFD8DC;
+  background-color: #cfd8dc;
   color: white;
 }
 .heroes .hero.selected:hover {
-  background-color: #BBD8DC;
+  background-color: #bbd8dc;
   color: white;
 }
 
@@ -46,7 +46,7 @@
 .logo {
   width: 100%;
   border-radius: 1rem 1rem 0 0;
-  transition: transform .5s ease;
+  transition: transform 0.5s ease;
   opacity: 0.99;
 }
 
@@ -61,14 +61,9 @@
 }
 
 .label-container {
-    display: flex;
+  display: flex;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
-
-span {
-  background-color: #607D8B;
-}
-

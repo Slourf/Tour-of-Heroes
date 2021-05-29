@@ -43,26 +43,35 @@ router.post(
     const files: any = req.files;
     const hero: HeroFileless = req.body;
     try {
+      console.log("post: heroes");
       await addHero(hero, files);
+      console.log("post: heroes added");
       res.status(200);
+      console.log("return 200");
       next();
     } catch (err) {
+      console.log(err);
       next(err);
     }
+    console.log("after");
+    next();
   }
 );
 
-router.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const id = parseInt(req.params.id, 10);
+router.delete(
+  "/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await deleteHero(id);
-      res.status(200);
-      next();
+      const id = parseInt(req.params.id, 10);
+      try {
+        await deleteHero(id);
+        res.status(200);
+        next();
+      } catch (err) {
+        next(err);
+      }
     } catch (err) {
-      next(err);
+      next(new ErrorHandler(500, "Failed to parse id"));
     }
-  } catch (err) {
-    next(new ErrorHandler(500, "Failed to parse id"));
   }
-});
+);

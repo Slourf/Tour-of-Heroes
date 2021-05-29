@@ -47,13 +47,15 @@ export const getHeroes = async (request?: any, response?: any) => {
     const heroes: Hero[] = (await client.query("SELECT * FROM heroes")).rows;
 
     try {
-      await Promise.all(heroes.map(async (hero: Hero) => {
-        try {
-          await fetchMissingImages(hero, client);
-        } catch (err) {
-          throw err;
-        }
-      }));
+      await Promise.all(
+        heroes.map(async (hero: Hero) => {
+          try {
+            await fetchMissingImages(hero, client);
+          } catch (err) {
+            throw err;
+          }
+        })
+      );
     } catch (err) {
       throw err;
     }
@@ -67,22 +69,26 @@ export const getHeroes = async (request?: any, response?: any) => {
 };
 
 const fetchMissingImages = async (hero: Hero, client: pkg.Client) => {
-    if (!fs.existsSync(hero.image)) {
-      const image = (
-        await client.query("SELECT encode(data::bytea, 'hex') FROM heroes_image WHERE image_path = $1", [hero.image])
-      ).rows[0];
-      await fs.promises.writeFile(hero.image, image.encode, "hex");
-    }
+  if (!fs.existsSync(hero.image)) {
+    const image = (
+      await client.query(
+        "SELECT encode(data::bytea, 'hex') FROM heroes_image WHERE image_path = $1",
+        [hero.image]
+      )
+    ).rows[0];
+    await fs.promises.writeFile(hero.image, image.encode, "hex");
+  }
 
-    if (!fs.existsSync(hero.logo)) {
-      const logo = (
-        await client.query("SELECT encode(data::bytea, 'hex') FROM heroes_logo WHERE logo_path = $1", [
-          hero.logo,
-        ])
-      ).rows[0];
-      await fs.promises.writeFile(hero.logo, logo.encode, "hex");
-    }
-}
+  if (!fs.existsSync(hero.logo)) {
+    const logo = (
+      await client.query(
+        "SELECT encode(data::bytea, 'hex') FROM heroes_logo WHERE logo_path = $1",
+        [hero.logo]
+      )
+    ).rows[0];
+    await fs.promises.writeFile(hero.logo, logo.encode, "hex");
+  }
+};
 
 export const addHero = async (hero: HeroFileless, files: any) => {
   const client = new Client(dbInfo);
@@ -95,9 +101,10 @@ export const addHero = async (hero: HeroFileless, files: any) => {
     throw new ErrorHandler(500, "Failed to connect to the database");
   }
 
-
   try {
-    const logoData: string = `\\x${await fs.promises.readFile(logo.path, { encoding: "hex" })}`;
+    const logoData: string = `\\x${await fs.promises.readFile(logo.path, {
+      encoding: "hex",
+    })}`;
     await client.query(
       "INSERT INTO heroes_logo \
         (fieldname, originalname, encoding, mimetype, destination, filename, logo_path, size, data) \
@@ -119,24 +126,25 @@ export const addHero = async (hero: HeroFileless, files: any) => {
   }
 
   try {
-      const imageData: string = `\\x${await fs.promises.readFile(image.path, { encoding: "hex" })}`;
-      await client.query(
-        "INSERT INTO heroes_image \
+    const imageData: string = `\\x${await fs.promises.readFile(image.path, {
+      encoding: "hex",
+    })}`;
+    await client.query(
+      "INSERT INTO heroes_image \
           (fieldname, originalname, encoding, mimetype, destination, filename, image_path, size, data) \
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-        [
-          image.fieldname,
-          image.originalname,
-          image.encoding,
-          image.mimetype,
-          image.destination,
-          image.filename,
-          image.path,
-          image.size,
-          imageData,
-        ]
-      );
-
+      [
+        image.fieldname,
+        image.originalname,
+        image.encoding,
+        image.mimetype,
+        image.destination,
+        image.filename,
+        image.path,
+        image.size,
+        imageData,
+      ]
+    );
   } catch (error) {
     throw error;
   }

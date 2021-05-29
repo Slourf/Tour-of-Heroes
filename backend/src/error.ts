@@ -1,12 +1,12 @@
 import { Response } from "express";
 
 export class ErrorHandler extends Error {
-    public statusCode: number;
-    public message: string;
+  public statusCode: number;
+  public message: string;
 
-    constructor(statusCode: number, message: string) {
-        super();
-        this.statusCode = statusCode;
-        this.message = message;
-    }
+  constructor(statusCode: number, message: string) {
+    super();
+    this.statusCode = statusCode;
+    this.message = message;
+  }
 }

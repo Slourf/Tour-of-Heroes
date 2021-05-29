@@ -1,48 +1,67 @@
-import React from "react"
+import React from "react";
+import { Field } from "react-final-form";
+import ReactTooltip from "react-tooltip";
 
-import "./InputField.css"
+import "./InputField.css";
 
 interface Props {
-    id: string;
-    name: string;
-    style?: React.CSSProperties;
-    value?: string;
-    type?: string;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  id: string;
+  name: string;
+  style?: React.CSSProperties;
+  value?: string;
+  type?: string;
+  required?: boolean;
+  info?: string;
 }
 
-interface State {
-    value?: string;
-}
-
-export default class InputField extends React.Component<Props, State> {
-
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {
-            value: props.value
-        }
-
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const { onChange } = this.props;
-        if (onChange) {
-            onChange(event);
-        }
-        this.setState({...event.target});
-    }
-
-    render() {
-        const { id, style, value, name, type } = this.props
-        return (
+export default class InputField extends React.Component<Props> {
+  render() {
+    const { id, style, name, type, required, info } = this.props;
+    let errorStyle = {};
+    return (
+      <Field<string> name={id}>
+        {({ input, meta }) => {
+          if (meta.touched && (meta.error || meta.submitError)) {
+            errorStyle = {
+              borderColor: "red",
+            };
+          }
+          return (
             <div style={{ ...style }}>
-                <label htmlFor={id}>{name}</label>
-                <br />
-                <input id={id} style={{ ...style }} type={type} value={value} className="input-form" onChange={this.handleChange} />
+              <label htmlFor={id}>
+                {name}
+                <span style={{ color: "red" }}>{required ? "*" : null}</span>
+                {info && (
+                  <span data-tip={info} style={{ fontStyle: "normal" }}>
+                    {" "}
+                    &#9432;
+                    <ReactTooltip type="info" html={true} />
+                  </span>
+                )}
+              </label>
+              <br />
+              <input
+                {...input}
+                id={id}
+                type={type}
+                style={{ ...style, ...errorStyle }}
+                className="input-form"
+              />
+              {(meta.error || meta.submitError) && meta.touched && (
+                <div
+                  style={{
+                    fontSize: "15px",
+                    color: "red",
+                    fontStyle: "italic",
+                  }}
+                >
+                  {meta.error || meta.submitError}
+                </div>
+              )}
             </div>
-        );
-    }
+          );
+        }}
+      </Field>
+    );
+  }
 }

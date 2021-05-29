@@ -7,13 +7,6 @@ import { router as auth } from "./auth/index";
 
 export const router: Router = express.Router();
 
-// middleware that is specific to this router
-router.use(function timeLog(req, res, next) {
-  console.log("Time: ", Date.now());
-  next();
-});
-
-
 // define the home page route
 router.use("/auth", auth);
 router.use("/users", users);
