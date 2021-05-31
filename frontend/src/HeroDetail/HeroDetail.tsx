@@ -33,7 +33,7 @@ class HeroDetail extends React.Component<Props, State> {
     };
   }
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     this.fetchHeroById(this.props.match.params.id);
   };
 

@@ -2,7 +2,7 @@ import axios from "axios";
 import { url } from "../helpers";
 
 const request = axios.create({
-  withCredentials: false,
+  withCredentials: true,
   baseURL: url,
 });
 

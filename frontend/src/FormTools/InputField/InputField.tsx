@@ -11,13 +11,15 @@ interface Props {
   value?: string;
   type?: string;
   required?: boolean;
+  disabled?: boolean;
   info?: string;
 }
 
 export default class InputField extends React.Component<Props> {
   render() {
-    const { id, style, name, type, required, info } = this.props;
+    const { id, style, name, type, required, info, disabled } = this.props;
     let errorStyle = {};
+    console.log(disabled);
     return (
       <Field<string> name={id}>
         {({ input, meta }) => {
@@ -46,6 +48,7 @@ export default class InputField extends React.Component<Props> {
                 type={type}
                 style={{ ...style, ...errorStyle }}
                 className="input-form"
+                disabled={disabled}
               />
               {(meta.error || meta.submitError) && meta.touched && (
                 <div

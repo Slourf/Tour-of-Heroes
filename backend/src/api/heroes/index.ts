@@ -18,6 +18,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const heroes = await getHeroes();
     res.status(200).json(heroes);
+    console.log("coucou");
     next();
   } catch (err) {
     next(err);

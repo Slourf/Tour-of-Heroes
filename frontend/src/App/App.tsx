@@ -16,6 +16,7 @@ import { User } from "../helpers";
 
 import "./App.css";
 import { requestGet } from "../misc/api";
+import UserProfile from "../UserProfile/UserProfile";
 
 interface IState {
   context: {
@@ -72,7 +73,7 @@ export default class App extends React.Component<IProps, IState> {
     });
   };
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     this.fetchAuthenticatedUser();
   };
 
@@ -86,6 +87,7 @@ export default class App extends React.Component<IProps, IState> {
             <PageBody>
               <Switch>
                 <Route exact path="/" component={Heroes} />
+                <Route exact path="/profile" component={UserProfile} />
                 <Route exact path="/heroes" component={Heroes} />
                 <Route exact path="/heroes/add" component={AddHeroForm} />
                 <Route exact path="/heroes/:id" component={HeroDetail} />

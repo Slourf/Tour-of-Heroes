@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import helmet from "helmet";
+import cors from "cors";
 import compression from "compression";
 import { router as api } from "./api/index";
 import { ErrorHandler } from "./error";
@@ -12,8 +13,15 @@ app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:4200",
+  })
+);
+
 app.use((req: Request, res: Response, next: NextFunction) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"

@@ -19,15 +19,6 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json(users);
   next();
 });
-/*
-router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-  const user: User = req.body;
-  await addUser(user);
-
-  res.status(200);
-  next();
-});
-*/
 
 router.post(
   "/",
@@ -43,6 +34,24 @@ router.post(
       next();
     } catch (err) {
       next(err);
+    }
+  }
+);
+
+router.get(
+  "/profile",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      try {
+        const user = await getUserById(id);
+        res.status(200).json(user);
+        next();
+      } catch (err) {
+        next(err);
+      }
+    } catch (err) {
+      next(new ErrorHandler(500, "Failed to parse id"));
     }
   }
 );
