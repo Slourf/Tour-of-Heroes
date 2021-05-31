@@ -1,6 +1,12 @@
 import express, { Router, Request, Response, NextFunction } from "express";
 import { HeroFileless } from "./helper";
-import { getHeroesById, getHeroes, addHero, deleteHero } from "./queries";
+import {
+  getHeroesById,
+  getHeroes,
+  addHero,
+  deleteHero,
+  getHeroesWithStatsById,
+} from "./queries";
 import multer from "multer";
 import { ErrorHandler } from "../../error";
 
@@ -32,6 +38,25 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
     next(new ErrorHandler(500, "Failed to parse id"));
   }
 });
+
+router.get(
+  "/stats/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      try {
+        const hero = await getHeroesWithStatsById(id);
+        console.log(hero);
+        res.status(200).json(hero);
+        next();
+      } catch (err) {
+        next(err);
+      }
+    } catch (err) {
+      next(new ErrorHandler(500, "Failed to parse id"));
+    }
+  }
+);
 
 router.post(
   "/",

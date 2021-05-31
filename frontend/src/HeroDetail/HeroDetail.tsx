@@ -1,5 +1,5 @@
 import React from "react";
-import { Hero } from "./../Heroes/helper";
+import { HeroWithStats } from "./../Heroes/helper";
 import { RouteComponentProps } from "react-router-dom";
 import { store } from "../Notification/Notification";
 
@@ -7,6 +7,18 @@ import { url, User } from "../helpers";
 import "./HeroDetail.css";
 import { requestDelete, requestGet } from "../misc/api";
 import { withAuthenticatedUser } from "../misc/auth";
+import health_icon from "./stats-icones/Health_icon.png";
+import health_regen_icon from "./stats-icones/Health_regeneration_icon.png";
+import ressource_icon from "./stats-icones/Mana_icon.png";
+import ressource_regen_icon from "./stats-icones/Mana_regeneration_icon.png";
+import ability_power_icon from "./stats-icones/Ability_power_icon.png";
+import armor_icon from "./stats-icones/Armor_icon.png";
+import margic_resist_icon from "./stats-icones/Magic_resistance_icon.png";
+import attack_damage_icon from "./stats-icones/Attack_damage_icon.png";
+import attack_speed_icon from "./stats-icones/Attack_speed_icon.png";
+import movement_speed_icon from "./stats-icones/Movement_speed_icon.png";
+import range_icon from "./stats-icones/Range_icon.png";
+import { Characteristic, characteristics } from "./helper";
 
 interface MatchParams {
   id: string;
@@ -20,13 +32,16 @@ interface Props extends RouteComponentProps<MatchParams> {
 }
 
 interface State {
-  hero?: Hero;
+  hero?: HeroWithStats;
+  characteristics: Characteristic[];
 }
 
 class HeroDetail extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {};
+    this.state = {
+      characteristics: [],
+    };
   }
 
   componentWillMount = () => {
@@ -54,16 +69,17 @@ class HeroDetail extends React.Component<Props, State> {
   };
 
   fetchHeroById = (id: string) => {
-    requestGet(`/api/heroes/${id}`).then((res) => {
-      const hero: Hero = res.data;
+    requestGet(`/api/heroes/stats/${id}`).then((res) => {
+      const hero: HeroWithStats = res.data;
       hero.image_path = `${url}/${hero.image}`;
       hero.logo_path = `${url}/${hero.logo}`;
-      this.setState({ hero });
+      const chara: Characteristic[] = characteristics(hero.stats);
+      this.setState({ hero, characteristics: chara });
     });
   };
 
   render() {
-    const { hero } = this.state;
+    const { hero, characteristics } = this.state;
     const { context } = this.props;
     if (!hero) {
       return null;
@@ -86,6 +102,29 @@ class HeroDetail extends React.Component<Props, State> {
           <div>
             {desc.map((paragraph, index) => {
               return <p key={index}>{paragraph}</p>;
+            })}
+          </div>
+          <h1 className="hero-body-title">Characteristic</h1>
+
+          <div className="hero-chara">
+            {characteristics.map((char: Characteristic) => {
+              return (
+                <div className="hero-chara-item">
+                  <img src={char.icon} alt="" className="hero-chara-icon" />
+                  <div>
+                    <div className="hero-chara-name">{char.name}</div>
+                    <div>
+                      {char.value}{" "}
+                      {char.value_upgrade !== null && (
+                        <span className="hero-chara-upgrade-value">
+                          (+{char.value_upgrade}
+                          {char.percentage ? "%" : null})
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
             })}
           </div>
           <h1 className="hero-body-title">Spells</h1>

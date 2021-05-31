@@ -1,6 +1,12 @@
 import pkg from "pg";
 import { dbInfo } from "../../helper";
-import { Hero, HeroFileHeader, HeroFileless } from "./helper";
+import {
+  Hero,
+  HeroFileHeader,
+  HeroFileless,
+  HeroWithStats,
+  HeroWithStatsRaw,
+} from "./helper";
 import fs from "fs";
 import { ErrorHandler } from "../../error";
 
@@ -31,6 +37,51 @@ export const getHeroesById = async (id: number) => {
 
     client.end();
     return hero;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getHeroesWithStatsById = async (
+  id: number
+): Promise<HeroWithStats> => {
+  const client: pkg.Client = new Client(dbInfo);
+  try {
+    client.connect();
+  } catch {
+    throw new ErrorHandler(500, "Failed to connect to the database");
+  }
+
+  try {
+    const hero: HeroWithStatsRaw = (
+      await client.query(
+        "SELECT \
+          h.id, h.name, h.description, h.image, h.logo, \
+          s.health, s.health_by_level, s.health_regen, s.health_regen_by_level, \
+          s.ressource, s.ressource_by_level, s.ressource_regen, s.ressource_regen_by_level, \
+          s.attack_damage, s.attack_damage_by_level, s.attack_speed, s.attack_speed_percentage_by_level, \
+          s.ability_power, s.ability_power_by_level, s.armor, s.armor_by_level, \
+          s.magic_resist, s.magic_resist_by_level, s.movement_speed, s.range \
+        FROM heroes h \
+        JOIN heroes_stats s \
+          ON h.stats_id = s.id \
+        WHERE h.id = $1",
+        [id]
+      )
+    ).rows[0];
+    console.log(hero);
+    if (!hero) {
+      throw new ErrorHandler(404, "Hero not found");
+    }
+
+    try {
+      await fetchMissingImages(hero, client);
+    } catch (err) {
+      throw err;
+    }
+
+    client.end();
+    return cleanHeroWithStats(hero);
   } catch (err) {
     throw err;
   }
@@ -170,4 +221,37 @@ export const deleteHero = async (id: number) => {
   await client.query("DELETE FROM heroes WHERE id = $1", [id]);
 
   client.end();
+};
+
+const cleanHeroWithStats = (rawHero: HeroWithStatsRaw): HeroWithStats => {
+  return {
+    id: rawHero.id,
+    name: rawHero.name,
+    description: rawHero.description,
+    image: rawHero.image,
+    logo: rawHero.logo,
+    stats: {
+      health: rawHero.health,
+      health_by_level: rawHero.health_by_level,
+      health_regen: rawHero.health_regen,
+      health_regen_by_level: rawHero.health_regen_by_level,
+      ressource: rawHero.ressource,
+      ressource_by_level: rawHero.ressource_by_level,
+      ressource_regen: rawHero.ressource_regen,
+      ressource_regen_by_level: rawHero.ressource_regen_by_level,
+      attack_damage: rawHero.attack_damage,
+      attack_damage_by_level: rawHero.attack_damage_by_level,
+      attack_speed: rawHero.attack_speed,
+      attack_speed_percentage_by_level:
+        rawHero.attack_speed_percentage_by_level,
+      ability_power: rawHero.ability_power,
+      ability_power_by_level: rawHero.ability_power_by_level,
+      armor: rawHero.armor,
+      armor_by_level: rawHero.armor_by_level,
+      magic_resist: rawHero.magic_resist,
+      magic_resist_by_level: rawHero.magic_resist_by_level,
+      movement_speed: rawHero.movement_speed,
+      range: rawHero.range,
+    },
+  };
 };
