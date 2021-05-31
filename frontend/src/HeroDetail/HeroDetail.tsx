@@ -7,17 +7,6 @@ import { url, User } from "../helpers";
 import "./HeroDetail.css";
 import { requestDelete, requestGet } from "../misc/api";
 import { withAuthenticatedUser } from "../misc/auth";
-import health_icon from "./stats-icones/Health_icon.png";
-import health_regen_icon from "./stats-icones/Health_regeneration_icon.png";
-import ressource_icon from "./stats-icones/Mana_icon.png";
-import ressource_regen_icon from "./stats-icones/Mana_regeneration_icon.png";
-import ability_power_icon from "./stats-icones/Ability_power_icon.png";
-import armor_icon from "./stats-icones/Armor_icon.png";
-import margic_resist_icon from "./stats-icones/Magic_resistance_icon.png";
-import attack_damage_icon from "./stats-icones/Attack_damage_icon.png";
-import attack_speed_icon from "./stats-icones/Attack_speed_icon.png";
-import movement_speed_icon from "./stats-icones/Movement_speed_icon.png";
-import range_icon from "./stats-icones/Range_icon.png";
 import { Characteristic, characteristics } from "./helper";
 
 interface MatchParams {

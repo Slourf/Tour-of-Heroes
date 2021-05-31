@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { Hero } from "./helper";
 import { Link } from "react-router-dom";
 
-import { url, User } from "../helpers";
+import { url } from "../helpers";
 import "./Heroes.css";
 import { requestGet } from "../misc/api";
 
