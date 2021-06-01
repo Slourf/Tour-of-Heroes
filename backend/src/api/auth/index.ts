@@ -30,6 +30,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     const payload = {
       sub: user.id,
       name: user.username,
+      admin: user.admin,
       iat: Math.round(Date.now() / 1000),
     };
 

@@ -47,20 +47,19 @@ export default class App extends React.Component<IProps, IState> {
 
     const token = jwt.decode(auth_token);
     if (token === null) return;
+    if (typeof token === "string") return;
 
-    requestGet(`/api/users/${token.sub}`)
-      .then((response) => {
-        const user: User = response.data;
-
-        this.setState({
-          context: {
-            authenticatedUser: user,
-            clearAuthenticatedUser: this.clearAuthenticatedUser,
-            fetchAuthenticatedUser: this.fetchAuthenticatedUser,
-          },
-        });
-      })
-      .catch((error) => {});
+    this.setState({
+      context: {
+        authenticatedUser: {
+          id: token.sub,
+          username: token.name,
+          admin: token.admin,
+        },
+        clearAuthenticatedUser: this.clearAuthenticatedUser,
+        fetchAuthenticatedUser: this.fetchAuthenticatedUser,
+      },
+    });
   };
 
   clearAuthenticatedUser = () => {
