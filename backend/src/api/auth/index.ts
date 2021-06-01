@@ -10,9 +10,7 @@ export const router: Router = express.Router();
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req.body);
     const user: User = await getUserByUsernameWithPassword(req.body.username);
-    console.log(user);
     if (!user) {
       throw new ErrorHandler(404, "No user found.");
     }
@@ -22,7 +20,6 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       req.body.password,
       combined
     );
-    console.log(isPasswordValid);
     if (!isPasswordValid) {
       res.status(401).send({ auth: false, token: null });
     }

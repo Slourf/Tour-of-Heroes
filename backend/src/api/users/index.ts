@@ -1,11 +1,12 @@
 import express, { Router, Request, Response, NextFunction } from "express";
-import { User } from "./helper";
+import { User, UserWithProfile } from "./helper";
 import {
   getUsers,
   getUserById,
   addUser,
   deleteUser,
   isUsernameAvailable,
+  getUserWithProfileById,
 } from "./queries";
 import multer from "multer";
 import { ErrorHandler } from "../../error";
@@ -44,8 +45,8 @@ router.get(
     try {
       const id = parseInt(req.params.id, 10);
       try {
-        const user = await getUserById(id);
-        res.status(200).json(user);
+        const profile: UserWithProfile = await getUserWithProfileById(id);
+        res.status(200).json(profile);
         next();
       } catch (err) {
         next(err);

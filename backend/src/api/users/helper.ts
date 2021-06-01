@@ -5,6 +5,14 @@ export interface User {
   admin: boolean;
 }
 
+export interface UserWithProfile extends User {
+  gender: string;
+  firstname: string;
+  lastname: string;
+  birthdate: Date;
+  phone_number: string;
+}
+
 export const config = {
   // size of the generated hash
   hashBytes: 32,

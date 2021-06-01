@@ -39,7 +39,6 @@ app.use("/healthcheck", (req: Request, res: Response, next: NextFunction) => {
 app.use(
   (err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
     const { statusCode, message } = err;
-    console.log(statusCode, message);
     res.status(statusCode).json({
       status: "error",
       statusCode,

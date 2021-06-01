@@ -51,7 +51,6 @@ class NavBar extends React.Component<Props, State> {
     if (!this.props.context) return;
     const { authenticatedUser } = this.props.context;
     if (!authenticatedUser || !authenticatedUser.admin) {
-      console.log(authenticatedUser);
       navbarMenu = navbarMenu.filter((item) => item.admin === false);
     }
 

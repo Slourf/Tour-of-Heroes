@@ -4,6 +4,7 @@ import InputField from "../FormTools/InputField/InputField";
 import { User } from "../helpers";
 import { requestGet } from "../misc/api";
 import { withAuthenticatedUser } from "../misc/auth";
+import { store } from "../Notification/Notification";
 import PageTitle from "../PageTitle/PageTitle";
 import { UserWithProfile } from "./helper";
 
@@ -23,6 +24,7 @@ class UserProfile extends React.Component<Props, State> {
     super(props);
     this.state = {};
   }
+
   componentDidMount = () => {
     const { context } = this.props;
     if (context && context.authenticatedUser) {
@@ -33,10 +35,15 @@ class UserProfile extends React.Component<Props, State> {
   fetchUserProfile = (id: string) => {
     requestGet("/api/user/profile")
       .then((res) => {
-        console.log(res);
         this.setState({ profile: res.data });
       })
-      .catch((res) => {});
+      .catch((res) => {
+        store.addNotification({
+          message: "An error occured while logging.",
+          type: "error",
+          timer: 3000,
+        });
+      });
   };
 
   handleSubmit = (values: any) => {};

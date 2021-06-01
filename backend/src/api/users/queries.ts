@@ -2,7 +2,7 @@ import pkg from "pg";
 import crypto from "crypto";
 
 import { dbInfo } from "../../helper";
-import { User, config } from "./helper";
+import { User, config, UserWithProfile } from "./helper";
 import { ErrorHandler } from "../../error";
 
 const { Client } = pkg;
@@ -22,6 +22,40 @@ export const getUsers = async () => {
     return users;
   } catch {
     throw new ErrorHandler(404, "Users not found");
+  }
+};
+
+export const getUserWithProfileById = async (id: number) => {
+  const client: pkg.Client = new Client(dbInfo);
+  try {
+    client.connect();
+  } catch {
+    throw new ErrorHandler(500, "Failed to connect to the database");
+  }
+  try {
+    const user: UserWithProfile = (
+      await client.query(
+        "SELECT \
+           users.id, users.username, users.admin, users_profile.gender, \
+           users_profile.firstname, users_profile.lastname, users.birthdate, \
+           users_profile.phone_number \
+         FROM users \
+         JOIN users_profile \
+           ON users.id = users_profile \
+         WHERE users.id = $1",
+        [id]
+      )
+    ).rows[0];
+
+    if (!user) {
+      throw new ErrorHandler(404, "User not found");
+    }
+
+    client.end();
+
+    return user;
+  } catch {
+    throw new ErrorHandler(404, "User not found");
   }
 };
 
@@ -48,7 +82,6 @@ export const getUserById = async (id: number) => {
 
     return user;
   } catch {
-    console.log("err");
     throw new ErrorHandler(404, "User not found");
   }
 };
@@ -106,7 +139,6 @@ export const getUserByUsernameWithPassword = async (username: string) => {
   }
 
   try {
-    console.log(username);
     const user: User = (
       await client.query("SELECT * FROM users WHERE username = $1", [username])
     ).rows[0];
@@ -149,7 +181,6 @@ export const addUser = async (user: User) => {
   hash.copy(combined, salt.length + 8);
 
   try {
-    console.log(combined.toString("base64"));
     await client.query(
       "INSERT INTO users \
           (username, password) \

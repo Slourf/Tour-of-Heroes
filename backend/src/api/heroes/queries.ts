@@ -83,7 +83,6 @@ export const getHeroesWithStatsById = async (
         [id]
       )
     ).rows[0];
-    console.log(hero);
     if (!hero) {
       throw new ErrorHandler(404, "Hero not found");
     }

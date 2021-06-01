@@ -33,7 +33,6 @@ export default class AddHeroFrom extends React.Component<Props, State> {
   handleSubmitForm = (values: any) => {
     const form = new FormData();
     const errors = this.checkValidation(values);
-    console.log("submitting...");
     if (errors) {
       return errors;
     }
@@ -94,7 +93,6 @@ export default class AddHeroFrom extends React.Component<Props, State> {
 
   handleValidation = (values: any) => {
     const errors = this.checkValidation(values);
-    console.log(errors);
     if (errors) {
       return errors;
     }
@@ -109,7 +107,6 @@ export default class AddHeroFrom extends React.Component<Props, State> {
       ...this.state,
       form: { ...form, [id]: value },
     });
-    console.log(this.state);
   };
 
   handleTextInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {

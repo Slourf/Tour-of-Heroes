@@ -18,7 +18,6 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const heroes = await getHeroes();
     res.status(200).json(heroes);
-    console.log("coucou");
     next();
   } catch (err) {
     next(err);
@@ -47,7 +46,6 @@ router.get(
       const id = parseInt(req.params.id, 10);
       try {
         const hero = await getHeroesWithStatsById(id);
-        console.log(hero);
         res.status(200).json(hero);
         next();
       } catch (err) {
@@ -69,17 +67,12 @@ router.post(
     const files: any = req.files;
     const hero: HeroFileless = req.body;
     try {
-      console.log("post: heroes");
       await addHero(hero, files);
-      console.log("post: heroes added");
       res.status(200);
-      console.log("return 200");
       next();
     } catch (err) {
-      console.log(err);
       next(err);
     }
-    console.log("after");
     next();
   }
 );

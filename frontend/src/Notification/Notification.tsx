@@ -31,11 +31,9 @@ export default class Notification extends React.Component<Props, State> {
     if (notification.timer) {
       setTimeout(() => {
         //Start the timer
-        console.log(this.state.notifications, notification.id);
         const notifs: iNotification[] = this.state.notifications.filter(
           (notif) => notif.id !== notification.id
         );
-        console.log(notifs);
 
         this.setState({ notifications: notifs }); //After 1 second, set render to true
       }, notification.timer);
@@ -47,8 +45,6 @@ export default class Notification extends React.Component<Props, State> {
       return notif.id !== id;
     });
 
-    console.log(n);
-
     this.setState({ notifications: n });
   };
 
@@ -56,7 +52,7 @@ export default class Notification extends React.Component<Props, State> {
     this.setState({ notifications: [] });
   };
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     store.register({
       addNotification: this.addNotification,
       removeNotification: this.removeNotification,
@@ -66,7 +62,6 @@ export default class Notification extends React.Component<Props, State> {
 
   handleRemoveButton = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.currentTarget.parentElement) {
-      console.log(event.currentTarget.parentElement.id);
       this.removeNotification(event.currentTarget.parentElement.id);
     }
   };
