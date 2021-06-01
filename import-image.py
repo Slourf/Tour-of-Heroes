@@ -9,7 +9,7 @@ from pathlib import Path
 image_dir = 'lol-image/'
 
 custom_champ_desc = {"malaphite": "malphite", "ialiyah": "taliyah",
-                "graves-cigar": "graves", "xeratth": "xerath"}
+                     "graves-cigar": "graves", "xeratth": "xerath"}
 
 custom_champ_imag = {"aurelionsol": "AurelionSol",
                      "xinzhao": "XinZhao",
@@ -27,6 +27,7 @@ custom_champ_imag = {"aurelionsol": "AurelionSol",
                      "twistedfate": "TwitedFate",
                      "kogmaw": "KogMaw",
                      "leesin": "LeeSin"}
+
 
 def import_logo():
     f = open('logo-url.html', 'r')
@@ -50,7 +51,8 @@ def import_image():
         for champ_name in dirs[1]:
             path = image_dir + champ_name + '/'
             if champ_name in custom_champ_imag:
-                url = 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/' + custom_champ_imag[champ_name] +'_0.jpg'
+                url = 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/' + \
+                    custom_champ_imag[champ_name] + '_0.jpg'
             else:
                 url = 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/' + \
                     champ_name.capitalize() + '_0.jpg'
@@ -83,9 +85,9 @@ def import_description():
 
 
 def main():
-    # import_logo()
+    import_logo()
     import_image()
-    # import_description()
+    import_description()
 
 
 if __name__ == "__main__":

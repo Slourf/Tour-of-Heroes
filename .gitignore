@@ -46,7 +46,6 @@ testem.log
 Thumbs.db
 
 *swp
-lol-image
 static/
 
 backend/dist/

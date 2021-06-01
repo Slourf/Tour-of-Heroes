@@ -60,14 +60,14 @@ def insert_image(cur, name, data):
 
     cur.execute(sql_insert_image,
                 ("image",
-                name + "-image.jpg",
-                "7bit",
-                "image/jpeg",
-                "static/heroes/",
-                name_hex,
-                filename,
-                size,
-                psycopg2.Binary(data)))
+                 name + "-image.jpg",
+                 "7bit",
+                 "image/jpeg",
+                 "static/heroes/",
+                 name_hex,
+                 filename,
+                 size,
+                 psycopg2.Binary(data)))
     return filename
 
 
@@ -78,14 +78,14 @@ def insert_logo(cur, name, data):
     filename = "static/heroes/" + name_hex
     cur.execute(sql_insert_logo,
                 ("image",
-                name + "-logo.jpg",
-                "7bit",
-                "image/jpeg",
-                "static/heroes/",
-                name_hex,
-                filename,
-                size,
-                psycopg2.Binary(data)))
+                 name + "-logo.jpg",
+                 "7bit",
+                 "image/jpeg",
+                 "static/heroes/",
+                 name_hex,
+                 filename,
+                 size,
+                 psycopg2.Binary(data)))
     return filename
 
 
@@ -106,8 +106,10 @@ def import_hero():
 
             if champ_name in custom_champ_desc:
                 champ_name = custom_champ_desc[champ_name]
+            else:
+                champ_name = champ_name.capitalize()
 
-            cur.execute(sql_hero, (champ_name.capitalize(),
+            cur.execute(sql_hero, (champ_name,
                         desc, image_name, logo_name))
             conn.commit()
 

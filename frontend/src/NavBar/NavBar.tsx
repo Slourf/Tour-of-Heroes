@@ -89,9 +89,11 @@ class NavBar extends React.Component<Props, State> {
               <div className="header-account-item" onClick={this.handleLogOut}>
                 Log out
               </div>
-              <div className="header-account-item">
-                {authenticatedUser.username}
-              </div>
+              <Link to="/profile">
+                <div className="header-account-item">
+                  {authenticatedUser.username}
+                </div>
+              </Link>
             </Fragment>
           )}
         </div>

@@ -33,6 +33,7 @@ class UserProfile extends React.Component<Props, State> {
   fetchUserProfile = (id: string) => {
     requestGet("/api/user/profile")
       .then((res) => {
+        console.log(res);
         this.setState({ profile: res.data });
       })
       .catch((res) => {});
@@ -64,7 +65,7 @@ class UserProfile extends React.Component<Props, State> {
               </div>
               <InputField id="lastname" name="Lastname" disabled={true} />
               <InputField id="birthdate" name="Birthdate" />
-              <InputField id="gender" name="Genre" />
+              <InputField id="gender" name="Gender" />
               <InputField id="phone_number" name="Phone N°" />
               <button type="submit" className="submit">
                 Update

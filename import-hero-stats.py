@@ -2,8 +2,6 @@
 import csv
 import psycopg2
 
-# health;health_by_level;health_regenH;health_regen_by_level;ressource;ressource_by_level;ressource_regen;ressource_regen_by_level;attack_damage;attack_damage_by_level;attack_speed;attack_speed_by_level;armor;armor_by_level;magic_resist;magic_resist_by_level;movement_speed;range
-
 sql_insert_stats = """INSERT INTO heroes_stats
   (health,
    health_by_level,

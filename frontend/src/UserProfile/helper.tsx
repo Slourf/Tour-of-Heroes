@@ -1,7 +1,7 @@
 import { User } from "../helpers";
 
 export interface UserWithProfile extends User {
-  genre: string;
+  gender: string;
   firstname: string;
   lastname: string;
   birthdate: Date;
