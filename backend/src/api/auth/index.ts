@@ -1,8 +1,9 @@
 import express, { Request, Response, NextFunction, Router } from "express";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import http from "http";
 import { getUserByUsernameWithPassword } from "../users/queries";
-import { User } from "../users/helper";
+import { User, UserWithoutPassword, UserWithProfile } from "../users/helper";
 import { config } from "./helper";
 import { ErrorHandler } from "../../error";
 
@@ -60,4 +61,50 @@ const verifyPassword = (password: string, combined: Buffer) => {
     .toString("base64");
 
   return passwordHash === combinedHash;
+};
+
+export const verifyToken = (req: Request) => {
+  const cookies: { [name: string]: string } = parseCookies(req);
+  const auth_token = cookies.auth_token;
+
+  const isTokenValid = jwt.verify(auth_token, config.secret);
+  if (!isTokenValid) {
+    throw new ErrorHandler(
+      498,
+      "The token is invalid: the token verification failed"
+    );
+  }
+
+  const decodedToken: any = jwt.decode(auth_token);
+  if (
+    decodedToken.sub === undefined ||
+    decodedToken.name === undefined ||
+    decodedToken.admin === undefined
+  ) {
+    throw new ErrorHandler(
+      498,
+      "The token is invalid: the token has missing fields"
+    );
+  }
+
+  const currentUser: UserWithoutPassword = {
+    id: decodedToken.sub,
+    username: decodedToken.name,
+    admin: decodedToken.admin,
+  };
+
+  return currentUser;
+};
+
+const parseCookies = (req: Request) => {
+  const list: { [name: string]: string } = {};
+  const rc = req.headers.cookie;
+
+  if (rc) {
+    rc.split(";").forEach((cookie) => {
+      const parts = cookie.split("=");
+      list[parts.shift().trim()] = decodeURI(parts.join("="));
+    });
+  }
+  return list;
 };

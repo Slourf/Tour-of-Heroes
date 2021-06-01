@@ -4,6 +4,11 @@ export interface User {
   password: string;
   admin: boolean;
 }
+export interface UserWithoutPassword {
+  id: string;
+  username: string;
+  admin: boolean;
+}
 
 export interface UserWithProfile extends User {
   gender: string;
