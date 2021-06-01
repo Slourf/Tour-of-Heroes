@@ -32,7 +32,7 @@ def write_description(cur, dir, name, data):
 
 
 def write_file(cur, dir, name, data, field):
-    f = open(dir + "/" + name.lower() + "-" + field + ".png", "bw")
+    f = open(dir + "/" + name.lower() + "-" + field + ".jpg", "bw")
     f.write(data)
     f.close()
     pass

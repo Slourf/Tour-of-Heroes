@@ -8,7 +8,7 @@ from pathlib import Path
 
 image_dir = 'lol-image/'
 
-custom_champ_desc = {"malaphite": "malphite", "ialiyah": "taliyah",
+custom_champ_desc = {"Wukong": "monkeyking", "malaphite": "malphite", "ialiyah": "taliyah",
                      "graves-cigar": "graves", "xeratth": "xerath"}
 
 custom_champ_imag = {"aurelionsol": "AurelionSol",
@@ -70,7 +70,8 @@ def import_description():
             if champ_name in custom_champ_desc:
                 champ_name = custom_champ_desc[champ_name]
             url = 'https://universe-meeps.leagueoflegends.com/v1/en_us/champions/' + \
-                champ_name + '/index.json'
+                champ_name.lower().replace(" ", "").replace(
+                    "'", "").replace(".", "") + '/index.json'
             print("fetch " + champ_name + " descrption...")
             resp = requests.get(url).content.decode('utf-8')
             print("cleaning data...")
@@ -79,14 +80,14 @@ def import_description():
                 "</p>", "").replace("<i>", "").replace("</i>", "")
 
             path = image_dir + dir_name + '/'
-            desc = open(path + dir_name + '-description.txt', 'w+')
+            desc = open(path + dir_name.lower() + '-description.txt', 'w+')
             desc.write(data)
             desc.close()
 
 
 def main():
-    import_logo()
-    import_image()
+    # import_logo()
+    # import_image()
     import_description()
 
 

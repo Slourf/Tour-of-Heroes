@@ -17,16 +17,17 @@ custom_champ_desc = {"malaphite": "malphite",
 
 
 sql_insert_logo = """INSERT INTO heroes_logo
-    (fieldname, originalname, encoding, mimetype, destination, filename, logo_path, size, data)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    (fieldname, originalname, encoding, mimetype, destination, filename, logo_path, size, data, hero_id)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
 sql_insert_image = """INSERT INTO heroes_image
-    (fieldname, originalname, encoding, mimetype, destination, filename, image_path, size, data)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    (fieldname, originalname, encoding, mimetype, destination, filename, image_path, size, data, hero_id)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
 sql_hero = """INSERT INTO heroes
-    (name, description, image, logo)
-    VALUES (%s, %s, %s, %s)"""
+    (name, description)
+    VALUES (%s, %s)
+    RETURNING id"""
 
 
 def database_connect():
@@ -39,23 +40,26 @@ def database_connect():
 
 
 def fetch_image(hero, image):
-    f = open("./lol-image/" + hero + "/" + hero + "-" + image + ".jpg", "rb")
+    f = open("./lol-image/" + hero + "/" +
+             hero.lower() + "-" + image + ".jpg", "rb")
     data = f.read()
     f.close()
     return data
 
 
 def fetch_description(hero):
-    f = open("./lol-image/" + hero + "/" + hero + "-description.txt", "rb")
+    f = open("./lol-image/" + hero + "/" +
+             hero.lower() + "-description.txt", "rb")
     data = f.read().decode("utf-8")
     f.close()
     return data
 
 
-def insert_image(cur, name, data):
+def insert_image(cur, name, data, hero):
     name_hex = binascii.b2a_hex(os.urandom(15)).decode('utf-8')
     print(name_hex)
-    size = os.path.getsize("./lol-image/" + name + "/" + name + "-image.jpg")
+    size = os.path.getsize("./lol-image/" + name +
+                           "/" + name.lower() + "-image.jpg")
     filename = "static/heroes/" + name_hex
 
     cur.execute(sql_insert_image,
@@ -67,14 +71,16 @@ def insert_image(cur, name, data):
                  name_hex,
                  filename,
                  size,
-                 psycopg2.Binary(data)))
+                 psycopg2.Binary(data),
+                 hero))
     return filename
 
 
-def insert_logo(cur, name, data):
+def insert_logo(cur, name, data, hero):
     name_hex = binascii.b2a_hex(os.urandom(15)).decode('utf-8')
     print(name_hex)
-    size = os.path.getsize("./lol-image/" + name + "/" + name + "-logo.jpg")
+    size = os.path.getsize("./lol-image/" + name +
+                           "/" + name.lower() + "-logo.jpg")
     filename = "static/heroes/" + name_hex
     cur.execute(sql_insert_logo,
                 ("image",
@@ -85,7 +91,8 @@ def insert_logo(cur, name, data):
                  name_hex,
                  filename,
                  size,
-                 psycopg2.Binary(data)))
+                 psycopg2.Binary(data),
+                 hero))
     return filename
 
 
@@ -95,22 +102,17 @@ def import_hero():
 
     for dirs in os.walk(image_dir):
         for champ_name in dirs[1]:
-            dir_name = champ_name
-            desc = fetch_description(dir_name)
-            image = fetch_image(dir_name, "image")
-            logo = fetch_image(dir_name, "logo")
+            desc = fetch_description(champ_name)
+            image = fetch_image(champ_name, "image")
+            logo = fetch_image(champ_name, "logo")
 
-            image_name = insert_image(cur, champ_name, image)
-            logo_name = insert_logo(cur, champ_name, logo)
+            cur.execute(sql_hero, (champ_name, desc))
             conn.commit()
-
-            if champ_name in custom_champ_desc:
-                champ_name = custom_champ_desc[champ_name]
-            else:
-                champ_name = champ_name.capitalize()
-
-            cur.execute(sql_hero, (champ_name,
-                        desc, image_name, logo_name))
+            hero = cur.fetchone()[0]
+            if image:
+                image_name = insert_image(cur, champ_name, image, hero)
+            if logo:
+                logo_name = insert_logo(cur, champ_name, logo, hero)
             conn.commit()
 
     cur.close()

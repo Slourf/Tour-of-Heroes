@@ -22,7 +22,17 @@ export const getHeroesById = async (id: number) => {
 
   try {
     const hero: Hero = (
-      await client.query("SELECT * FROM heroes WHERE id = $1", [id])
+      await client.query(
+        "SELECT \
+           heroes.id, heroes.name, heroes.description, heroes_image.path AS image, heroes_logo.path AS logo \
+         FROM heroes \
+         JOIN heroes_image \
+           ON heroes.id = heroes_image.hero_id \
+         JOIN heroes_logo \
+           ON heroes.id = heroes_logo.hero_id \
+         WHERE heroes.id = $1",
+        [id]
+      )
     ).rows[0];
 
     if (!hero) {
@@ -56,7 +66,7 @@ export const getHeroesWithStatsById = async (
     const hero: HeroWithStatsRaw = (
       await client.query(
         "SELECT \
-          h.id, h.name, h.description, h.image, h.logo, \
+          h.id, h.name, h.description, i.path AS image, l.path AS logo, \
           s.health, s.health_by_level, s.health_regen, s.health_regen_by_level, \
           s.ressource, s.ressource_by_level, s.ressource_regen, s.ressource_regen_by_level, \
           s.attack_damage, s.attack_damage_by_level, s.attack_speed, s.attack_speed_percentage_by_level, \
@@ -64,7 +74,11 @@ export const getHeroesWithStatsById = async (
           s.magic_resist, s.magic_resist_by_level, s.movement_speed, s.range \
         FROM heroes h \
         JOIN heroes_stats s \
-          ON h.stats_id = s.id \
+          ON h.id = s.hero_id \
+        JOIN heroes_image i \
+          ON h.id = i.hero_id \
+        JOIN heroes_logo l \
+          ON h.id = l.hero_id \
         WHERE h.id = $1",
         [id]
       )
@@ -95,7 +109,17 @@ export const getHeroes = async (request?: any, response?: any) => {
     throw new ErrorHandler(500, "Failed to connect to the database");
   }
   try {
-    const heroes: Hero[] = (await client.query("SELECT * FROM heroes")).rows;
+    const heroes: Hero[] = (
+      await client.query(
+        "SELECT \
+           heroes.id, heroes.name, heroes.description, heroes_image.path AS image, heroes_logo.path AS logo \
+         FROM heroes \
+         JOIN heroes_image \
+           ON heroes.id = heroes_image.hero_id \
+         JOIN heroes_logo \
+           ON heroes.id = heroes_logo.hero_id"
+      )
+    ).rows;
 
     try {
       await Promise.all(
@@ -123,8 +147,8 @@ const fetchMissingImages = async (hero: Hero, client: pkg.Client) => {
   if (!fs.existsSync(hero.image)) {
     const image = (
       await client.query(
-        "SELECT encode(data::bytea, 'hex') FROM heroes_image WHERE image_path = $1",
-        [hero.image]
+        "SELECT encode(data::bytea, 'hex') FROM heroes_image WHERE hero_id = $1",
+        [hero.id]
       )
     ).rows[0];
     await fs.promises.writeFile(hero.image, image.encode, "hex");
@@ -133,8 +157,8 @@ const fetchMissingImages = async (hero: Hero, client: pkg.Client) => {
   if (!fs.existsSync(hero.logo)) {
     const logo = (
       await client.query(
-        "SELECT encode(data::bytea, 'hex') FROM heroes_logo WHERE logo_path = $1",
-        [hero.logo]
+        "SELECT encode(data::bytea, 'hex') FROM heroes_logo WHERE hero_id = $1",
+        [hero.id]
       )
     ).rows[0];
     await fs.promises.writeFile(hero.logo, logo.encode, "hex");

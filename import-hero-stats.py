@@ -22,11 +22,12 @@ sql_insert_stats = """INSERT INTO heroes_stats
    magic_resist,
    magic_resist_by_level,
    movement_speed,
-   range)
-   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-   RETURNING id"""
+   range,
+   hero_id)
+   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+   """
 
-sql_link_stats = """UPDATE heroes SET stats_id = %s WHERE name = (%s)"""
+sql_get_hero = "SELECT id FROM heroes WHERE name = %s"
 
 
 def database_connect():
@@ -45,6 +46,9 @@ def import_stats():
     with open('champ-stats.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
+            print(row["champions"])
+            cur.execute(sql_get_hero, (row["champions"],))
+            conn.commit()
             cur.execute(sql_insert_stats,
                         (row["hp"], row["hp_lvl"],
                          row["hp5"], row["hp5_lvl"],
@@ -55,11 +59,8 @@ def import_stats():
                          0, 0,
                          row["ar"], row["ar_lvl"],
                          row["mr"], row["mr_lvl"],
-                         row["ms"], row["range"]))
-            stats_id = cur.fetchone()[0]
-            conn.commit()
-            print(stats_id)
-            cur.execute(sql_link_stats, (stats_id, row["champions"]))
+                         row["ms"], row["range"],
+                         cur.fetchone()[0]))
             conn.commit()
 
     cur.close()
