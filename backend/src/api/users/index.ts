@@ -10,7 +10,6 @@ import {
 } from "./queries";
 import multer from "multer";
 import { ErrorHandler } from "../../error";
-import { verifyToken } from "../auth";
 
 const upload = multer({ dest: "static/heroes/" });
 
@@ -43,19 +42,16 @@ router.post(
 router.get(
   "/profile/:id",
   async (req: Request, res: Response, next: NextFunction) => {
+    const idParam: string = req.params.id;
+    console.log("get: profile");
+
     try {
-      const user: UserWithoutPassword = verifyToken(req);
-      if (!user.admin && user.id !== req.params.id) {
-        throw new ErrorHandler(403, "Not enough rights");
-      }
-    } catch (err) {
-      next(err);
-    }
-    try {
-      const id = parseInt(req.params.id, 10);
+      const id = parseInt(idParam, 10);
 
       try {
         const profile: UserWithProfile = await getUserWithProfileById(id);
+
+        console.log("profile:", profile);
         res.status(200).json(profile);
         next();
       } catch (err) {

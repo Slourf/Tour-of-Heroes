@@ -13,6 +13,16 @@ app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+
+  next();
+});
+
 app.use(
   cors({
     credentials: true,
@@ -20,15 +30,6 @@ app.use(
   })
 );
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  next();
-});
 app.use("/static", express.static(staticPath));
 app.use("/api", api);
 app.use("/healthcheck", (req: Request, res: Response, next: NextFunction) => {

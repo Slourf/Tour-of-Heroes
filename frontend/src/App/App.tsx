@@ -16,6 +16,7 @@ import { AuthenticatedUser } from "../AuthenticatedUser/AuthenticatedUser";
 import { User } from "../helpers";
 
 import "./App.css";
+import { requestGet } from "../misc/api";
 
 interface Props {}
 
@@ -44,23 +45,40 @@ export default class App extends React.Component<Props, State> {
   fetchAuthenticatedUser = () => {
     const cookie: Cookies = new Cookies();
     const auth_token = cookie.get("auth_token");
-    if (!auth_token) return;
-    const token = jwt.decode(auth_token);
-    if (token === null) return;
-    if (typeof token === "string") return;
 
-    this.setState({
-      context: {
-        authenticatedUser: {
-          id: token.sub,
-          username: token.name,
-          admin: token.admin,
-        },
-        clearAuthenticatedUser: this.clearAuthenticatedUser,
-        fetchAuthenticatedUser: this.fetchAuthenticatedUser,
-      },
-      isContextSetup: true,
-    });
+    if (!auth_token) {
+      this.setState({ ...this.state, isContextSetup: true });
+      return;
+    }
+
+    requestGet("/api/auth")
+      .then((res) => {
+        if (res.data.auth) {
+          const token = jwt.decode(auth_token);
+
+          if (token === null) return;
+          if (typeof token === "string") return;
+
+          this.setState({
+            context: {
+              authenticatedUser: {
+                id: token.sub,
+                username: token.name,
+                admin: token.admin,
+              },
+              clearAuthenticatedUser: this.clearAuthenticatedUser,
+              fetchAuthenticatedUser: this.fetchAuthenticatedUser,
+            },
+          });
+        } else {
+          const cookie = new Cookies();
+          cookie.remove("auth_token");
+        }
+      })
+      .catch((err) => {})
+      .finally(() => {
+        this.setState({ ...this.state, isContextSetup: true });
+      });
   };
 
   clearAuthenticatedUser = () => {

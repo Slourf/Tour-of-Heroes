@@ -1,10 +1,9 @@
 import express, { Request, Response, NextFunction, Router } from "express";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import http from "http";
 import { getUserByUsernameWithPassword } from "../users/queries";
-import { User, UserWithoutPassword, UserWithProfile } from "../users/helper";
-import { config } from "./helper";
+import { User, UserWithoutPassword } from "../users/helper";
+import { config, authenticateJWT, RequestWithUser } from "./helper";
 import { ErrorHandler } from "../../error";
 
 export const router: Router = express.Router();
@@ -47,6 +46,14 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+router.get(
+  "/",
+  authenticateJWT,
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    res.status(200).json({ auth: true });
+  }
+);
+
 const verifyPassword = (password: string, combined: Buffer) => {
   // extract the salt and hash from the combined buffer
   const saltBytes: number = combined.readUInt32BE(0);
@@ -62,20 +69,37 @@ const verifyPassword = (password: string, combined: Buffer) => {
 
   return passwordHash === combinedHash;
 };
-
+/*
 export const verifyToken = (req: Request) => {
   const cookies: { [name: string]: string } = parseCookies(req);
   const auth_token = cookies.auth_token;
-
-  const isTokenValid = jwt.verify(auth_token, config.secret);
-  if (!isTokenValid) {
-    throw new ErrorHandler(
-      498,
-      "The token is invalid: the token verification failed"
-    );
+  try {
+    console.log(auth_token);
+    const isTokenValid = jwt.verify(auth_token, config.secret);
+    console.log(isTokenValid);
+    console.log("after verify token");
+    if (!isTokenValid) {
+      throw new ErrorHandler(
+        498,
+        "The token is invalid: the token verification failed"
+      );
+    }
+  } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      throw err;
+    } else if (err instanceof jwt.JsonWebTokenError) {
+      throw err;
+    } else {
+      console.log(err);
+      throw new ErrorHandler(
+        498,
+        "The token is invalid: the token verification failed"
+      );
+    }
   }
 
   const decodedToken: any = jwt.decode(auth_token);
+  console.log("after decode token");
   if (
     decodedToken.sub === undefined ||
     decodedToken.name === undefined ||
@@ -108,3 +132,4 @@ const parseCookies = (req: Request) => {
   }
   return list;
 };
+*/

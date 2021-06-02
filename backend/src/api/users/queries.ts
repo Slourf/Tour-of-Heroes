@@ -2,7 +2,7 @@ import pkg from "pg";
 import crypto from "crypto";
 
 import { dbInfo } from "../../helper";
-import { User, config, UserWithProfile } from "./helper";
+import { User, config, UserWithProfile, UserWithoutPassword } from "./helper";
 import { ErrorHandler } from "../../error";
 
 const { Client } = pkg;
@@ -33,26 +33,27 @@ export const getUserWithProfileById = async (id: number) => {
     throw new ErrorHandler(500, "Failed to connect to the database");
   }
   try {
+    console.log("berof query");
     const user: UserWithProfile = (
       await client.query(
         "SELECT \
            users.id, users.username, users.admin, users_profile.gender, \
-           users_profile.firstname, users_profile.lastname, users.birthdate, \
+           users_profile.firstname, users_profile.lastname, users_profile.birthdate, \
            users_profile.phone_number \
          FROM users \
          JOIN users_profile \
-           ON users.id = users_profile \
+           ON users.id = users_profile.user_id \
          WHERE users.id = $1",
         [id]
       )
     ).rows[0];
+    console.log(user);
 
     if (!user) {
       throw new ErrorHandler(404, "User not found");
     }
 
     client.end();
-
     return user;
   } catch {
     throw new ErrorHandler(404, "User not found");

@@ -9,7 +9,6 @@ import {
 } from "./queries";
 import multer from "multer";
 import { ErrorHandler } from "../../error";
-import { verifyToken } from "../auth";
 import { UserWithoutPassword } from "../users/helper";
 
 const upload = multer({ dest: "static/heroes/" });
@@ -66,15 +65,6 @@ router.post(
     { name: "logo", maxCount: 1 },
   ]),
   async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const user: UserWithoutPassword = verifyToken(req);
-      if (!user.admin) {
-        throw new ErrorHandler(403, "Not enough rights");
-      }
-    } catch (err) {
-      next(err);
-    }
-
     const files: any = req.files;
     const hero: HeroFileless = req.body;
     try {
@@ -91,15 +81,6 @@ router.post(
 router.delete(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const user: UserWithoutPassword = verifyToken(req);
-      if (!user.admin) {
-        throw new ErrorHandler(403, "Not enough rights");
-      }
-    } catch (err) {
-      next(err);
-    }
-
     try {
       const id = parseInt(req.params.id, 10);
       try {

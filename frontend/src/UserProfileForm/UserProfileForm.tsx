@@ -1,6 +1,7 @@
 import React from "react";
 import { Form } from "react-final-form";
 import InputField from "../FormTools/InputField/InputField";
+import SelectField from "../FormTools/SelectField/SelectField";
 import { User } from "../helpers";
 import { requestGet } from "../misc/api";
 import { withAuthenticatedUser } from "../misc/auth";
@@ -33,7 +34,7 @@ class UserProfile extends React.Component<Props, State> {
   };
 
   fetchUserProfile = (id: string) => {
-    requestGet("/api/user/profile")
+    requestGet(`/api/users/profile/${id}`)
       .then((res) => {
         this.setState({ profile: res.data });
       })
