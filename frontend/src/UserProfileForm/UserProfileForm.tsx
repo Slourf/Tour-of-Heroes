@@ -1,5 +1,6 @@
 import React from "react";
 import { Form } from "react-final-form";
+import DateField from "../FormTools/DateField/DateField";
 import InputField from "../FormTools/InputField/InputField";
 import SelectField from "../FormTools/SelectField/SelectField";
 import { User } from "../helpers";
@@ -8,6 +9,7 @@ import { withAuthenticatedUser } from "../misc/auth";
 import { store } from "../Notification/Notification";
 import PageTitle from "../PageTitle/PageTitle";
 import { UserWithProfile } from "./helper";
+import DatePicker from "react-datepicker";
 
 interface Props {
   context: {
@@ -73,7 +75,12 @@ class UserProfile extends React.Component<Props, State> {
               </div>
               <InputField id="lastname" name="Lastname" disabled={true} />
               <InputField id="birthdate" name="Birthdate" />
-              <InputField id="gender" name="Gender" />
+              <SelectField id="gender" name="Gender">
+                <option />
+                <option>Man</option>
+                <option>Woman</option>
+              </SelectField>
+              <DateField id="birthdate" name="Birthdate" />
               <InputField id="phone_number" name="Phone N°" />
               <button type="submit" className="submit">
                 Update
