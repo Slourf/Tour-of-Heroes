@@ -54,7 +54,7 @@ router.get(
   }
 );
 
-const verifyPassword = (password: string, combined: Buffer) => {
+export const verifyPassword = (password: string, combined: Buffer) => {
   // extract the salt and hash from the combined buffer
   const saltBytes: number = combined.readUInt32BE(0);
   const hashBytes: number = combined.length - saltBytes - 8;
@@ -69,67 +69,3 @@ const verifyPassword = (password: string, combined: Buffer) => {
 
   return passwordHash === combinedHash;
 };
-/*
-export const verifyToken = (req: Request) => {
-  const cookies: { [name: string]: string } = parseCookies(req);
-  const auth_token = cookies.auth_token;
-  try {
-    console.log(auth_token);
-    const isTokenValid = jwt.verify(auth_token, config.secret);
-    console.log(isTokenValid);
-    console.log("after verify token");
-    if (!isTokenValid) {
-      throw new ErrorHandler(
-        498,
-        "The token is invalid: the token verification failed"
-      );
-    }
-  } catch (err) {
-    if (err instanceof jwt.TokenExpiredError) {
-      throw err;
-    } else if (err instanceof jwt.JsonWebTokenError) {
-      throw err;
-    } else {
-      console.log(err);
-      throw new ErrorHandler(
-        498,
-        "The token is invalid: the token verification failed"
-      );
-    }
-  }
-
-  const decodedToken: any = jwt.decode(auth_token);
-  console.log("after decode token");
-  if (
-    decodedToken.sub === undefined ||
-    decodedToken.name === undefined ||
-    decodedToken.admin === undefined
-  ) {
-    throw new ErrorHandler(
-      498,
-      "The token is invalid: the token has missing fields"
-    );
-  }
-
-  const currentUser: UserWithoutPassword = {
-    id: decodedToken.sub,
-    username: decodedToken.name,
-    admin: decodedToken.admin,
-  };
-
-  return currentUser;
-};
-
-const parseCookies = (req: Request) => {
-  const list: { [name: string]: string } = {};
-  const rc = req.headers.cookie;
-
-  if (rc) {
-    rc.split(";").forEach((cookie) => {
-      const parts = cookie.split("=");
-      list[parts.shift().trim()] = decodeURI(parts.join("="));
-    });
-  }
-  return list;
-};
-*/

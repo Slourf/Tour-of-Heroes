@@ -1,17 +1,15 @@
-import { profile } from "console";
 import React from "react";
 import { Form } from "react-final-form";
-import DateField from "../FormTools/DateField/DateField";
-import InputField from "../FormTools/InputField/InputField";
-import SelectField from "../FormTools/SelectField/SelectField";
 import { User } from "../helpers";
-import { requestGet } from "../misc/api";
+import { requestGet, requestPost } from "../misc/api";
 import { withAuthenticatedUser } from "../misc/auth";
 import { store } from "../Notification/Notification";
 import PageTitle from "../PageTitle/PageTitle";
 import { profileField, UserWithProfile } from "./helper";
+import dateFormat from "dateformat";
 
 import "./UserProfileForm.css";
+import NewPasswordModal from "../NewPasswordModal/NewPasswordModal";
 
 interface Props {
   context: {
@@ -26,7 +24,9 @@ interface State {
     id: string;
     component: JSX.Element;
     disabled: boolean;
+    url: string;
   }[];
+  isNewPasswordModalOpen: boolean;
   // profileFieldSave: UserWithProfile;
 }
 
@@ -35,6 +35,7 @@ class UserProfile extends React.Component<Props, State> {
     super(props);
     this.state = {
       profileField,
+      isNewPasswordModalOpen: false,
     };
   }
 
@@ -45,10 +46,35 @@ class UserProfile extends React.Component<Props, State> {
     }
   };
 
+  toggleModal = () => {
+    console.log(this.state);
+    this.setState({
+      ...this.state,
+      isNewPasswordModalOpen: !this.state.isNewPasswordModalOpen,
+    });
+  };
+
+  handleToggleModal = (event: React.MouseEvent<HTMLButtonElement>) => {
+    this.toggleModal();
+  };
+
   fetchUserProfile = (id: string) => {
     requestGet(`/api/users/profile/${id}`)
       .then((res) => {
-        this.setState({ profile: res.data });
+        console.log(res.data);
+        let stringBirthdate = "";
+        if (res.data.birthdate) {
+          console.log("formatting!!!!");
+          stringBirthdate = dateFormat(res.data.birthdate, "dd/mm/yyyy");
+          console.log(stringBirthdate);
+        }
+        this.setState({
+          profile: {
+            ...res.data,
+            birthdate: stringBirthdate,
+            password: "•".repeat(res.data.password_length),
+          },
+        });
       })
       .catch((res) => {
         store.addNotification({
@@ -65,7 +91,7 @@ class UserProfile extends React.Component<Props, State> {
     if (fieldIndex === -1) {
       return;
     }
-
+    console.log(id);
     const fields = this.state.profileField;
     fields[fieldIndex].disabled = !fields[fieldIndex].disabled;
 
@@ -75,10 +101,27 @@ class UserProfile extends React.Component<Props, State> {
     });
   };
 
-  handleSubmit = (values: any) => {};
+  handleSubmit = (values: any, id: string, url: string) => {
+    requestPost(`${url}/${this.props.context?.authenticatedUser?.id}/${id}`, {
+      [id]: values[id],
+    })
+      .then(() => {
+        store.addNotification({
+          message: "The was created sucessfully!",
+          type: "success",
+        });
+      })
+      .catch((err) => {
+        store.addNotification({
+          message: `${err.code} : ${err.message}`,
+          type: "error",
+        });
+      });
+    this.handleToggleEdit(id);
+  };
 
   render() {
-    const { profile, profileField } = this.state;
+    const { profile, profileField, isNewPasswordModalOpen } = this.state;
     if (!profile) {
       return null;
     }
@@ -90,6 +133,7 @@ class UserProfile extends React.Component<Props, State> {
             <Form
               mutators={{
                 restorValue: (args, state, utils) => {
+                  console.log("mutator");
                   utils.changeValue(state, field.id, () => {
                     if (!field.disabled) {
                       this.setState({
@@ -109,31 +153,47 @@ class UserProfile extends React.Component<Props, State> {
                   });
                 },
               }}
-              onSubmit={this.handleSubmit}
+              onSubmit={(values) => {
+                this.handleSubmit(values, field.id, field.url);
+              }}
               initialValues={profile}
             >
               {(props) => (
-                <form onSubmit={props.handleSubmit}>
+                <form onSubmit={props.handleSubmit} key={field.id}>
                   <div style={{ display: "flex", width: "100%" }}>
                     {React.cloneElement(field.component, {
                       disabled: field.disabled,
                     })}
                     {field.disabled ? (
                       <button
+                        type="button"
                         className="profile-edit-button"
-                        onClick={props.form.mutators.restorValue}
+                        onClick={
+                          field.id === "password"
+                            ? this.handleToggleModal
+                            : props.form.mutators.restorValue
+                        }
+                        style={{ backgroundColor: "#369", color: "white" }}
                       >
                         Edit
                       </button>
                     ) : (
                       <div style={{ display: "flex" }}>
                         <button
+                          type="button"
                           className="profile-edit-button"
                           onClick={props.form.mutators.restorValue}
+                          style={{ backgroundColor: "red", color: "white" }}
                         >
                           Cancel
                         </button>
-                        <button className="profile-edit-button">Save</button>
+                        <button
+                          className="profile-edit-button"
+                          style={{ backgroundColor: "green", color: "white" }}
+                          type="submit"
+                        >
+                          Save
+                        </button>
                       </div>
                     )}
                   </div>
@@ -142,6 +202,10 @@ class UserProfile extends React.Component<Props, State> {
             </Form>
           );
         })}
+        <NewPasswordModal
+          isOpen={isNewPasswordModalOpen}
+          toggleModal={this.toggleModal}
+        />
       </div>
     );
   }

@@ -2,7 +2,7 @@ import React from "react";
 import { Field } from "react-final-form";
 import ReactTooltip from "react-tooltip";
 import DatePicker from "react-datepicker";
-import { format } from "date-fns";
+import dateFormat from "dateformat";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -23,14 +23,13 @@ export default class InputField extends React.Component<Props> {
     const { id, style, name, required, info, disabled } = this.props;
     let errorStyle = {};
     return (
-      <Field name={id}>
+      <Field<string> name={id}>
         {({ input, meta }) => {
           if (meta.touched && (meta.error || meta.submitError)) {
             errorStyle = {
               borderColor: "red",
             };
           }
-          console.log(input.value, typeof input.value);
           return (
             <div style={{ ...style }}>
               <label htmlFor={id}>
@@ -54,7 +53,7 @@ export default class InputField extends React.Component<Props> {
                   disabled={disabled}
                   onChange={(date: Date) => {
                     // On Change, you should use final-form Field Input prop to change the value
-                    const dateFormatted = format(date, "dd/MM/yyyy");
+                    const dateFormatted = dateFormat(date, "dd/mm/yyyy");
                     input.onChange(dateFormatted);
                   }}
                   autoComplete="off"

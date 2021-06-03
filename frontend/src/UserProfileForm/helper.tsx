@@ -8,9 +8,10 @@ export interface UserWithProfile extends User {
   gender: string;
   firstname: string;
   lastname: string;
-  birthdate: Date;
+  birthdate: string;
   phone_number: string;
   email: string;
+  password: string;
 }
 
 export const profileField = [
@@ -20,6 +21,7 @@ export const profileField = [
       <InputField id="username" name="Username" style={{ width: "100%" }} />
     ),
     disabled: true,
+    url: "/api/users",
   },
   {
     id: "password",
@@ -27,6 +29,7 @@ export const profileField = [
       <InputField id="password" name="Password" style={{ width: "100%" }} />
     ),
     disabled: true,
+    url: "/api/auth",
   },
   {
     id: "firstname",
@@ -34,6 +37,7 @@ export const profileField = [
       <InputField id="firstname" name="Firstname" style={{ width: "100%" }} />
     ),
     disabled: true,
+    url: "/api/users/profile",
   },
   {
     id: "lastname",
@@ -41,17 +45,19 @@ export const profileField = [
       <InputField id="lastname" name="Lastname" style={{ width: "100%" }} />
     ),
     disabled: true,
+    url: "/api/users/profile",
   },
   {
     id: "gender",
     component: (
       <SelectField id="gender" name="Gender" style={{ width: "100%" }}>
         <option />
-        <option>Man</option>
-        <option>Woman</option>
+        <option>Male</option>
+        <option>Female</option>
       </SelectField>
     ),
     disabled: true,
+    url: "/api/users/profile",
   },
   {
     id: "birthdate",
@@ -59,6 +65,7 @@ export const profileField = [
       <DateField id="birthdate" name="Birthdate" style={{ width: "100%" }} />
     ),
     disabled: true,
+    url: "/api/users/profile",
   },
   {
     id: "phone_number",
@@ -66,6 +73,7 @@ export const profileField = [
       <InputField id="phone_number" name="Phone N°" style={{ width: "100%" }} />
     ),
     disabled: true,
+    url: "/api/users/profile",
   },
   {
     id: "email",
@@ -73,5 +81,6 @@ export const profileField = [
       <InputField id="email" name="Email address" style={{ width: "100%" }} />
     ),
     disabled: true,
+    url: "/api/users/profile",
   },
 ];

@@ -1,5 +1,6 @@
 import express, { Router, Request, Response, NextFunction } from "express";
-import { User, UserWithoutPassword, UserWithProfile } from "./helper";
+import { NewPasswordPayload, User, UserWithProfile } from "./helper";
+import { router as profile } from "./profile/index";
 import {
   getUsers,
   getUserById,
@@ -7,13 +8,15 @@ import {
   deleteUser,
   isUsernameAvailable,
   getUserWithProfileById,
+  updatePassword,
+  getUserByIdWithPassword,
 } from "./queries";
-import multer from "multer";
 import { ErrorHandler } from "../../error";
-
-const upload = multer({ dest: "static/heroes/" });
+import { verifyPassword } from "../auth";
 
 export const router: Router = express.Router();
+
+router.use("/profile", profile);
 
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   const users = await getUsers();
@@ -21,18 +24,40 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+  const user: User = req.body;
+  try {
+    await addUser(user);
+    res.status(200);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post(
-  "/",
-  upload.fields([
-    { name: "image", maxCount: 1 },
-    { name: "logo", maxCount: 1 },
-  ]),
+  "/:id/password",
   async (req: Request, res: Response, next: NextFunction) => {
-    const user: User = req.body;
+    const passwords: NewPasswordPayload = req.body;
+    passwords.user_id = req.params.id;
+
     try {
-      await addUser(user);
-      res.status(200);
-      next();
+      const userId = parseInt(passwords.user_id, 10);
+
+      const user: User = await getUserByIdWithPassword(userId);
+
+      const combined: Buffer = Buffer.from(user.password, "base64");
+      if (!verifyPassword(passwords.new_password, combined)) {
+        throw new ErrorHandler(401, "Bad password");
+      }
+
+      try {
+        await updatePassword(passwords);
+        res.status(200);
+        next();
+      } catch (err) {
+        next(err);
+      }
     } catch (err) {
       next(err);
     }
@@ -43,16 +68,14 @@ router.get(
   "/profile/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     const idParam: string = req.params.id;
-    console.log("get: profile");
 
     try {
       const id = parseInt(idParam, 10);
 
       try {
-        const profile: UserWithProfile = await getUserWithProfileById(id);
+        const prof: UserWithProfile = await getUserWithProfileById(id);
 
-        console.log("profile:", profile);
-        res.status(200).json(profile);
+        res.status(200).json(prof);
         next();
       } catch (err) {
         next(err);

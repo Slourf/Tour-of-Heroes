@@ -2,7 +2,14 @@ import pkg from "pg";
 import crypto from "crypto";
 
 import { dbInfo } from "../../helper";
-import { User, config, UserWithProfile, UserWithoutPassword } from "./helper";
+import {
+  User,
+  config,
+  UserWithProfile,
+  UserWithoutPassword,
+  hashPassword,
+  NewPasswordPayload,
+} from "./helper";
 import { ErrorHandler } from "../../error";
 
 const { Client } = pkg;
@@ -38,7 +45,7 @@ export const getUserWithProfileById = async (id: number) => {
         "SELECT \
            users.id, users.username, users.admin, users_profile.gender, \
            users_profile.firstname, users_profile.lastname, users_profile.birthdate, \
-           users_profile.phone_number, users_profile.email \
+           users_profile.phone_number, users_profile.email, users.password_length \
          FROM users \
          JOIN users_profile \
            ON users.id = users_profile.user_id \
@@ -46,7 +53,6 @@ export const getUserWithProfileById = async (id: number) => {
         [id]
       )
     ).rows[0];
-    console.log(user);
 
     if (!user) {
       throw new ErrorHandler(404, "User not found");
@@ -139,8 +145,31 @@ export const getUserByUsernameWithPassword = async (username: string) => {
   }
 
   try {
+    // FIXEME specify the fields selected
     const user: User = (
       await client.query("SELECT * FROM users WHERE username = $1", [username])
+    ).rows[0];
+
+    client.end();
+
+    return user;
+  } catch {
+    throw new ErrorHandler(404, "User not found");
+  }
+};
+
+export const getUserByIdWithPassword = async (id: number) => {
+  const client: pkg.Client = new Client(dbInfo);
+  try {
+    client.connect();
+  } catch {
+    throw new ErrorHandler(500, "Failed to connect to the database");
+  }
+
+  try {
+    // FIXEME specify the fields selected
+    const user: User = (
+      await client.query("SELECT * FROM users WHERE id = $1", [id])
     ).rows[0];
 
     client.end();
@@ -159,39 +188,40 @@ export const addUser = async (user: User) => {
     throw new ErrorHandler(500, "Failed to connect to the database");
   }
 
-  const salt: Buffer = crypto.randomBytes(config.saltBytes);
-
-  const hash: Buffer = crypto.pbkdf2Sync(
-    user.password,
-    salt,
-    config.iterations,
-    config.hashBytes,
-    "sha512"
-  );
-
-  const combined: Buffer = new Buffer(hash.length + salt.length + 8);
-
-  // include the size of the salt so that we can, during verification,
-  // figure out how much of the hash is salt
-  combined.writeUInt32BE(salt.length, 0);
-  // similarly, include the iteration count
-  combined.writeUInt32BE(config.iterations, 4);
-
-  salt.copy(combined, 8);
-  hash.copy(combined, salt.length + 8);
+  const combined: Buffer = hashPassword(user.password);
 
   try {
     await client.query(
       "INSERT INTO users \
-          (username, password) \
-          VALUES ($1, $2)",
-      [user.username, combined.toString("base64")]
+          (username, password, password_lenght) \
+          VALUES ($1, $2, $2)",
+      [user.username, combined.toString("base64"), user.password.length]
     );
   } catch {
     throw new ErrorHandler(500, "User creation failed");
   }
 
   client.end();
+};
+
+export const updatePassword = async (p: NewPasswordPayload) => {
+  const client: pkg.Client = new Client(dbInfo);
+  try {
+    client.connect();
+  } catch {
+    throw new ErrorHandler(500, "Failed to connect to the database");
+  }
+  try {
+    const combined: Buffer = hashPassword(p.new_password);
+    await client.query(
+      "UPDATE users \
+            SET password TO $1 \
+         WHERE id = $2",
+      [combined, p.user_id]
+    );
+  } catch {
+    throw new ErrorHandler(500, "Update password failed");
+  }
 };
 
 export const deleteUser = async (id: number) => {
