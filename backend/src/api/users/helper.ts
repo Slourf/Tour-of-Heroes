@@ -16,6 +16,7 @@ export interface UserWithProfile extends User {
   lastname: string;
   birthdate: Date;
   phone_number: string;
+  email: string;
 }
 
 export const config = {

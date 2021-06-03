@@ -33,13 +33,12 @@ export const getUserWithProfileById = async (id: number) => {
     throw new ErrorHandler(500, "Failed to connect to the database");
   }
   try {
-    console.log("berof query");
     const user: UserWithProfile = (
       await client.query(
         "SELECT \
            users.id, users.username, users.admin, users_profile.gender, \
            users_profile.firstname, users_profile.lastname, users_profile.birthdate, \
-           users_profile.phone_number \
+           users_profile.phone_number, users_profile.email \
          FROM users \
          JOIN users_profile \
            ON users.id = users_profile.user_id \

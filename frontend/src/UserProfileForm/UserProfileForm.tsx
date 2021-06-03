@@ -1,3 +1,4 @@
+import { profile } from "console";
 import React from "react";
 import { Form } from "react-final-form";
 import DateField from "../FormTools/DateField/DateField";
@@ -8,8 +9,9 @@ import { requestGet } from "../misc/api";
 import { withAuthenticatedUser } from "../misc/auth";
 import { store } from "../Notification/Notification";
 import PageTitle from "../PageTitle/PageTitle";
-import { UserWithProfile } from "./helper";
-import DatePicker from "react-datepicker";
+import { profileField, UserWithProfile } from "./helper";
+
+import "./UserProfileForm.css";
 
 interface Props {
   context: {
@@ -20,12 +22,20 @@ interface Props {
 
 interface State {
   profile?: UserWithProfile;
+  profileField: {
+    id: string;
+    component: JSX.Element;
+    disabled: boolean;
+  }[];
+  // profileFieldSave: UserWithProfile;
 }
 
 class UserProfile extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {};
+    this.state = {
+      profileField,
+    };
   }
 
   componentDidMount = () => {
@@ -49,45 +59,89 @@ class UserProfile extends React.Component<Props, State> {
       });
   };
 
+  handleToggleEdit = async (id: string) => {
+    const { profileField } = this.state;
+    const fieldIndex = profileField.findIndex((field) => field.id === id);
+    if (fieldIndex === -1) {
+      return;
+    }
+
+    const fields = this.state.profileField;
+    fields[fieldIndex].disabled = !fields[fieldIndex].disabled;
+
+    await this.setState({
+      ...this.state,
+      profileField: fields,
+    });
+  };
+
   handleSubmit = (values: any) => {};
 
   render() {
-    const { profile } = this.state;
+    const { profile, profileField } = this.state;
     if (!profile) {
       return null;
     }
     return (
       <div>
-        <PageTitle title="test" />
-        <Form onSubmit={this.handleSubmit} initialValues={profile}>
-          {(props) => (
-            <form onSubmit={props.handleSubmit}>
-              <div style={{ display: "flex" }}>
-                <InputField
-                  id="firstname"
-                  name="Firstname"
-                  style={{ width: "100%" }}
-                  disabled={true}
-                />
-                <button className="profile-edit-button" style={{}}>
-                  Edit
-                </button>
-              </div>
-              <InputField id="lastname" name="Lastname" disabled={true} />
-              <InputField id="birthdate" name="Birthdate" />
-              <SelectField id="gender" name="Gender">
-                <option />
-                <option>Man</option>
-                <option>Woman</option>
-              </SelectField>
-              <DateField id="birthdate" name="Birthdate" />
-              <InputField id="phone_number" name="Phone N°" />
-              <button type="submit" className="submit">
-                Update
-              </button>
-            </form>
-          )}
-        </Form>
+        <PageTitle title="Personal informations" />
+        {profileField.map((field) => {
+          return (
+            <Form
+              mutators={{
+                restorValue: (args, state, utils) => {
+                  utils.changeValue(state, field.id, () => {
+                    if (!field.disabled) {
+                      this.setState({
+                        ...this.state,
+                        profile: {
+                          ...profile,
+                          [field.id]: state.formState.values,
+                        },
+                      });
+                    }
+                    const savedValues: { [name: string]: any } = {
+                      ...this.state.profile,
+                    };
+
+                    this.handleToggleEdit(field.id);
+                    return savedValues[field.id];
+                  });
+                },
+              }}
+              onSubmit={this.handleSubmit}
+              initialValues={profile}
+            >
+              {(props) => (
+                <form onSubmit={props.handleSubmit}>
+                  <div style={{ display: "flex", width: "100%" }}>
+                    {React.cloneElement(field.component, {
+                      disabled: field.disabled,
+                    })}
+                    {field.disabled ? (
+                      <button
+                        className="profile-edit-button"
+                        onClick={props.form.mutators.restorValue}
+                      >
+                        Edit
+                      </button>
+                    ) : (
+                      <div style={{ display: "flex" }}>
+                        <button
+                          className="profile-edit-button"
+                          onClick={props.form.mutators.restorValue}
+                        >
+                          Cancel
+                        </button>
+                        <button className="profile-edit-button">Save</button>
+                      </div>
+                    )}
+                  </div>
+                </form>
+              )}
+            </Form>
+          );
+        })}
       </div>
     );
   }
