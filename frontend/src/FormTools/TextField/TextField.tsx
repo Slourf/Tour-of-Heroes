@@ -8,11 +8,19 @@ interface Props {
   name: string;
   style?: React.CSSProperties;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export default class TextField extends React.Component<Props> {
   render() {
-    const { id, style, name, required } = this.props;
+    const { id, style, name, required, disabled } = this.props;
+    let disabledStyle = {};
+
+    if (disabled) {
+      disabledStyle = {
+        cursor: "not-allowed",
+      };
+    }
     return (
       <Field<string> name={id}>
         {({ input, meta }) => {
@@ -32,7 +40,7 @@ export default class TextField extends React.Component<Props> {
               <textarea
                 {...input}
                 id={id}
-                style={{ ...style, ...errorStyle }}
+                style={{ ...style, ...errorStyle, ...disabledStyle }}
                 className="input-form"
               />
               {(meta.error || meta.submitError) && meta.touched && (

@@ -22,6 +22,13 @@ export default class InputField extends React.Component<Props> {
   render() {
     const { id, style, name, required, info, disabled } = this.props;
     let errorStyle = {};
+
+    let classDatePicker = "input-form";
+
+    if (disabled) {
+      classDatePicker += " date-picker-disabled";
+    }
+
     return (
       <Field<string> name={id}>
         {({ input, meta }) => {
@@ -48,7 +55,7 @@ export default class InputField extends React.Component<Props> {
                 <DatePicker
                   {...input}
                   id={id}
-                  className="input-form"
+                  className={classDatePicker}
                   dateFormat="dd/MM/yyyy"
                   disabled={disabled}
                   onChange={(date: Date) => {

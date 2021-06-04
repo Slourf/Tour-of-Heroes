@@ -19,6 +19,14 @@ export default class InputField extends React.Component<Props> {
   render() {
     const { id, style, name, type, required, info, disabled } = this.props;
     let errorStyle = {};
+    let disabledStyle = {};
+
+    if (disabled) {
+      disabledStyle = {
+        cursor: "not-allowed",
+      };
+    }
+
     return (
       <Field<string> name={id}>
         {({ input, meta }) => {
@@ -45,7 +53,7 @@ export default class InputField extends React.Component<Props> {
                 {...input}
                 id={id}
                 type={type}
-                style={{ ...style, ...errorStyle }}
+                style={{ ...style, ...errorStyle, ...disabledStyle }}
                 className="input-form"
                 disabled={disabled}
               />
