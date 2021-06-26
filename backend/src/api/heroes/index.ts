@@ -8,8 +8,7 @@ import {
   getHeroesWithStatsById,
 } from "./queries";
 import multer from "multer";
-import { ErrorHandler } from "../../error";
-import { UserWithoutPassword } from "../users/helper";
+import { HttpInternalServerError } from "../../errors/http/http-internal-server-error";
 
 const upload = multer({ dest: "static/heroes/" });
 
@@ -36,7 +35,7 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
       next(err);
     }
   } catch (err) {
-    next(new ErrorHandler(500, "Failed to parse id"));
+    next(new HttpInternalServerError("Failed to parse id"));
   }
 });
 
@@ -53,7 +52,7 @@ router.get(
         next(err);
       }
     } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
+      next(new HttpInternalServerError("Failed to parse id"));
     }
   }
 );
@@ -91,7 +90,7 @@ router.delete(
         next(err);
       }
     } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
+      next(new HttpInternalServerError("Failed to parse id"));
     }
   }
 );

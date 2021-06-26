@@ -43,6 +43,7 @@ class NavBar extends React.Component<Props, State> {
     const cookie: Cookies = new Cookies();
     cookie.remove("auth_token");
     this.props.context.clearAuthenticatedUser();
+    window.location.reload();
   };
 
   render() {

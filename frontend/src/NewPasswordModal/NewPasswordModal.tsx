@@ -11,33 +11,51 @@ import { store } from "../Notification/Notification";
 import { requestPost } from "../misc/api";
 import { withAuthenticatedUser } from "../misc/auth";
 import { User } from "../helpers";
+import ReactDOMServer from "react-dom/server";
+import { PasswordPolicy } from "../SignIn/helper";
 
 interface IProps {
   isOpen: boolean;
+  userId: string;
   toggleModal: (isOpen: boolean) => void;
-  context: {
-    authenticatedUser: User | null;
-    clearAuthenticatedUser: () => void;
-    fetchAuthenticatedUser: () => void;
-  } | null;
 }
 
 class SignOnModal extends React.Component<IProps> {
   checkValidation = (values: any) => {
     const errors = {
-      username: "",
-      password: "",
+      current_password: "",
+      new_password: "",
+      new_password_confirm: "",
     };
     let valid = true;
 
-    if (!values.username) {
-      errors.username = "This field is required!";
+    if (!values.current_password) {
+      errors.current_password = "This field is required!";
       valid = false;
     }
-    if (!values.password) {
-      errors.password = "This field is required!";
+
+    if (!values.new_password) {
+      errors.new_password = "This field is required!";
+      valid = false;
+    } else {
+      const strongRegex = new RegExp(
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
+      );
+      if (!strongRegex.test(values.password)) {
+        errors.new_password = "The password doesn't match the password policy!";
+        valid = false;
+      }
+    }
+
+    if (!values.new_password_confirm) {
+      errors.new_password_confirm = "This field is required!";
+      valid = false;
+    } else if (values.new_password_confirm !== values.new_password) {
+      errors.new_password_confirm = "Both passwords must be identical!";
       valid = false;
     }
+
+    // implemente a password policy
     if (valid) {
       return null;
     }
@@ -59,30 +77,23 @@ class SignOnModal extends React.Component<IProps> {
 
   handleSubmitForm = (values: any) => {
     const credentials = {
-      username: values.username,
-      password: values.password,
+      current_password: values.current_password,
+      new_password: values.new_password,
     };
+    const { userId } = this.props;
 
-    requestPost("/api/auth", credentials)
+    requestPost(`/api/users/${userId}/password`, credentials)
       .then((res) => {
         store.addNotification({
-          message: "Login successfully!!",
+          message: "Password changed successfully!!",
           type: "success",
           timer: 3000,
         });
         this.handleToggleModal();
-
-        const cookie = new Cookies();
-        cookie.set("auth_token", res.data.token);
-
-        const { context } = this.props;
-        if (context !== null) {
-          context.fetchAuthenticatedUser();
-        }
       })
       .catch(() => {
         store.addNotification({
-          message: "An error occured while logging.",
+          message: "An error occured while changing the password.",
           type: "error",
           timer: 3000,
         });
@@ -99,25 +110,30 @@ class SignOnModal extends React.Component<IProps> {
             &#10005;
           </div>
         </div>
-        <Form onSubmit={this.handleSubmitForm} validate={this.handleValidation}>
+        <Form
+          onSubmit={this.handleSubmitForm}
+          validate={this.handleValidation}
+          validateOnBlur={true}
+        >
           {(props) => (
             <form onSubmit={props.handleSubmit}>
               <InputField
-                id="current-password"
+                id="current_password"
                 name="Current password"
                 type="password"
                 style={{ marginTop: ".575rem" }}
                 required={true}
               />
               <InputField
-                id="new-password"
+                id="new_password"
                 name="New password"
                 type="password"
                 style={{ marginTop: ".575rem" }}
                 required={true}
+                info={ReactDOMServer.renderToString(<PasswordPolicy />)}
               />
               <InputField
-                id="new-password-confirm"
+                id="new_password_confirm"
                 name="Confirm new Password"
                 type="password"
                 style={{ marginTop: ".575rem" }}

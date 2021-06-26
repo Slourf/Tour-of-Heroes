@@ -3,7 +3,7 @@ import helmet from "helmet";
 import cors from "cors";
 import compression from "compression";
 import { router as api } from "./api/index";
-import { ErrorHandler } from "./error";
+import { ErrorHandler } from "./errors/error";
 
 export const app = express();
 export const staticPath: string = "static";

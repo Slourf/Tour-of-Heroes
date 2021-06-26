@@ -1,16 +1,14 @@
 import pkg from "pg";
-import crypto from "crypto";
 
 import { dbInfo } from "../../helper";
 import {
   User,
-  config,
   UserWithProfile,
-  UserWithoutPassword,
   hashPassword,
   NewPasswordPayload,
 } from "./helper";
-import { ErrorHandler } from "../../error";
+import { HttpInternalServerError } from "../../errors/http/http-internal-server-error";
+import { HttpNotFoundError } from "../../errors/http/http-not-found-error";
 
 const { Client } = pkg;
 
@@ -19,7 +17,7 @@ export const getUsers = async () => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     const users: User[] = (await client.query("SELECT * FROM users")).rows;
@@ -28,7 +26,7 @@ export const getUsers = async () => {
 
     return users;
   } catch {
-    throw new ErrorHandler(404, "Users not found");
+    throw new HttpNotFoundError("Users not found");
   }
 };
 
@@ -37,7 +35,7 @@ export const getUserWithProfileById = async (id: number) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     const user: UserWithProfile = (
@@ -55,13 +53,13 @@ export const getUserWithProfileById = async (id: number) => {
     ).rows[0];
 
     if (!user) {
-      throw new ErrorHandler(404, "User not found");
+      throw new HttpNotFoundError("User not found");
     }
 
     client.end();
     return user;
   } catch {
-    throw new ErrorHandler(404, "User not found");
+    throw new HttpNotFoundError("User not found");
   }
 };
 
@@ -70,7 +68,7 @@ export const getUserById = async (id: number) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     const user: User = (
@@ -81,14 +79,14 @@ export const getUserById = async (id: number) => {
     ).rows[0];
 
     if (!user) {
-      throw new ErrorHandler(404, "User not found");
+      throw new HttpNotFoundError("User not found");
     }
 
     client.end();
 
     return user;
   } catch {
-    throw new ErrorHandler(404, "User not found");
+    throw new HttpNotFoundError("User not found");
   }
 };
 
@@ -97,7 +95,7 @@ export const getUserByUsername = async (username: string) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
 
   try {
@@ -111,7 +109,7 @@ export const getUserByUsername = async (username: string) => {
 
     return user;
   } catch {
-    throw new ErrorHandler(404, "User not found");
+    throw new HttpNotFoundError("User not found");
   }
 };
 
@@ -120,7 +118,7 @@ export const isUsernameAvailable = async (username: string) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
 
   try {
@@ -132,7 +130,7 @@ export const isUsernameAvailable = async (username: string) => {
 
     return results === 0;
   } catch {
-    throw new ErrorHandler(404, "User not found");
+    throw new HttpNotFoundError("User not found");
   }
 };
 
@@ -141,7 +139,7 @@ export const getUserByUsernameWithPassword = async (username: string) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
 
   try {
@@ -154,7 +152,7 @@ export const getUserByUsernameWithPassword = async (username: string) => {
 
     return user;
   } catch {
-    throw new ErrorHandler(404, "User not found");
+    throw new HttpNotFoundError("User not found");
   }
 };
 
@@ -163,7 +161,7 @@ export const getUserByIdWithPassword = async (id: number) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
 
   try {
@@ -176,7 +174,7 @@ export const getUserByIdWithPassword = async (id: number) => {
 
     return user;
   } catch {
-    throw new ErrorHandler(404, "User not found");
+    throw new HttpNotFoundError("User not found");
   }
 };
 
@@ -185,7 +183,7 @@ export const addUser = async (user: User) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
 
   const combined: Buffer = hashPassword(user.password);
@@ -198,7 +196,7 @@ export const addUser = async (user: User) => {
       [user.username, combined.toString("base64"), user.password.length]
     );
   } catch {
-    throw new ErrorHandler(500, "User creation failed");
+    throw new HttpInternalServerError("User creation failed");
   }
 
   client.end();
@@ -209,7 +207,7 @@ export const updatePassword = async (p: NewPasswordPayload) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     const combined: Buffer = hashPassword(p.new_password);
@@ -220,7 +218,7 @@ export const updatePassword = async (p: NewPasswordPayload) => {
       [combined, p.user_id]
     );
   } catch {
-    throw new ErrorHandler(500, "Update password failed");
+    throw new HttpInternalServerError("Update password failed");
   }
 };
 
@@ -229,12 +227,12 @@ export const deleteUser = async (id: number) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     await client.query("DELETE FROM users WHERE id = $1", [id]);
   } catch {
-    throw new ErrorHandler(404, "User not found");
+    throw new HttpNotFoundError("User not found");
   }
   client.end();
 };

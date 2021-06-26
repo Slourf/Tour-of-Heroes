@@ -1,7 +1,7 @@
 import express, { Router, Request, Response, NextFunction } from "express";
 import { UserWithProfile } from "./../helper";
 import { getUserWithProfileById } from "./../queries";
-import { ErrorHandler } from "../../../error";
+import { HttpInternalServerError } from "../../../errors/http/http-internal-server-error";
 import {
   updateProfileBirthdate,
   updateProfileEmail,
@@ -31,7 +31,7 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
       next(err);
     }
   } catch (err) {
-    next(new ErrorHandler(500, "Failed to parse id"));
+    next(new HttpInternalServerError("Failed to parse id"));
   }
 });
 
@@ -54,7 +54,7 @@ router.post(
         next(err);
       }
     } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
+      next(new HttpInternalServerError("Failed to parse id"));
     }
   }
 );
@@ -76,7 +76,7 @@ router.post(
         next(err);
       }
     } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
+      next(new HttpInternalServerError("Failed to parse id"));
     }
   }
 );
@@ -98,7 +98,7 @@ router.post(
         next(err);
       }
     } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
+      next(new HttpInternalServerError("Failed to parse id"));
     }
   }
 );
@@ -120,7 +120,7 @@ router.post(
         next(err);
       }
     } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
+      next(new HttpInternalServerError("Failed to parse id"));
     }
   }
 );
@@ -135,7 +135,7 @@ router.post(
       try {
         const gender = req.body.gender;
         if (!genders.includes(gender)) {
-          throw new ErrorHandler(500, "Invalid gender");
+          throw new HttpInternalServerError("Invalid gender");
         }
         await updateProfileGender(id, gender);
 
@@ -145,7 +145,7 @@ router.post(
         next(err);
       }
     } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
+      next(new HttpInternalServerError("Failed to parse id"));
     }
   }
 );
@@ -160,7 +160,7 @@ router.post(
       try {
         const birthdate: string = req.body.birthdate;
 
-        const dateMomentObject = moment(birthdate, "DD/MM/YYYY"); // 1st argument - string, 2nd argument - format
+        const dateMomentObject = moment(birthdate, "DD/MM/YYYY");
         const dateObject = dateMomentObject.toDate();
         await updateProfileBirthdate(id, dateObject);
 
@@ -170,7 +170,7 @@ router.post(
         next(err);
       }
     } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
+      next(new HttpInternalServerError("Failed to parse id"));
     }
   }
 );
@@ -193,7 +193,7 @@ router.post(
         next(err);
       }
     } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
+      next(new HttpInternalServerError("Failed to parse id"));
     }
   }
 );

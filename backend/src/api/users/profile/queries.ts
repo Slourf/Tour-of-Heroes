@@ -1,8 +1,8 @@
 import pkg from "pg";
 
 import { dbInfo } from "../../../helper";
-import { User } from "./../helper";
-import { ErrorHandler } from "../../../error";
+import { HttpInternalServerError } from "../../../errors/http/http-internal-server-error";
+import { HttpNotFoundError } from "../../../errors/http/http-not-found-error";
 
 const { Client } = pkg;
 
@@ -11,7 +11,7 @@ export const updateProfileFirstname = async (id: number, firstname: string) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     await client.query(
@@ -21,7 +21,7 @@ export const updateProfileFirstname = async (id: number, firstname: string) => {
 
     client.end();
   } catch {
-    throw new ErrorHandler(404, "Users not found");
+    throw new HttpNotFoundError("Users not found");
   }
 };
 
@@ -30,7 +30,7 @@ export const updateProfileLastname = async (id: number, lastname: string) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     await client.query(
@@ -40,7 +40,7 @@ export const updateProfileLastname = async (id: number, lastname: string) => {
 
     client.end();
   } catch {
-    throw new ErrorHandler(404, "Users not found");
+    throw new HttpNotFoundError("Users not found");
   }
 };
 
@@ -49,7 +49,7 @@ export const updateProfileEmail = async (id: number, email: string) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     await client.query(
@@ -58,7 +58,7 @@ export const updateProfileEmail = async (id: number, email: string) => {
     );
     client.end();
   } catch {
-    throw new ErrorHandler(404, "Users not found");
+    throw new HttpNotFoundError("Users not found");
   }
 };
 
@@ -70,7 +70,7 @@ export const updateProfilePhoneNumber = async (
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
 
   try {
@@ -80,7 +80,7 @@ export const updateProfilePhoneNumber = async (
     );
     client.end();
   } catch {
-    throw new ErrorHandler(404, "Users not found");
+    throw new HttpNotFoundError("Users not found");
   }
 };
 
@@ -89,7 +89,7 @@ export const updateProfileGender = async (id: number, gender: string) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     await client.query(
@@ -99,7 +99,7 @@ export const updateProfileGender = async (id: number, gender: string) => {
 
     client.end();
   } catch {
-    throw new ErrorHandler(404, "Users not found");
+    throw new HttpNotFoundError("Users not found");
   }
 };
 
@@ -108,7 +108,7 @@ export const updateProfileUsername = async (id: number, username: string) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     await client.query("UPDATE users SET username = $1 WHERE id = $2", [
@@ -118,7 +118,7 @@ export const updateProfileUsername = async (id: number, username: string) => {
 
     client.end();
   } catch {
-    throw new ErrorHandler(404, "Users not found");
+    throw new HttpNotFoundError("Users not found");
   }
 };
 
@@ -127,7 +127,7 @@ export const updateProfileBirthdate = async (id: number, birthdate: Date) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     await client.query(
@@ -137,6 +137,6 @@ export const updateProfileBirthdate = async (id: number, birthdate: Date) => {
 
     client.end();
   } catch {
-    throw new ErrorHandler(404, "Users not found");
+    throw new HttpNotFoundError("Users not found");
   }
 };

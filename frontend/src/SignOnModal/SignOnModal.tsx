@@ -81,6 +81,7 @@ class SignOnModal extends React.Component<IProps> {
         if (context !== null) {
           context.fetchAuthenticatedUser();
         }
+        window.location.reload();
       })
       .catch(() => {
         store.addNotification({

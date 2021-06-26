@@ -2,9 +2,10 @@ import express, { Request, Response, NextFunction, Router } from "express";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { getUserByUsernameWithPassword } from "../users/queries";
-import { User, UserWithoutPassword } from "../users/helper";
+import { User } from "../users/helper";
 import { config, authenticateJWT, RequestWithUser } from "./helper";
-import { ErrorHandler } from "../../error";
+import { HttpNotFoundError } from "../../errors/http/http-not-found-error";
+import { HttpInternalServerError } from "../../errors/http/http-internal-server-error";
 
 export const router: Router = express.Router();
 
@@ -12,7 +13,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user: User = await getUserByUsernameWithPassword(req.body.username);
     if (!user) {
-      throw new ErrorHandler(404, "No user found.");
+      throw new HttpNotFoundError("No user found.");
     }
     const combined: Buffer = Buffer.from(user.password, "base64");
 
@@ -39,7 +40,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       res.status(200).json({ auth: true, token });
       next();
     } catch (err) {
-      throw new ErrorHandler(500, "Failed to sign jwt token");
+      throw new HttpInternalServerError("Failed to sign jwt token");
     }
   } catch (err) {
     next(err);

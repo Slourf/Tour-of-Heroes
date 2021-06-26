@@ -7,11 +7,11 @@ import {
   addUser,
   deleteUser,
   isUsernameAvailable,
-  getUserWithProfileById,
   updatePassword,
   getUserByIdWithPassword,
 } from "./queries";
-import { ErrorHandler } from "../../error";
+import { HttpInternalServerError } from "../../errors/http/http-internal-server-error";
+import { HttpUnauthorizedError } from "../../errors/http/http-unauthorized-error";
 import { verifyPassword } from "../auth";
 
 export const router: Router = express.Router();
@@ -48,7 +48,7 @@ router.post(
 
       const combined: Buffer = Buffer.from(user.password, "base64");
       if (!verifyPassword(passwords.new_password, combined)) {
-        throw new ErrorHandler(401, "Bad password");
+        throw new HttpUnauthorizedError("Bad password");
       }
 
       try {
@@ -64,28 +64,6 @@ router.post(
   }
 );
 
-router.get(
-  "/profile/:id",
-  async (req: Request, res: Response, next: NextFunction) => {
-    const idParam: string = req.params.id;
-
-    try {
-      const id = parseInt(idParam, 10);
-
-      try {
-        const prof: UserWithProfile = await getUserWithProfileById(id);
-
-        res.status(200).json(prof);
-        next();
-      } catch (err) {
-        next(err);
-      }
-    } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
-    }
-  }
-);
-
 router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(req.params.id, 10);
@@ -97,7 +75,7 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
       next(err);
     }
   } catch (err) {
-    next(new ErrorHandler(500, "Failed to parse id"));
+    next(new HttpInternalServerError("Failed to parse id"));
   }
 });
 
@@ -129,7 +107,7 @@ router.delete(
         next(err);
       }
     } catch (err) {
-      next(new ErrorHandler(500, "Failed to parse id"));
+      next(new HttpInternalServerError("Failed to parse id"));
     }
   }
 );

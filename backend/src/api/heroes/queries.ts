@@ -8,7 +8,8 @@ import {
   HeroWithStatsRaw,
 } from "./helper";
 import fs from "fs";
-import { ErrorHandler } from "../../error";
+import { HttpInternalServerError } from "../../errors/http/http-internal-server-error";
+import { HttpNotFoundError } from "../../errors/http/http-not-found-error";
 
 const { Client } = pkg;
 
@@ -17,7 +18,7 @@ export const getHeroesById = async (id: number) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
 
   try {
@@ -36,7 +37,7 @@ export const getHeroesById = async (id: number) => {
     ).rows[0];
 
     if (!hero) {
-      throw new ErrorHandler(404, "Hero not found");
+      throw new HttpNotFoundError("Hero not found");
     }
 
     try {
@@ -59,7 +60,7 @@ export const getHeroesWithStatsById = async (
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
 
   try {
@@ -84,7 +85,7 @@ export const getHeroesWithStatsById = async (
       )
     ).rows[0];
     if (!hero) {
-      throw new ErrorHandler(404, "Hero not found");
+      throw new HttpNotFoundError("Hero not found");
     }
 
     try {
@@ -105,7 +106,7 @@ export const getHeroes = async (request?: any, response?: any) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
   try {
     const heroes: Hero[] = (
@@ -172,7 +173,7 @@ export const addHero = async (hero: HeroFileless, files: any) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
 
   try {
@@ -238,7 +239,7 @@ export const deleteHero = async (id: number) => {
   try {
     client.connect();
   } catch {
-    throw new ErrorHandler(500, "Failed to connect to the database");
+    throw new HttpInternalServerError("Failed to connect to the database");
   }
 
   await client.query("DELETE FROM heroes WHERE id = $1", [id]);
