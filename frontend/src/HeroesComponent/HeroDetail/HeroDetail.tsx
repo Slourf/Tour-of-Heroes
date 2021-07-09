@@ -1,12 +1,12 @@
 import React from "react";
-import { HeroWithStats } from "./../Heroes/helper";
+import { HeroWithStats } from "../Heroes/helper";
 import { RouteComponentProps } from "react-router-dom";
-import { store } from "../Notification/Notification";
+import { store } from "../../Notification/Notification";
 
-import { url, User } from "../helpers";
+import { url, User } from "../../helpers";
 import "./HeroDetail.css";
-import { requestDelete, requestGet } from "../misc/api";
-import { withAuthenticatedUser } from "../misc/auth";
+import { requestDelete, requestGet } from "../../misc/api";
+import { withAuthenticatedUser } from "../../misc/auth";
 import { Characteristic, characteristics } from "./helper";
 
 interface MatchParams {

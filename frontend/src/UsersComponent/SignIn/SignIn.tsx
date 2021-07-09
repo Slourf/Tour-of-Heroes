@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import InputField from "../FormTools/InputField/InputField";
-import { store } from "../Notification/Notification";
+import InputField from "../../FormTools/InputField/InputField";
+import { store } from "../../Notification/Notification";
 
 import "./SignIn.css";
-import PageTitle from "../PageTitle/PageTitle";
+import PageTitle from "../../PageTools/PageTitle/PageTitle";
 import { RouteComponentProps } from "react-router-dom";
-import { requestGet, requestPost } from "../misc/api";
+import { requestGet, requestPost } from "../../misc/api";
 import { Form } from "react-final-form";
 import { PasswordPolicy } from "./helper";
 

@@ -1,8 +1,8 @@
 import React from "react";
-import DateField from "../FormTools/DateField/DateField";
-import InputField from "../FormTools/InputField/InputField";
-import SelectField from "../FormTools/SelectField/SelectField";
-import { User } from "../helpers";
+import DateField from "../../FormTools/DateField/DateField";
+import InputField from "../../FormTools/InputField/InputField";
+import SelectField from "../../FormTools/SelectField/SelectField";
+import { User } from "../../helpers";
 
 export interface UserWithProfile extends User {
   gender: string;

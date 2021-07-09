@@ -3,14 +3,14 @@ import Modal from "react-modal";
 import { Form } from "react-final-form";
 import Cookies from "universal-cookie";
 
-import InputField from "../FormTools/InputField/InputField";
-import PageTitle from "../PageTitle/PageTitle";
+import InputField from "../../FormTools/InputField/InputField";
+import PageTitle from "../../PageTools/PageTitle/PageTitle";
 import { customStyles } from "./styles";
 import "./NewPasswordModal.css";
-import { store } from "../Notification/Notification";
-import { requestPost } from "../misc/api";
-import { withAuthenticatedUser } from "../misc/auth";
-import { User } from "../helpers";
+import { store } from "../../Notification/Notification";
+import { requestPost } from "../../misc/api";
+import { withAuthenticatedUser } from "../../misc/auth";
+import { User } from "../../helpers";
 import ReactDOMServer from "react-dom/server";
 import { PasswordPolicy } from "../SignIn/helper";
 

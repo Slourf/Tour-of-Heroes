@@ -4,15 +4,15 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import jwt from "jsonwebtoken";
 import Cookies from "universal-cookie";
-import NavBar from "../NavBar/NavBar";
-import AddHeroForm from "../AddHeroForm/AddHeroForm";
-import Heroes from "../Heroes/Heroes";
-import PageBody from "../PageBody/PageBody";
-import HeroDetail from "../HeroDetail/HeroDetail";
+import NavBar from "../PageTools/NavBar/NavBar";
+import AddHeroForm from "../HeroesComponent/AddHeroForm/AddHeroForm";
+import Heroes from "../HeroesComponent/Heroes/Heroes";
+import PageBody from "../PageTools/PageBody/PageBody";
+import HeroDetail from "../HeroesComponent/HeroDetail/HeroDetail";
 import Notification from "../Notification/Notification";
-import SignIn from "../SignIn/SignIn";
-import UserProfileForm from "../UserProfileForm/UserProfileForm";
-import { AuthenticatedUser } from "../AuthenticatedUser/AuthenticatedUser";
+import SignIn from "../UsersComponent/SignIn/SignIn";
+import UserProfileForm from "../UsersComponent/UserProfileForm/UserProfileForm";
+import { AuthenticatedUser } from "../UsersComponent/AuthenticatedUser/AuthenticatedUser";
 import { User } from "../helpers";
 
 import "./App.css";

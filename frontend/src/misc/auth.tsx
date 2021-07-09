@@ -1,4 +1,4 @@
-import { AuthenticatedUser } from "../AuthenticatedUser/AuthenticatedUser";
+import { AuthenticatedUser } from "../UsersComponent/AuthenticatedUser/AuthenticatedUser";
 
 export const withAuthenticatedUser = (Component: any) => {
   return (props: any) => {

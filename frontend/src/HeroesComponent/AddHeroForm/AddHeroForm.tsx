@@ -1,14 +1,14 @@
 import React from "react";
 import { Form } from "react-final-form";
-import InputField from "../FormTools/InputField/InputField";
-import FileField from "../FormTools/FileField/FileField";
-import { store } from "../Notification/Notification";
+import InputField from "../../FormTools/InputField/InputField";
+import FileField from "../../FormTools/FileField/FileField";
+import { store } from "../../Notification/Notification";
 
 import "./AddHeroForm.css";
-import PageTitle from "../PageTitle/PageTitle";
-import TextField from "../FormTools/TextField/TextField";
+import PageTitle from "../../PageTools/PageTitle/PageTitle";
+import TextField from "../../FormTools/TextField/TextField";
 import { RouteComponentProps } from "react-router-dom";
-import { requestPost } from "../misc/api";
+import { requestPost } from "../../misc/api";
 
 interface Props extends RouteComponentProps {}
 

@@ -1,10 +1,10 @@
 import React from "react";
 import { Form } from "react-final-form";
-import { User } from "../helpers";
-import { requestGet, requestPost } from "../misc/api";
-import { withAuthenticatedUser } from "../misc/auth";
-import { store } from "../Notification/Notification";
-import PageTitle from "../PageTitle/PageTitle";
+import { User } from "../../helpers";
+import { requestGet, requestPost } from "../../misc/api";
+import { withAuthenticatedUser } from "../../misc/auth";
+import { store } from "../../Notification/Notification";
+import PageTitle from "../../PageTools/PageTitle/PageTitle";
 import { profileField, UserWithProfile } from "./helper";
 import dateFormat from "dateformat";
 

@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import SignOnModal from "../SignOnModal/SignOnModal";
-import { withAuthenticatedUser } from "../misc/auth";
+import SignOnModal from "../../UsersComponent/SignOnModal/SignOnModal";
+import { withAuthenticatedUser } from "../../misc/auth";
 
 import "./NavBar.css";
-import { User } from "../helpers";
+import { User } from "../../helpers";
 import { menu } from "./helper";
 import Cookies from "universal-cookie";
 
